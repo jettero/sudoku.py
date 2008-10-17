@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# this might help:
+
+# http://effbot.org/zone/import-confusion.htm
+
 from sudoku.puzzle import puzzle
 
 x = puzzle()
