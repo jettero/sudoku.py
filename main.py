@@ -2,7 +2,7 @@
 
 import sudoku;
 
-sudoku = sudoku.puzzle([
+p = sudoku.puzzle([
     [ 2,1,0, 6,0,0, 0,0,0 ],
     [ 0,0,0, 0,0,5, 4,0,0 ],
     [ 0,0,8, 0,0,0, 0,3,0 ],
@@ -15,3 +15,5 @@ sudoku = sudoku.puzzle([
     [ 0,0,6, 8,0,0, 0,0,0 ],
     [ 0,0,0, 0,0,4, 0,9,7 ],
 ]);
+
+print p
