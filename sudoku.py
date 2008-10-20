@@ -58,6 +58,11 @@ class puzzle(object):
        It understands rows, cols, and squares.
        Solvers can tell the rows, cols, and squares (sometimes excluding single elements): you can't be <blarg>.
     """
+
+    def log(self,msg):
+        msg.
+        self._logfile.write(msg)
+
     def assign_cols(self):
         self.cols = []
         for j in range(9):
@@ -89,6 +94,7 @@ class puzzle(object):
         if type([]) != type(rows) or len(rows) != 9:
             raise TypeError, "puzzle(rows) takes 9 rows as an argument"
 
+        self._logfile = open("debug.log", "w")
         self.rows = []
         knowns = []
 
