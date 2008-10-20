@@ -3,13 +3,21 @@ class solver(object):
     """The solver is given a puzzle to work on, applying rules.
     """
 
+    def __init__(self, puzzle):
+        self.puzzle = puzzle
+
+    def _loop_once(self):
+        self.find_aligned_pairs()
+
 class element(object):
     """This a single element in the puzzle.
        It has a value, but doesn't know anything about the Puzzle itself.
        It knows what values it *can* be based on rules and can report whether it's "solved."
     """
-    def __init__(self, value):
+    def __init__(self, value, caller):
         self.possibilities = range(1, 9)
+        self._puzzle = caller
+
         if value == 0:
             self.val = None
         else:
@@ -39,6 +47,7 @@ class element(object):
 
         self.val = value
         self.possibilities = [value]
+        self._puzzle.knowns.append(self)
 
         for e in self.col + self.row + self.cel:
             if e is not self:
@@ -72,8 +81,9 @@ class puzzle(object):
                 e.cel = cel
 
     def i_am(self, knowns):
+        self.knowns = []
         for e in knowns:
-            e.i_am(e.val);
+            e.i_am(e.val); # this fills in knowns for us
 
     def __init__(self, rows):
         if type([]) != type(rows) or len(rows) != 9:
@@ -91,7 +101,7 @@ class puzzle(object):
 
             for i in row:
                 if i == 0 or (type(i)==type(3) and 0<i<10):
-                    e = element(i)
+                    e = element(i, self)
                     this_row.append(e)
                     knowns.append(e)
 

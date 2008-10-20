@@ -16,4 +16,7 @@ p = sudoku.puzzle([
     [ 0,0,0, 0,0,4, 0,9,7 ],
 ]);
 
+s = sudoku.solver(p)
+s._loop_once()
+
 print p
