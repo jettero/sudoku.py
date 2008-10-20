@@ -26,7 +26,7 @@ class puzzle(object):
     """
 
     def __init__(self, rows):
-        self.rows = [];
+        self.rows = []
 
         if type([]) != type(rows) or len(rows) != 9:
             raise TypeError, "puzzle(rows) takes 9 rows as an argument"
@@ -49,10 +49,22 @@ class puzzle(object):
             for e in row:
                 e.row = row
 
+        self.cols = []
         for j in range(9):
             col = [ row[j] for row in self.rows ]
+            self.cols.append(col)
             for e in col:
                 e.col = col
+
+        self.cels = [] # #python Crys_:
+        for c in [(x, y) for y in range(3) for x in range(3)]:
+            this_cell = [];
+            self.cels.append(this_cell)
+
+            for rn in range(3*c[0], 3*c[0]+3):
+                this_row = self.rows[rn]
+                for cn in range(3*c[1], 3*c[1]+3):
+                    this_cell.append( this_row[cn] )
 
     def __str__(self):
         ret = ""
