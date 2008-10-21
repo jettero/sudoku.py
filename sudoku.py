@@ -45,11 +45,11 @@ class element(object):
         if value in self.possibilities:
             self.possibilities.remove(value)
 
-        if len( self.possibilities ) == 1:
-            self._puzzle.log("only one possibility left: %d" % self.possibilities[0], self._loc);
-            self._puzzle.indent()
-            self.i_am( self.possibilities[0] )
-            self._puzzle.outdent()
+      # if len( self.possibilities ) == 1:
+      #     self._puzzle.log("only one possibility left: %d" % self.possibilities[0], self._loc);
+      #     self._puzzle.indent()
+      #     self.i_am( self.possibilities[0] )
+      #     self._puzzle.outdent()
 
     def i_am(self, value):
         if not (type(value)==type(3) and 0<value<10):
@@ -60,14 +60,11 @@ class element(object):
         self._puzzle.knowns.append(self)
 
         self._puzzle.log("i_am(%d)" % value, self._loc)
-
         for e in self.col + self.row + self.cel:
             if e is not self:
-                self._puzzle.log("lol-wtf-before(%s)" % repr(e))
                 self._puzzle.indent()
                 e.i_cannot_be(value)
                 self._puzzle.outdent()
-                self._puzzle.log("lol-wtf-after (%s)" % repr(e))
 
 class puzzle(object):
     """This is the puzzle, it's 9x9 Elements.
