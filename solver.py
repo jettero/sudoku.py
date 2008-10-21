@@ -10,6 +10,14 @@ class solver(object):
         self.find_aligned_pairs()
 
     def find_aligned_pairs(self):
+        """ Find elements in which i occur such that they are the ony two
+            elements where i can occur and they're in the same row or column.
+            This eliminates their changes of being elsewhere in the row or
+            column.
+
+            (This could be generalized to any two *or* three elements easily.)
+        """
+
         for cell in self.puzzle.cels:
             for i in range(1, 9+1):
                 can_be_i = []
@@ -18,14 +26,27 @@ class solver(object):
                     if i in e.possibilities:
                         can_be_i.append(e)
 
-                if len(can_be_i) == 2:
+                if len(can_be_i) > 1:
+                    first = can_be_i.pop()
+                    same_row = reduce(lambda a,b: a and b, [first.row is e.row for e in can_be_i])
+                    same_col = reduce(lambda a,b: a and b, [first.row is e.row for e in can_be_i])
+                    can_be_i.append(first)
 
-                    if can_be_i[0].col is can_be_i[1].col:
-                        for e in can_be_i[0].col:
-                            if e is not can_be_i[0] and e is not can_be_i[1]:
+                    if same_row:
+                        self.puzzle.log("found %d isolated in a single row %s" % (i, repr(first._loc)))
+                        for e in first.row:
+                            if e not in can_be_i:
                                 e.i_cannot_be(i)
 
-                    if can_be_i[0].row is can_be_i[1].row:
-                        for e in can_be_i[0].row:
-                            if e is not can_be_i[0] and e is not can_be_i[1]:
+                    if same_col:
+                        self.puzzle.log("found %d isolated in a single col %s" % (i, repr(first._loc)))
+                        for e in first.col:
+                            if e not in can_be_i:
                                 e.i_cannot_be(i)
+
+  # def find_bound_double_pairs(self):
+  #     """ Find pair of elements where i and j may occur such that i and j
+  #         must occur only in those two elements.  This eliminates the two
+  #         elements chance of being anything but i or j.
+  #     """
+  #     for cell in self.puzzle.cels:
