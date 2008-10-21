@@ -16,7 +16,13 @@ p = sudoku.puzzle([
     [ 0,0,0, 0,0,4, 0,9,7 ],
 ]);
 
-# s = sudoku.solver(p)
-# s._loop_once()
-
+print p._before_string
 print p
+
+s = sudoku.solver(p)
+solved = 0
+while not solved:
+    s._loop_once()
+    print p
+    solved = 1
+

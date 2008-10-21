@@ -13,6 +13,27 @@ class solver(object):
     def _loop_once(self):
         self.find_aligned_pairs()
 
+    def find_aligned_pairs(self):
+        for cell in self.puzzle.cels:
+            for i in range(1, 9+1):
+                can_be_i = []
+
+                for e in cell:
+                    if i in e.possibilities:
+                        can_be_i.append(e)
+
+                if len(can_be_i) == 2:
+
+                    if can_be_i[0].col is can_be_i[1].col:
+                        for e in can_be_i[0].col:
+                            if e is not can_be_i[0] and e is not can_be_i[1]:
+                                e.i_cannot_be(i)
+
+                    if can_be_i[0].row is can_be_i[1].row:
+                        for e in can_be_i[0].row:
+                            if e is not can_be_i[0] and e is not can_be_i[1]:
+                                e.i_cannot_be(i)
+
 class element(object):
     """This a single element in the puzzle.
        It has a value, but doesn't know anything about the Puzzle itself.
@@ -24,7 +45,7 @@ class element(object):
 
         if value == 0:
             self.val = None
-            self.possibilities = range(1, 1+9)
+            self.possibilities = range(1, 9+1)
         else:
             self.val = value
             self.possibilities = [value]
@@ -81,7 +102,8 @@ class puzzle(object):
             self.debugging = True
 
         self.rows = []
-        knowns = []
+        self.knowns = []
+        self.givens = []
 
         self.log("starting puzzle")
         self.indent()
@@ -99,7 +121,7 @@ class puzzle(object):
                     e = element(i, self, (xpos,ypos))
                     this_row.append(e)
                     if i>0:
-                        knowns.append(e)
+                        self.givens.append(e)
 
                 else:
                     raise TypeError, "every element in a puzzle row must be an integer (0-9) or None"
@@ -114,11 +136,12 @@ class puzzle(object):
         self.log("populating cels")
         self.assign_cels()
 
-        self.log("telling initial knowns: i_am() (known elements: %d)" % len(knowns))
-        self.i_am(knowns)
+        self._before_string = str(self) # after the line below, the puzzle starts solving itself
 
+        self.log("telling initial knowns: i_am()")
+        self.i_am()
         self.outdent()
-        self.log("done building puzzle (known elements: %d)" % len(knowns))
+        self.log("done building puzzle")
 
     def assign_cols(self):
         self.cols = []
@@ -142,25 +165,28 @@ class puzzle(object):
             for e in cel:
                 e.cel = cel
 
-    def i_am(self, knowns):
+    def i_am(self):
         self.indent()
-        self.knowns = []
-        self.indent()
-        for e in knowns:
+        for e in self.givens:
             e.i_am(e.val); # this fills in knowns for us
         self.outdent()
 
     def __str__(self):
-        ret = ""
+        flux_score = 0
+        ret = "- - -  " * 3 + "\n"
+
         for i, row in enumerate(self.rows):
             for j, element in enumerate(row):
+                flux_score += len(element.possibilities)
                 ret += "%s " % element
                 if j % 3 == 2:
                     ret += " "
             ret += "\n";
             if i % 3 == 2:
-                ret += "\n"
-        return ret
+                if i!=8:
+                    ret += "\n"
+
+        return ret + " flux_score: %d" % (flux_score-len(self.knowns)) + "\n"
 
     def indent(self,i=1):
         if not hasattr(self, '_indstr'):
