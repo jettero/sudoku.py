@@ -18,13 +18,3 @@ p = sudoku.puzzle([
 
 # s = sudoku.solver(p)
 # s._loop_once()
-
-print p
-for row in p.rows:
-    print [len(e.possibilities) for e in row]
-
-for row in p.rows:
-    for e in row:
-        if len(e.possibilities) == 1:
-            print e.possibilities
-            e.i_am(e.possibilities[0])

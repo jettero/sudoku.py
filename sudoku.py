@@ -1,3 +1,7 @@
+import re,time,os,sys
+
+sys.tracebacklimit = 5
+sys.recursionlimit = 10000
 
 class solver(object):
     """The solver is given a puzzle to work on, applying rules.
@@ -14,9 +18,10 @@ class element(object):
        It has a value, but doesn't know anything about the Puzzle itself.
        It knows what values it *can* be based on rules and can report whether it's "solved."
     """
-    def __init__(self, value, caller):
+    def __init__(self, value, caller, loc):
         self.possibilities = range(1, 9)
         self._puzzle = caller
+        self._loc = loc
 
         if value == 0:
             self.val = None
@@ -35,23 +40,34 @@ class element(object):
         if self.val is not None:
             return
 
+        self._puzzle.log("i_cannot_be(%d)" % value, self._loc);
+
         if value in self.possibilities:
             self.possibilities.remove(value)
 
         if len( self.possibilities ) == 1:
+            self._puzzle.log("only one possibility left: %d" % self.possibilities[0], self._loc);
+            self._puzzle.indent()
             self.i_am( self.possibilities[0] )
+            self._puzzle.outdent()
 
     def i_am(self, value):
-        if self.val is None:
-            return
+        if not (type(value)==type(3) and 0<value<10):
+            raise TypeError, "i_am() values must be integers, 1-9, received: " + repr(value)
 
         self.val = value
         self.possibilities = [value]
         self._puzzle.knowns.append(self)
 
+        self._puzzle.log("i_am(%d)" % value, self._loc)
+
         for e in self.col + self.row + self.cel:
             if e is not self:
+                self._puzzle.log("lol-wtf-before(%s)" % repr(e))
+                self._puzzle.indent()
                 e.i_cannot_be(value)
+                self._puzzle.outdent()
+                self._puzzle.log("lol-wtf-after (%s)" % repr(e))
 
 class puzzle(object):
     """This is the puzzle, it's 9x9 Elements.
@@ -59,9 +75,52 @@ class puzzle(object):
        Solvers can tell the rows, cols, and squares (sometimes excluding single elements): you can't be <blarg>.
     """
 
-    def log(self,msg):
-        msg.
-        self._logfile.write(msg)
+    def __init__(self, rows):
+        if type([]) != type(rows) or len(rows) != 9:
+            raise TypeError, "puzzle(rows) takes 9 rows as an argument"
+
+        if os.getenv("DEBUG"):
+            self.debugging = True
+
+        self.rows = []
+        knowns = []
+
+        self.log("starting puzzle")
+        self.indent()
+        self.log("populating rows")
+
+        for ypos, row in enumerate(rows):
+            this_row = []
+            self.rows.append(this_row)
+
+            if type([]) != type(row) or len(row) != 9:
+                raise TypeError, "puzzle(rows) takes 9 rows with 9 integers (or None) in each"
+
+            for xpos, i in enumerate(row):
+                if i == 0 or (type(i)==type(3) and 0<i<10):
+                    e = element(i, self, (xpos,ypos))
+                    this_row.append(e)
+                    if i>0:
+                        knowns.append(e)
+
+                else:
+                    raise TypeError, "every element in a puzzle row must be an integer (0-9) or None"
+
+        for row in self.rows:
+            for e in row:
+                e.row = row
+
+        self.log("populating cols")
+        self.assign_cols()
+
+        self.log("populating cels")
+        self.assign_cels()
+
+        self.log("telling initial knowns: i_am() (known elements: %d)" % len(knowns))
+        self.i_am(knowns)
+
+        self.outdent()
+        self.log("done building puzzle (known elements: %d)" % len(knowns))
 
     def assign_cols(self):
         self.cols = []
@@ -86,41 +145,12 @@ class puzzle(object):
                 e.cel = cel
 
     def i_am(self, knowns):
+        self.indent()
         self.knowns = []
+        self.indent()
         for e in knowns:
             e.i_am(e.val); # this fills in knowns for us
-
-    def __init__(self, rows):
-        if type([]) != type(rows) or len(rows) != 9:
-            raise TypeError, "puzzle(rows) takes 9 rows as an argument"
-
-        self._logfile = open("debug.log", "w")
-        self.rows = []
-        knowns = []
-
-        for row in rows:
-            this_row = []
-            self.rows.append(this_row)
-
-            if type([]) != type(row) or len(row) != 9:
-                raise TypeError, "puzzle(rows) takes 9 rows with 9 integers (or None) in each"
-
-            for i in row:
-                if i == 0 or (type(i)==type(3) and 0<i<10):
-                    e = element(i, self)
-                    this_row.append(e)
-                    knowns.append(e)
-
-                else:
-                    raise TypeError, "every element in a puzzle row must be an integer (0-9) or None"
-
-        for row in self.rows:
-            for e in row:
-                e.row = row
-
-        self.assign_cols()
-        self.assign_cels()
-        self.i_am(knowns)
+        self.outdent()
 
     def __str__(self):
         ret = ""
@@ -134,3 +164,34 @@ class puzzle(object):
                 ret += "\n"
         return ret
 
+    def indent(self,i=1):
+        if not hasattr(self, '_indstr'):
+            self._indstr = ""
+        self._indstr += "  " * i
+
+    def outdent(self,i=1):
+        if not hasattr(self, '_indstr'):
+            self._indstr = ""
+        if i>0:
+            self._indstr = self._indstr[0:-i*2]
+
+    def log(self,msg,*id):
+        if hasattr(self, 'debugging'):
+            if not hasattr(self, '_indstr'):
+                self._indstr = ""
+
+            if hasattr(self, 'prev'):
+                logfile = open("debug.log", "a")
+            else:
+                logfile = open("debug.log", "w")
+                self.prev = 1
+
+            logfile.write( time.ctime() + " [" + str(os.getpid()) + "]: " + self._indstr )
+
+            for i in id:
+                logfile.write( "<" + str(i) + "> " )
+
+            logfile.write( re.sub("[\r\n]", "", msg) )
+            logfile.write( "\n" )
+
+            logfile.close()
