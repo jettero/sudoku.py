@@ -19,14 +19,15 @@ class element(object):
        It knows what values it *can* be based on rules and can report whether it's "solved."
     """
     def __init__(self, value, caller, loc):
-        self.possibilities = range(1, 9)
         self._puzzle = caller
         self._loc = loc
 
         if value == 0:
             self.val = None
+            self.possibilities = range(1, 1+9)
         else:
             self.val = value
+            self.possibilities = [value]
 
     def __str__(self):
         if self.val is not None:
@@ -35,21 +36,21 @@ class element(object):
 
     def i_cannot_be(self, value):
         if self.val == value:
-            raise Exception, "logical inconsistancy formed, i_cannot_be(%d), but i_am(%d)" % (value,value)
+            raise Exception, "logical inconsistancy formed, %s.i_cannot_be(%d), but %s.val==%d" % \
+              (repr(self._loc),value, repr(self._loc),self.val)
 
         if self.val is not None:
             return
 
-        self._puzzle.log("i_cannot_be(%d)" % value, self._loc);
-
         if value in self.possibilities:
             self.possibilities.remove(value)
+            self._puzzle.log("i_cannot_be(%d)" % value, self._loc);
 
-      # if len( self.possibilities ) == 1:
-      #     self._puzzle.log("only one possibility left: %d" % self.possibilities[0], self._loc);
-      #     self._puzzle.indent()
-      #     self.i_am( self.possibilities[0] )
-      #     self._puzzle.outdent()
+        if len( self.possibilities ) == 1:
+            self._puzzle.log("only one possibility left: %d" % self.possibilities[0], self._loc);
+            self._puzzle.indent()
+            self.i_am( self.possibilities[0] )
+            self._puzzle.outdent()
 
     def i_am(self, value):
         if not (type(value)==type(3) and 0<value<10):
