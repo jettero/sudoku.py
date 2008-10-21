@@ -19,12 +19,14 @@ p = sudoku.puzzle([
 # s = sudoku.solver(p)
 # s._loop_once()
 
-print p
-for row in p.rows:
-    print [len(e.possibilities) for e in row]
+x=1
+while x == 1:
+    x=0
 
-for row in p.rows:
-    for e in row:
-        if len(e.possibilities) == 1:
-            print e.possibilities
-            e.i_am(e.possibilities[0])
+    for row in p.rows:
+        for e in row:
+            if e.val is None and len(e.possibilities) == 1:
+                e.i_am(e.possibilities[0])
+                x=1
+
+print p
