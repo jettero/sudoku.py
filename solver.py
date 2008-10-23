@@ -29,17 +29,19 @@ class solver(object):
                 if len(can_be_i) > 1:
                     first = can_be_i.pop()
                     same_row = reduce(lambda a,b: a and b, [first.row is e.row for e in can_be_i])
-                    same_col = reduce(lambda a,b: a and b, [first.row is e.row for e in can_be_i])
+                    same_col = reduce(lambda a,b: a and b, [first.col is e.row for e in can_be_i])
                     can_be_i.append(first)
 
                     if same_row:
-                        self.puzzle.log("found %d isolated in a single row %s" % (i, repr(first._loc)))
+                        for e in can_be_i:
+                            self.puzzle.log("found %d isolated in a single row %s" % (i, repr(e._loc)))
                         for e in first.row:
                             if e not in can_be_i:
                                 e.i_cannot_be(i)
 
                     if same_col:
-                        self.puzzle.log("found %d isolated in a single col %s" % (i, repr(first._loc)))
+                        for e in can_be_i:
+                            self.puzzle.log("found %d isolated in a single col %s" % (i, repr(e._loc)))
                         for e in first.col:
                             if e not in can_be_i:
                                 e.i_cannot_be(i)
