@@ -46,9 +46,15 @@ class solver(object):
                             if e not in can_be_i:
                                 e.i_cannot_be(i)
 
-  # def find_bound_double_pairs(self):
-  #     """ Find pair of elements where i and j may occur such that i and j
-  #         must occur only in those two elements.  This eliminates the two
-  #         elements chance of being anything but i or j.
-  #     """
-  #     for cell in self.puzzle.cels:
+    def find_bound_double_pairs(self):
+        """ Find pair of elements where i and j may occur such that i and j
+            must occur only in those two elements.  This eliminates the two
+            elements chance of being anything but i or j.
+        """
+        for cell in self.puzzle.cels:
+            for i in range(1, 9+1):
+                for j in range(1, 9+1):
+                    for e in cell:
+                        for f in cell:
+                            if e is not f:
+                                # wow, this deep? really?
