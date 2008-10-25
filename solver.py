@@ -126,11 +126,13 @@ class solver(object):
         self._puzzle.outdent()
 
     def find_double_bound_2_element_sets(self):
-        """ If we can find two sets of two double bound elements in
-            neighboring cells:  They can, if both elements of both sets of
-            the double bound pairs are in the same rows (or columns) of the
-            adjacent cells, elminate those rows (or columns) for those
-            numbers from the third cell in the cell-row (or cell-column).
+        """ If we can find an (i) for which (i) can only be in two elements in
+            two different columns (e.loc[nd]) of a cell (cel), and if that same
+            (i) occurs in the same columns (e.loc[nd]) of another cell in the
+            same cell-column (celar) as the first cell (oc), then i cannot
+            occur in those two columns in the third remaining cell of the
+            cell-column!  This can be re-reasoned for cell-rows and element
+            rows as well.
         """
 
         self._puzzle.log("looking for double bound 2 element sets")
