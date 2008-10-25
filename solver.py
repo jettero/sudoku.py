@@ -17,7 +17,7 @@ def _not_in(to_exclude, complete_set):
     return nots
 
 class solver(object):
-    """The solver is given a puzzle to work on, applying rules.
+    """ The solver is given a puzzle to work on, applying rules.
     """
 
     def __init__(self, puzzle):
@@ -50,8 +50,8 @@ class solver(object):
         self._puzzle.log("solver main-loop ended")
 
     def find_aligned_i_elements(self):
-        """ Find elements in which some number (i) can only occure in that row
-            or in that column.  This eliminates their changes of being
+        """ Find elements in which some number (i) can only occure in that
+            row or in that column.  This eliminates their changes of being
             elsewhere in the row or column.
         """
 
@@ -87,16 +87,14 @@ class solver(object):
         self._puzzle.outdent()
 
     def find_n_bound_elements(self):
-        """ Find some number (n) of bound elements where some
-            combination of numbers (ar) of length (n) can only
-            occur within those elements.  This eliminates the
-            possibility of their being any number besides those
-            in (ar).
+        """ Find some number (n) of bound elements where some combination
+            of numbers (ar) of length (n) can only occur within those
+            elements.  This eliminates the possibility of their being any
+            number besides those in (ar).
 
         """
 
-        self._save_for_double_bound_2_element_sets = []
-        self._puzzle.log("looking n-bound elements")
+        self._puzzle.log("looking for n-bound elements")
         self._puzzle.indent()
         for n in range(1, 3+1):
             self._puzzle.log("looking %d-bound elements" % n)
@@ -126,15 +124,11 @@ class solver(object):
         self._puzzle.outdent()
 
     def find_double_bound_2_element_sets(self):
-        """ If we can find two sets of two double bound elements
-            in neighboring cells:  They can, if both elements of
-            both sets of the double bound pairs are in the same
-            rows (or columns) of the adjacent cells, elminate
-            those rows (or columns) for those numbers from the
-            third cell in the cell-row (or cell-column).
+        """ If we can find two sets of two double bound elements in
+            neighboring cells:  They can, if both elements of both sets of
+            the double bound pairs are in the same rows (or columns) of the
+            adjacent cells, elminate those rows (or columns) for those
+            numbers from the third cell in the cell-row (or cell-column).
         """
 
-        # we should use the pairs found in self._save_for_double_... blah which
-        # is simply a list of bound pairs co-incidentally, this will solve the
-        # last puzzle
         pass
