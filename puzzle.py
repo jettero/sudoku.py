@@ -140,9 +140,9 @@ class puzzle(object):
             logfile.close()
     
     ### debugging queries
-    def psb(self, loc):
-        if type(loc) != type((1,2)) or len(loc) != 2 and 1<=loc[0]<=9 and 1<=loc[1]<=9:
-            raise TypeError, "psb takes a location tuple as an argument"
+    def psb(self, *loc):
+        if len(loc) != 2 and 1<=loc[0]<=9 and 1<=loc[1]<=9:
+            raise TypeError, "psb takes a location as two x,y arguments"
 
         e = self.rows[loc[1]-1][loc[0]-1]
         if e.val is not None:
