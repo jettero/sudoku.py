@@ -2,18 +2,16 @@
 
 import sudoku
 
+def show_solver(p):
+    print p
+
 def do_a_puzzle(p, outf):
     print p._before_string
     print p
 
     s = sudoku.solver(p)
+    s.solve(None,show_solver)
     solved = 0
-    while not solved:
-        s._loop_once()
-        print p
-        solved = 1
-        # NOTE: this should all, of course, be in the solver, not out here in
-        # main...  First, we need a puzzle that fails to solve after one loop.
 
     outf.write(str(p))
     outf.write("\n")

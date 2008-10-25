@@ -1,6 +1,6 @@
-# stolen from http://code.activestate.com/recipes/190465/
-# does not produce lists with repeat elements (e.g. [1,1])
 def _xcomb(items, n):
+    # stolen from http://code.activestate.com/recipes/190465/
+    # does not produce lists with repeat elements (e.g. [1,1])
     if n==0:
         yield []
 
@@ -23,14 +23,21 @@ class solver(object):
     def __init__(self, puzzle):
         self._puzzle = puzzle
 
-    def solve(self):
+    def solve(self,pre_callback=None,post_callback=None):
         self._puzzle.log("solver starting")
         flux_score = self._puzzle.flux_score()
         last_score = 0
-        while this_score != flux_score:
+        while last_score != flux_score:
             last_score = flux_score
+
+            if pre_callback:
+                pre_callback(self._puzzle)
+
             self._loop_once()
             flux_score = self._puzzle.flux_score()
+
+            if last_score != flux_score and post_callback:
+                post_callback(self._puzzle)
 
     def _loop_once(self):
         self._puzzle.log("solver main-loop started")

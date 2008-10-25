@@ -85,13 +85,18 @@ class puzzle(object):
             e.i_am(e.val); # this fills in knowns for us
         self.outdent()
 
+    def flux_score(self):
+        poss_score = 0
+        for i, row in enumerate(self.rows):
+            for j, element in enumerate(row):
+                poss_score += len(element.possibilities)
+        return poss_score - len(self.knowns)
+
     def __str__(self):
-        flux_score = 0
         ret = "- - -  " * 3 + "\n"
 
         for i, row in enumerate(self.rows):
             for j, element in enumerate(row):
-                flux_score += len(element.possibilities)
                 ret += "%s " % element
                 if j % 3 == 2:
                     ret += " "
@@ -100,7 +105,7 @@ class puzzle(object):
                 if i!=8:
                     ret += "\n"
 
-        return ret + " flux_score: %d" % (flux_score-len(self.knowns)) + "\n"
+        return ret + " flux_score: %d" % self.flux_score() + "\n"
 
     def indent(self,i=1):
         if not hasattr(self, '_indstr'):
@@ -133,3 +138,13 @@ class puzzle(object):
             logfile.write( "\n" )
 
             logfile.close()
+    
+    ### debugging queries
+    def psb(self, loc):
+        if type(loc) != type((1,2)) or len(loc) != 2 and 1<=loc[0]<=9 and 1<=loc[1]<=9:
+            raise TypeError, "psb takes a location tuple as an argument"
+
+        e = self.rows[loc[1]-1][loc[0]-1]
+        if e.val is not None:
+            return self.val
+        return e.possibilities
