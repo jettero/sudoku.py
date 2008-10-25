@@ -135,42 +135,41 @@ class solver(object):
 
         self._puzzle.log("looking for double bound 2 element sets")
         self._puzzle.indent()
-        for celcol in self._puzzle.celcols:
-            for cel in celcol:
-                for i in range(1, 9+1):
-                    for ee in _xcomb(filter(lambda x: x.val is None, cel), 2):
-                        if ee[0]._loc[1] == ee[1]._loc[1]:
-                            ne = _not_in(ee, cel)
+        for (celars, d1, d2) in [ [self._puzzle.celcols, 1, 0] ]:
+            for celar in celars:
+                for cel in celar:
+                    for i in range(1, 9+1):
+                        for ee in _xcomb(filter(lambda x: x.val is None, cel), 2):
+                            if ee[0]._loc[d1] == ee[1]._loc[d1]:
+                                ne = _not_in(ee, cel)
 
-                            eep = set(reduce(lambda x,y: x+y, [e.possibilities for e in ee]))
-                            nep = set(reduce(lambda x,y: x+y, [e.possibilities for e in ne]))
+                                eep = set(reduce(lambda x,y: x+y, [e.possibilities for e in ee]))
+                                nep = set(reduce(lambda x,y: x+y, [e.possibilities for e in ne]))
 
-                            if i in eep and i not in nep:
-                                ocs = _not_in([cel], celcol)
-                                for oc in ocs:
-                                    for oee in _xcomb(filter(lambda x: x.val is None, oc), 2):
-                                        if oee[0]._loc[1] == oee[1]._loc[1]:
-                                            one = _not_in(oee, oc)
+                                if i in eep and i not in nep:
+                                    ocs = _not_in([cel], celar)
+                                    for oc in ocs:
+                                        for oee in _xcomb(filter(lambda x: x.val is None, oc), 2):
+                                            if oee[0]._loc[d1] == oee[1]._loc[d1]:
+                                                one = _not_in(oee, oc)
 
-                                            oeep = set(reduce(lambda x,y: x+y, [e.possibilities for e in oee]))
-                                            onep = set(reduce(lambda x,y: x+y, [e.possibilities for e in one]))
+                                                oeep = set(reduce(lambda x,y: x+y, [e.possibilities for e in oee]))
+                                                onep = set(reduce(lambda x,y: x+y, [e.possibilities for e in one]))
 
-                                            if i in oeep and i not in onep:
-                                                leep  = sorted([ e._loc[0] for e in ee ])
-                                                loeep = sorted([ e._loc[0] for e in oee ])
-                                                if leep == loeep:
-                                                    self._puzzle.log("%d-element 1st set in %s,%s 2nd set in %s,%s" \
-                                                      % tuple(
-                                                          [i]+[str(e._loc) for e in ee]
-                                                             +[str(e._loc) for e in oee]
-                                                      ))
+                                                if i in oeep and i not in onep:
+                                                    leep  = sorted([ e._loc[d2] for e in ee ])
+                                                    loeep = sorted([ e._loc[d2] for e in oee ])
+                                                    if leep == loeep:
+                                                        self._puzzle.log("%d-element 1st set in %s,%s 2nd set in %s,%s" \
+                                                          % tuple(
+                                                              [i]+[str(e._loc) for e in ee]
+                                                                 +[str(e._loc) for e in oee]
+                                                          ))
 
-                                                    self._puzzle.indent()
-                                                    for e in ee:
-                                                        for f in e.col:
-                                                            if f not in ee and f not in oee:
-                                                                f.i_cannot_be(i)
-                                                    self._puzzle.outdent()
-
-
+                                                        self._puzzle.indent()
+                                                        for e in ee:
+                                                            for f in e.col:
+                                                                if f not in ee and f not in oee:
+                                                                    f.i_cannot_be(i)
+                                                        self._puzzle.outdent()
         self._puzzle.outdent()
