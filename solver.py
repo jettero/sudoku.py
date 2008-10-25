@@ -135,12 +135,12 @@ class solver(object):
 
         self._puzzle.log("looking for double bound 2 element sets")
         self._puzzle.indent()
-        for (celars, d1, d2, d3) in [ [self._puzzle.celcols, 1, 0, 'col'], [self._puzzle.celrows, 0, 1, 'row'] ]:
+        for (celars, nd, wd) in [ [self._puzzle.celcols, 0, 'col'], [self._puzzle.celrows, 1, 'row'] ]:
             for celar in celars:
                 for cel in celar:
                     for i in range(1, 9+1):
                         for ee in _xcomb(filter(lambda x: x.val is None, cel), 2):
-                            if ee[0]._loc[d1] == ee[1]._loc[d1]: # I doubt this matters
+                            if ee[0]._loc[nd] != ee[1]._loc[nd]:
                                 ne = _not_in(ee, cel)
 
                                 eep = set(reduce(lambda x,y: x+y, [e.possibilities for e in ee]))
@@ -150,25 +150,25 @@ class solver(object):
                                     ocs = _not_in([cel], celar)
                                     for oc in ocs:
                                         for oee in _xcomb(filter(lambda x: x.val is None, oc), 2):
-                                            if oee[0]._loc[d1] == oee[1]._loc[d1]: # I doubt this matters
+                                            if oee[0]._loc[nd] != oee[1]._loc[nd]:
                                                 one = _not_in(oee, oc)
 
                                                 oeep = set(reduce(lambda x,y: x+y, [e.possibilities for e in oee]))
                                                 onep = set(reduce(lambda x,y: x+y, [e.possibilities for e in one]))
 
                                                 if i in oeep and i not in onep:
-                                                    leep  = sorted([ e._loc[d2] for e in ee ])
-                                                    loeep = sorted([ e._loc[d2] for e in oee ])
+                                                    leep  = sorted([ e._loc[nd] for e in ee ])
+                                                    loeep = sorted([ e._loc[nd] for e in oee ])
                                                     if leep == loeep:
                                                         self._puzzle.log("%d-element 1st set in %s,%s 2nd set in %s,%s" \
                                                           % tuple(
-                                                              [i]+[str(e._loc) for e in ee]
-                                                                 +[str(e._loc) for e in oee]
+                                                              [i] + [str(e._loc) for e in ee]
+                                                                  + [str(e._loc) for e in oee]
                                                           ))
 
                                                         self._puzzle.indent()
                                                         for e in ee:
-                                                            for f in getattr(e, d3):
+                                                            for f in getattr(e, wd):
                                                                 if f not in ee and f not in oee:
                                                                     f.i_cannot_be(i)
                                                         self._puzzle.outdent()
