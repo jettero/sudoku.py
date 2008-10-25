@@ -68,7 +68,7 @@ class solver(object):
                 if len(can_be_i) > 1:
                     first = can_be_i.pop()
                     same_row = reduce(lambda a,b: a and b, [first.row is e.row for e in can_be_i])
-                    same_col = reduce(lambda a,b: a and b, [first.col is e.row for e in can_be_i])
+                    same_col = reduce(lambda a,b: a and b, [first.col is e.col for e in can_be_i])
                     can_be_i.append(first)
 
                     if same_row:
