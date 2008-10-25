@@ -146,7 +146,6 @@ class solver(object):
                             nep = set(reduce(lambda x,y: x+y, [e.possibilities for e in ne]))
 
                             if i in eep and i not in nep:
-                                self._puzzle.log("%d-element 1st set in %s,%s" % tuple([i]+[str(e._loc) for e in ee]))
                                 ocs = _not_in([cel], celcol)
                                 for oc in ocs:
                                     for oee in _xcomb(filter(lambda x: x.val is None, oc), 2):
@@ -157,11 +156,21 @@ class solver(object):
                                             onep = set(reduce(lambda x,y: x+y, [e.possibilities for e in one]))
 
                                             if i in oeep and i not in onep:
-                                                self._puzzle.log("%d-element 2nd set in %s,%s" % tuple([i]+[str(e._loc) for e in oee]))
                                                 leep  = sorted([ e._loc[0] for e in ee ])
                                                 loeep = sorted([ e._loc[0] for e in oee ])
                                                 if leep == loeep:
-                                                    self._puzzle.log("same columns!")
+                                                    self._puzzle.log("%d-element 1st set in %s,%s 2nd set in %s,%s" \
+                                                      % tuple(
+                                                          [i]+[str(e._loc) for e in ee]
+                                                             +[str(e._loc) for e in oee]
+                                                      ))
+
+                                                    self._puzzle.indent()
+                                                    for e in ee:
+                                                        for f in e.col:
+                                                            if f not in ee and f not in oee:
+                                                                f.i_cannot_be(i)
+                                                    self._puzzle.outdent()
 
 
         self._puzzle.outdent()
