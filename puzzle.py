@@ -66,10 +66,15 @@ class puzzle(object):
                 e.col = col
 
     def assign_cels(self):
-        self.cels = [] # #python Crys_:
-        for c in [(x, y) for y in range(3) for x in range(3)]:
+        self.cels = []
+        self.celcols = [[],[],[]] # columns of cells
+        self.celrows = [[],[],[]] # rows of cells
+
+        for c in [(x, y) for y in range(3) for x in range(3)]: # <-- #python Crys_ showed me how to do this
             cel = [];
             self.cels.append(cel)
+            self.celcols[c[0]].append(cel)
+            self.celrows[c[1]].append(cel)
 
             for rn in range(3*c[0], 3*c[0]+3):
                 this_row = self.rows[rn]
