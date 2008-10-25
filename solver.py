@@ -79,17 +79,22 @@ class solver(object):
         self._puzzle.indent()
         for n in range(1, 3+1):
             self._puzzle.log("looking %d-bound elements" % n)
+            self._puzzle.indent()
             for cell in self._puzzle.cels:
                 for ee in _xcomb(cell, n):
                     ne = _not_in(ee, cell)
 
-                    self._puzzle.indent()
+                    ees = ""
                     for i,l in enumerate([e._loc for e in ee]):
-                        self._puzzle.log("ee[%d]=%s" % (i,l))
-                    self._puzzle.outdent()
+                        ees += "ee[%d]=%s; " % (i,l)
 
-                    for ar in _xcomb([range(1, 9+1)], n):
+                    self._puzzle.log(ees)
+
+                    self._puzzle.indent()
+                    for ar in _xcomb(range(1, 9+1), n):
                         all_yes = True
+
+                        self._puzzle.log("ar=%s; " % str(ar))
 
                         for i in ar:
                             if i not in ee or i in ne:
@@ -101,6 +106,10 @@ class solver(object):
                             for i in _not_in(ar, range(1, 9+1)):
                                 for e in ee:
                                     e.i_cannot_be(i);
+
+                    self._puzzle.outdent()
+
+            self._puzzle.outdent()
         self._puzzle.outdent()
 
     def find_double_bound_2_element_sets(self):
