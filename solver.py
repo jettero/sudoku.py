@@ -45,6 +45,7 @@ class solver(object):
 
         self.find_aligned_i_elements()
         self.find_n_bound_elements()
+        self.find_double_bound_2_element_sets()
 
         self._puzzle.outdent()
         self._puzzle.log("solver main-loop ended")
@@ -57,11 +58,11 @@ class solver(object):
 
         self._puzzle.log("looking for aligned i elements")
         self._puzzle.indent()
-        for cell in self._puzzle.cels:
+        for cel in self._puzzle.cels:
             for i in range(1, 9+1):
                 can_be_i = []
 
-                for e in cell:
+                for e in cel:
                     if i in e.possibilities:
                         can_be_i.append(e)
 
@@ -94,14 +95,15 @@ class solver(object):
 
         """
 
+        self._save_for_db2es = []
         self._puzzle.log("looking for n-bound elements")
         self._puzzle.indent()
         for n in range(1, 3+1):
             self._puzzle.log("looking %d-bound elements" % n)
             self._puzzle.indent()
-            for cell in self._puzzle.cels:
-                for ee in _xcomb(filter(lambda x: x.val is None, cell), n):
-                    ne = _not_in(ee, cell)
+            for cel in self._puzzle.cels:
+                for ee in _xcomb(filter(lambda x: x.val is None, cel), n):
+                    ne = _not_in(ee, cel)
 
                     eep = set(reduce(lambda x,y: x+y, [e.possibilities for e in ee]))
                     nep = set(reduce(lambda x,y: x+y, [e.possibilities for e in ne]))
@@ -131,4 +133,18 @@ class solver(object):
             numbers from the third cell in the cell-row (or cell-column).
         """
 
-        pass
+        self._puzzle.log("looking for double bound 2 element sets")
+        self._puzzle.indent()
+        for cel in self._puzzle.cels:
+            for i in range(1, 9+1):
+                for ee in _xcomb(filter(lambda x: x.val is None, cel), 2):
+                    if ee[0]._loc[1] == ee[1]._loc[1]:
+                        ne = _not_in(ee, cel)
+
+                        eep = set(reduce(lambda x,y: x+y, [e.possibilities for e in ee]))
+                        nep = set(reduce(lambda x,y: x+y, [e.possibilities for e in ne]))
+
+                        if i in eep and i not in nep:
+                            self._puzzle.log("found horizontally bound %d element set" % i)
+
+        self._puzzle.outdent()
