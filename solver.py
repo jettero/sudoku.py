@@ -23,9 +23,24 @@ class solver(object):
     def __init__(self, puzzle):
         self._puzzle = puzzle
 
+    def solve(self):
+        self._puzzle.log("solver starting")
+        flux_score = self._puzzle.flux_score()
+        last_score = 0
+        while this_score != flux_score:
+            last_score = flux_score
+            self._loop_once()
+            flux_score = self._puzzle.flux_score()
+
     def _loop_once(self):
+        self._puzzle.log("solver main-loop started")
+        self._puzzle.indent()
+
         self.find_aligned_i_elements()
         self.find_n_bound_elements()
+
+        self._puzzle.outdent()
+        self._puzzle.log("solver main-loop ended")
 
     def find_aligned_i_elements(self):
         """ Find elements in which some number (i) can only occure in that row
