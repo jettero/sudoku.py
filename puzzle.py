@@ -141,10 +141,10 @@ class puzzle(object):
     
     ### debugging queries
     def psb(self, *loc):
-        if len(loc) != 2 and 1<=loc[0]<=9 and 1<=loc[1]<=9:
+        if len(loc) != 2 and 0<=loc[0]<=8 and 0<=loc[1]<=8:
             raise TypeError, "psb takes a location as two x,y arguments"
 
-        e = self.rows[loc[1]-1][loc[0]-1]
+        e = self.rows[loc[1]][loc[0]]
         if e.val is not None:
             return self.val
         return e.possibilities
