@@ -135,12 +135,12 @@ class solver(object):
 
         self._puzzle.log("looking for double bound 2 element sets")
         self._puzzle.indent()
-        for (celars, d1, d2) in [ [self._puzzle.celcols, 1, 0] ]:
+        for (celars, d1, d2, d3) in [ [self._puzzle.celcols, 1, 0, 'col'], [self._puzzle.celrows, 0, 1, 'row'] ]:
             for celar in celars:
                 for cel in celar:
                     for i in range(1, 9+1):
                         for ee in _xcomb(filter(lambda x: x.val is None, cel), 2):
-                            if ee[0]._loc[d1] == ee[1]._loc[d1]:
+                            if ee[0]._loc[d1] == ee[1]._loc[d1]: # I doubt this matters
                                 ne = _not_in(ee, cel)
 
                                 eep = set(reduce(lambda x,y: x+y, [e.possibilities for e in ee]))
@@ -150,7 +150,7 @@ class solver(object):
                                     ocs = _not_in([cel], celar)
                                     for oc in ocs:
                                         for oee in _xcomb(filter(lambda x: x.val is None, oc), 2):
-                                            if oee[0]._loc[d1] == oee[1]._loc[d1]:
+                                            if oee[0]._loc[d1] == oee[1]._loc[d1]: # I doubt this matters
                                                 one = _not_in(oee, oc)
 
                                                 oeep = set(reduce(lambda x,y: x+y, [e.possibilities for e in oee]))
@@ -168,7 +168,7 @@ class solver(object):
 
                                                         self._puzzle.indent()
                                                         for e in ee:
-                                                            for f in e.col:
+                                                            for f in getattr(e, d3):
                                                                 if f not in ee and f not in oee:
                                                                     f.i_cannot_be(i)
                                                         self._puzzle.outdent()
