@@ -16,7 +16,6 @@ def _not_in(to_exclude, complete_set):
             nots.append(r)
     return nots
 
-
 class solver(object):
     """The solver is given a puzzle to work on, applying rules.
     """
@@ -82,32 +81,28 @@ class solver(object):
             self._puzzle.indent()
             for cell in self._puzzle.cels:
                 for ee in _xcomb(cell, n):
-                    ne = _not_in(ee, cell)
+                    if reduce(lambda x,y: (x.val is None)+(y.val is None), ee):
+                        ne = _not_in(ee, cell)
 
-                    ees = ""
-                    for i,l in enumerate([e._loc for e in ee]):
-                        ees += "ee[%d]=%s; " % (i,l)
+                        print "wtf1: ", ee
+                        print "wtf2: ", ne
 
-                    self._puzzle.log(ees)
+                        eep = reduce(lambda x,y: x.possibilities + y.possibilities, ee)
+                        nep = reduce(lambda x,y: x.possibilities + y.possibilities, ne)
 
-                    self._puzzle.indent()
-                    for ar in _xcomb(range(1, 9+1), n):
-                        all_yes = True
+                        for ar in _xcomb(range(1, 9+1), n):
+                            all_yes = True
 
-                        self._puzzle.log("ar=%s; " % str(ar))
+                            for i in ar:
+                                if i not in eep or i in nep:
+                                    all_yes = False
+                                    break;
 
-                        for i in ar:
-                            if i not in ee or i in ne:
-                                all_yes = False
-                                break;
-
-                        if all_yes:
-                            self._puzzle.log("found %-bound elements around %s" % (n, str(ar)))
-                            for i in _not_in(ar, range(1, 9+1)):
-                                for e in ee:
-                                    e.i_cannot_be(i);
-
-                    self._puzzle.outdent()
+                            if all_yes:
+                                self._puzzle.log("found %-bound elements around %s" % (n, str(ar)))
+                                for i in _not_in(ar, range(1, 9+1)):
+                                    for e in ee:
+                                        e.i_cannot_be(i);
 
             self._puzzle.outdent()
         self._puzzle.outdent()
