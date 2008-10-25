@@ -135,5 +135,6 @@ class solver(object):
         """
 
         # we should use the pairs found in self._save_for_double_... blah which
-        # is simply a list of bound pairs
+        # is simply a list of bound pairs co-incidentally, this will solve the
+        # last puzzle
         pass
