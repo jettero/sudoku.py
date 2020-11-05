@@ -5,7 +5,7 @@ import re
 import weakref
 from tabulate import tabulate
 from pyfiglet import Figlet
-from .tools import PYTR
+from .tools import PYTR, sudoku_table_format
 
 BOX_NUMBERS = ROW_NUMBERS = COLUMN_NUMBERS = ELEMENT_VALUES = tuple(range(1, 9 + 1))
 
@@ -242,4 +242,4 @@ class Grid:
 
     def __repr__(self):
         dat = [[x.as_cell for x in row] for row in self.rows]
-        return tabulate(dat, tablefmt="grid", stralign=None)
+        return tabulate(dat, tablefmt=sudoku_table_format, stralign=None)
