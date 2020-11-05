@@ -5,6 +5,7 @@ import re
 import weakref
 from tabulate import tabulate
 from pyfiglet import Figlet
+from .tools import PYTR
 
 BOX_NUMBERS = ROW_NUMBERS = COLUMN_NUMBERS = ELEMENT_VALUES = tuple(range(1, 9 + 1))
 
@@ -19,6 +20,8 @@ FIG = Figlet(
     font="small", justify="center", width=CELL_WIDTH + FUCKED_UP_LINEAR_SCALING
 )
 BLANK = re.sub(r"[^\n]", " ", FIG.renderText("X"))
+
+VALID_TAG = PYTR(r'(?P<t>[bcr])(?P<n>[1-9])')
 
 # rather than making an adaptive pencil mark layout; ... I just hardcoded it... lame
 PENCIL_POS = ( None,
@@ -43,6 +46,8 @@ def acceptable_element_value(x):
 
 
 class Element:
+    _box = _col = _row = _value = _given = None
+
     def __init__(self, value=None, given=False):
         self.value = value
         self.pencil = set()
@@ -58,6 +63,31 @@ class Element:
         if self.value:
             r.append(f"<{self.value}>")
         return "".join(r)
+
+    @property
+    def box(self):
+        if self._box is None:
+            self._box = self._t2n(t='b')
+        return self._box
+
+    @property
+    def column(self):
+        if self._col is None:
+            self._col = self._t2n(t='c')
+        return self._col
+    col = column
+
+    @property
+    def row(self):
+        if self._row is None:
+            self._row = self._t2n(t='r')
+        return self._row
+
+    def _t2n(self, t=None):
+        for tag in self.tags:
+            if VALID_TAG.match(tag):
+                if VALID_TAG.groupdict.t == t:
+                    return int(VALID_TAG.groupdict.n)
 
     @property
     def as_cell(self):
@@ -89,6 +119,21 @@ class Element:
         if isinstance(x, Element):
             x = x.value
         self._value = acceptable_element_value(x)
+
+    @property
+    def given(self):
+        return self._given
+
+    @given.setter
+    def given(self, v):
+        if isinstance(v, bool):
+            self._given = v
+        elif v is None:
+            self._given = False
+            self._value = None
+        else:
+            self._value = int(v)
+            self._given = True
 
     def add_pencil_mark(self, *m):
         for a in m:
