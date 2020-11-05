@@ -17,19 +17,20 @@ def get_puzzles(file='Puzzles.txt'):
 
     pp = PuzzleParser()
     cur_lines = ''
+    def my_yield(x):
+        if isinstance(x, Grid):
+            yield x
+        else:
+            yield from x
     with open(file, 'r') as fh:
         for line in fh:
             if '-' in line and '-' in cur_lines:
-                res = pp.parse(cur_lines)
-                if isinstance(res, Grid):
-                    yield res
-                else:
-                    yield from res
+                yield from my_yield(pp.parse(cur_lines))
                 cur_lines = line
                 continue
             cur_lines += line
     if cur_lines:
-        yield from pp.parse(cur_lines)
+        yield from my_yield(pp.parse(cur_lines))
 
 class PuzzleTransformer(Transformer):
     def given(self, v):

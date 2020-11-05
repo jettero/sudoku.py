@@ -44,16 +44,23 @@ def acceptable_element_value(x):
         return x
     raise ValueError(f"values must be one of {ELEMENT_VALUES}")
 
-
 class Element:
     _box = _col = _row = _value = _given = None
 
     def __init__(self, value=None, given=False):
         self.value = value
-        self.pencil = set()
-        self.center = set()
+        self._pencil = set()
+        self._center = set()
+        self._hidden = set()
         self.tags = set()
         self.given = given
+
+    def reset(self):
+        self._pencil = set()
+        self._center = set()
+        self._hidden = set()
+        if not self.given:
+            self.value = None
 
     def __repr__(self):
         r = ["E"]
@@ -102,10 +109,10 @@ class Element:
 
             return "".join(pad()) #.replace(" ", ".")
         blank = [ list(x) for x in BLANK.split('\n')[:-1] ]
-        for i in self.pencil:
+        for i in self._pencil:
             r,c = PENCIL_POS[i]
             blank[r][c] = f'{i}'
-        for i in self.center:
+        for i in self._center:
             r,c = CENTER_POS[i]
             blank[r][c] = f'{i}'
         return '\n'.join(''.join(x) for x in blank)
@@ -114,11 +121,26 @@ class Element:
     def value(self):
         return self._value
 
+    @property
+    def hidden(self):
+        return set(self._hidden)
+
+    @property
+    def center(self):
+        return set(self._center)
+
+    @property
+    def pencil(self):
+        return set(self._pencil)
+
     @value.setter
     def value(self, x):
         if isinstance(x, Element):
             x = x.value
         self._value = acceptable_element_value(x)
+        self._pencil = set()
+        self._center = set()
+        self._hidden = set()
 
     @property
     def given(self):
@@ -138,29 +160,50 @@ class Element:
     def add_pencil_mark(self, *m):
         for a in m:
             a = acceptable_element_value(a)
-            self.pencil.add(a)
+            self._pencil.add(a)
 
     def remove_pencil_mark(self, *m):
         for a in m:
             a = acceptable_element_value(a)
-            self.pencil.remove(a)
+            if a in self._pencil:
+                self._pencil.remove(a)
+
+    def clear_pencil_marks(self):
+        self._pencil.clear()
 
     def add_center_mark(self, *m):
         for a in m:
             a = acceptable_element_value(a)
-            self.center.add(a)
+            self._center.add(a)
 
     def remove_center_mark(self, *m):
         for a in m:
             a = acceptable_element_value(a)
-            self.center.remove(a)
+            if a in self._center:
+                self._center.remove(a)
+
+    def clear_center_marks(self):
+        self._center.clear()
+
+    def add_hidden_mark(self, *m):
+        for a in m:
+            a = acceptable_element_value(a)
+            self._hidden.add(a)
+
+    def remove_hidden_mark(self, *m):
+        for a in m:
+            a = acceptable_element_value(a)
+            if a in self._hidden:
+                self._hidden.remove(a)
+
+    def clear_hidden_marks(self):
+        self._hidden.clear()
 
 class Otuple(tuple):
     def __getitem__(self, idx):
         if not 1 <= idx <= 9:
             raise IndexError("1 <= idx <= 9")
         return super().__getitem__(idx - 1)
-
 
 class Box:
     def __init__(self, *e, idx=None):
@@ -201,7 +244,6 @@ class Box:
         e = " ".join(repr(e) for e in self)
         return f"{self.cname}[{e}]"
 
-
 class Row(Box):
     pass
 
@@ -228,6 +270,15 @@ class Grid:
                     yield self.rows[r + 1][c + 1]
 
         self.boxes = Otuple(Box(*box_elements(b), idx=b) for b in BOX_NUMBERS)
+
+    def reset(self):
+        for e in self:
+            e.reset()
+
+    def __iter__(self):
+        for row in self.rows:
+            for e in row:
+                yield e
 
     def __getitem__(self, idx):
         if isinstance(idx, (list, tuple)) and len(idx) == 2:
