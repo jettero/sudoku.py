@@ -1,13 +1,6 @@
 
-with open('Puzzles.txt', 'r') as fh:
-    dat = fh.read()
-from sudoku.puzzle_parser import PuzzleParser
-pp = PuzzleParser()
-pz = pp.parse(dat)
-
-del pp
-del PuzzleParser
-del dat
-del fh
-
+from sudoku.puzzle_parser import get_puzzles
+pz = list(get_puzzles())
 p = pz[-1]
+
+del get_puzzles

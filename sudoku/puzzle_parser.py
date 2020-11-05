@@ -4,6 +4,33 @@
 from .grid import Grid
 from lark import Lark, Transformer
 
+def get_puzzles(file='Puzzles.txt'):
+    """ get_puzzles(file='Puzzles.txt') does essentially this:
+
+            with open(file, 'r') as fh:
+                dat = fh.read()
+            yield from PuzzleParser().parse(dat)
+
+        but it tries to read one puzzle at a time and yield them without
+        reading the whole file.
+    """
+
+    pp = PuzzleParser()
+    cur_lines = ''
+    with open(file, 'r') as fh:
+        for line in fh:
+            if '-' in line and '-' in cur_lines:
+                res = pp.parse(cur_lines)
+                if isinstance(res, Grid):
+                    yield res
+                else:
+                    yield from res
+                cur_lines = line
+                continue
+            cur_lines += line
+    if cur_lines:
+        yield from pp.parse(cur_lines)
+
 class PuzzleTransformer(Transformer):
     def given(self, v):
         return int(v[0])
