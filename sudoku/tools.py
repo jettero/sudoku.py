@@ -3,6 +3,7 @@
 
 import re
 from collections import namedtuple
+from tabulate import TableFormat, Line, DataRow
 
 class PYTR:
     def __init__(self, pattern, flags=0):
@@ -53,3 +54,14 @@ class PYTR:
 
     def __repr__(self):
         return self._regex.pattern
+
+sudoku_table_format = TableFormat(
+        lineabove=Line(begin="+", hline="-", sep="+", end="+"),
+        linebelowheader=Line(begin="+", hline="=", sep="+", end="+"),
+        linebetweenrows=Line(begin="+", hline="-", sep="+", end="+"),
+        linebelow=Line(begin="+", hline="-", sep="+", end="+"),
+        headerrow=DataRow(begin="|", sep="|", end="|"),
+        datarow=DataRow(begin="|", sep="|", end="|"),
+        padding=1,
+        with_header_hide=None,
+    )
