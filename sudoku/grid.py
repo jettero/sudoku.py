@@ -271,9 +271,18 @@ class Grid:
 
         self.boxes = Otuple(Box(*box_elements(b), idx=b) for b in BOX_NUMBERS)
 
+        self._history = list()
+
     def reset(self):
         for e in self:
             e.reset()
+
+    def describe_inference(self, desc):
+        self._history.append(desc.strip() + '\n')
+
+    @property
+    def history(self):
+        return ''.join(self._history)
 
     def __iter__(self):
         for row in self.rows:
