@@ -44,6 +44,9 @@ def acceptable_element_value(x):
         return x
     raise ValueError(f"values must be one of {ELEMENT_VALUES}")
 
+def describe_elements(elements):
+    return ", ".join(sorted(e.short for e in elements))
+
 class Element:
     _box = _col = _row = _value = _given = None
 
@@ -70,6 +73,10 @@ class Element:
         if self.value:
             r.append(f"<{self.value}>")
         return "".join(r)
+
+    @property
+    def short(self):
+        return "".join(sorted(self.tags))
 
     @property
     def box(self):
@@ -208,9 +215,9 @@ class Otuple(tuple):
 class Box:
     def __init__(self, *e, idx=None):
         if len(e) == 0:
-            self.elements = Otuple(Element() for _ in range(9))
+            self._elements = Otuple(Element() for _ in range(9))
         elif len(e) == 9:
-            self.elements = Otuple(weakref.ref(x) for x in e)
+            self._elements = Otuple(weakref.ref(x) for x in e)
         else:
             raise ValueError(
                 f"A {self.__class__} must receive 0 elements or 9, nothing in between"
@@ -225,17 +232,21 @@ class Box:
         return self.__class__.__name__
 
     @property
+    def lcname(self):
+        return self.__class__.__name__.lower()
+
+    @property
     def ccode(self):
         return self.__class__.__name__[0].lower()
 
     def __getitem__(self, i):
-        e = self.elements[i]
+        e = self._elements[i]
         if isinstance(e, weakref.ref):
             return e()
         return e
 
     def __setitem__(self, i, v):
-        self.elements[i].value = v
+        self._elements[i].value = v
 
     def __iter__(self):
         yield from (self[i] for i in BOX_NUMBERS)
@@ -243,6 +254,11 @@ class Box:
     def __repr__(self):
         e = " ".join(repr(e) for e in self)
         return f"{self.cname}[{e}]"
+
+    @property
+    def short(self):
+        n = self.lcname
+        return f'{n} {getattr(self[1], n)}'
 
 class Row(Box):
     pass
@@ -278,7 +294,9 @@ class Grid:
             e.reset()
 
     def describe_inference(self, desc):
-        self._history.append(desc.strip() + '\n')
+        desc = desc.strip() + '\n'
+        if desc not in self._history:
+            self._history.append(desc)
 
     @property
     def history(self):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from sudoku.grid import ELEMENT_VALUES as EV
+from sudoku.grid import ELEMENT_VALUES as EV, describe_elements
 from .spec import hookimpl
 
 def has_value(box, value):
@@ -12,23 +12,27 @@ def has_value(box, value):
 def has_no_value(box):
     return set(e for e in box if not e.value)
 
-def elements_of_puzzle_with_single_rowcol_hidden_marks(puzzle, box, value):
+def restrictions_cause_further_restrictions(puzzle, box, value):
+    """ if value is restricted to a single row in box 1, then box 2 and box 3 can't have value in that row """
+
     has_v_box  = set(e for e in box if value in e.hidden)
     has_v_rows = set(e.row for e in has_v_box)
     has_v_cols = set(e.col for e in has_v_box)
 
     if len(has_v_rows) == 1:
-        has_v_rows, = has_v_rows
-        yield from set(puzzle.rows[has_v_rows]) - set(box)
+        r, = has_v_rows
+        reason = f"{value} is restricted to row {r} in {box.short}"
+        yield (reason, set(puzzle.rows[r]) - set(box))
 
     if len(has_v_cols) == 1:
-        has_v_cols, = has_v_cols
-        yield from set(puzzle.cols[has_v_cols]) - set(box)
+        c, = has_v_cols
+        reason = f"{value} is restricted to col {c} in {box.short}"
+        yield (reason, set(puzzle.cols[c]) - set(box))
 
 @hookimpl
 def hidden(puzzle):
     did_count = 0
-    something = set()
+    changed = set()
 
     for v in EV:
         has_v = set()
@@ -40,15 +44,18 @@ def hidden(puzzle):
             if has_value(box, v):
                 continue
             could_have_v = set(x for x in has_no_value(box) - has_v if v not in x.hidden)
-            something = something.union(could_have_v)
+            changed = changed.union(could_have_v)
             for e in could_have_v:
                 e.add_hidden_mark(v)
 
         for box in puzzle.boxes:
-            shouldnt_have_v = set(elements_of_puzzle_with_single_rowcol_hidden_marks(puzzle, box, v))
-            something -= shouldnt_have_v
-            for e in shouldnt_have_v:
-                e.remove_hidden_mark(v)
+            for reason, generator in restrictions_cause_further_restrictions(puzzle, box, v):
+                shouldnt_have_v = set(x for x in generator if v in x.hidden)
+                if shouldnt_have_v:
+                    puzzle.describe_inference(f"{reason} => {v} can't be in {describe_elements(shouldnt_have_v)}")
+                    changed = changed.symmetric_difference(shouldnt_have_v)
+                    for e in shouldnt_have_v:
+                        e.remove_hidden_mark(v)
 
-    did_count = len(something)
+    did_count = len(changed)
     return did_count
