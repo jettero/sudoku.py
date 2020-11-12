@@ -1,6 +1,15 @@
+#!/usr/bin/env python
+# coding: utf-8
 
-from sudoku.puzzle_parser import get_puzzles
-pz = list(get_puzzles())
-p = pz[-1]
+from sudoku import solve
 
-del get_puzzles
+def reload_puzzles():
+    """ declare global pz=get_puzzles() and p=pz[-1] """
+    from sudoku import get_puzzles
+    global pz
+    global p
+    pz = list(get_puzzles())
+    p = pz[-1]
+    return pz
+
+reload_puzzles()

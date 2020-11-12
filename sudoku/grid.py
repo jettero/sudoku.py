@@ -37,10 +37,11 @@ CENTER_POS = ( None,
     (3,2), (3,3), (3,4),
 )
 
-def acceptable_element_value(x):
+def acceptable_element_value(x, none_ok=False):
     if x is None:
-        return x
-    if 1 <= x <= 9:
+        if none_ok:
+            return x
+    elif 1 <= x <= 9:
         return x
     raise ValueError(f"values must be one of {ELEMENT_VALUES}")
 
@@ -73,6 +74,16 @@ class Element:
         if self.value:
             r.append(f"<{self.value}>")
         return "".join(r)
+
+    def __gt__(self, other):
+        if isinstance(other, Element):
+            other = other.short
+        return self.short > other
+
+    def __ge__(self, other):
+        if isinstance(other, Element):
+            other = other.short
+        return self.short >= other
 
     @property
     def short(self):
@@ -144,7 +155,7 @@ class Element:
     def value(self, x):
         if isinstance(x, Element):
             x = x.value
-        self._value = acceptable_element_value(x)
+        self._value = acceptable_element_value(x, none_ok=True)
         self._pencil = set()
         self._center = set()
         self._hidden = set()
@@ -155,14 +166,14 @@ class Element:
 
     @given.setter
     def given(self, v):
-        if isinstance(v, bool):
-            self._given = v
-        elif v is None:
+        if v is None:
             self._given = False
-            self._value = None
+            self.value = None
+        elif isinstance(v, bool):
+            self._given = v
         else:
-            self._value = int(v)
             self._given = True
+            self.value = int(v)
 
     def add_pencil_mark(self, *m):
         for a in m:
@@ -227,6 +238,12 @@ class Box:
             for e in self:
                 e.tags.add(f"{self.ccode}{idx}")
 
+    def has(self, v):
+        for e in self:
+            if e.value == v:
+                return True
+        return False
+
     @property
     def cname(self):
         return self.__class__.__name__
@@ -286,12 +303,21 @@ class Grid:
                     yield self.rows[r + 1][c + 1]
 
         self.boxes = Otuple(Box(*box_elements(b), idx=b) for b in BOX_NUMBERS)
-
         self._history = list()
+
+    def clone(self):
+        ret = self.__class__()
+        for r in ROW_NUMBERS:
+            for c in COLUMN_NUMBERS:
+                e = self[r,c]
+                if e.given:
+                    ret[r,c] = e.value
+        return ret
 
     def reset(self):
         for e in self:
             e.reset()
+        self._history = list()
 
     def describe_inference(self, desc):
         desc = desc.strip() + '\n'

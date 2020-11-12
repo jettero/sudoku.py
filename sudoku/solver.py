@@ -54,12 +54,24 @@ class RulesManager(pluggy.PluginManager):
 
         log.debug("RulesManager.init [end]")
 
-    def solve(self, puzzle):
-        while sum(self.hook.hidden(puzzle=puzzle)):
-            pass
+        self.step_count = 0
 
-        while sum(self.hook.human(puzzle=puzzle)):
-            pass
+    def step(self, puzzle):
+        if self.step_count > 0:
+            puzzle.describe_inference(f'step {self.step_count}')
+        return sum(self.hook.hidden(puzzle=puzzle)) + sum(self.hook.human(puzzle=puzzle))
+
+    def solve(self, puzzle):
+        puzzle = puzzle.clone()
+
+        self.step_count = 1
+        while self.step(puzzle):
+            self.step_count += 1
+
+        puzzle.describe_inference(f'FIN')
+        self.step_count = 0
+
+        return puzzle
 
 
 _manager = None
@@ -72,7 +84,8 @@ def get_manager():
     return _manager
 
 
-Karen = get_manager
+Solver = Karen = get_manager
 
 def solve(puzzle):
-    Karen().solve(puzzle=puzzle)
+    """ instantiate a Solver and solve the given puzzle """
+    return Karen().solve(puzzle=puzzle)
