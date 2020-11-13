@@ -4,12 +4,9 @@
 from sudoku import solve
 
 def reload_puzzles():
-    """ declare global pz=get_puzzles() and p=pz[-1] """
     from sudoku import get_puzzles
-    global pz
-    global p
-    pz = list(get_puzzles())
-    p = pz[-1]
-    return pz
+    global p, q
+    p = list(get_puzzles())
+    q = list(solve(x) for x in p)
 
 reload_puzzles()

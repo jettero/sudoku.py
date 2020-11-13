@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
+# pylint: disable=no-self-use
 
-from .grid import Grid
 from lark import Lark, Transformer
+from .puzzle import Puzzle
 
-def get_puzzles(file='Puzzles.txt'):
+
+def get_puzzles(file="Puzzles.txt"):
     """ get_puzzles(file='Puzzles.txt') does essentially this:
 
             with open(file, 'r') as fh:
@@ -16,21 +18,24 @@ def get_puzzles(file='Puzzles.txt'):
     """
 
     pp = PuzzleParser()
-    cur_lines = ''
+    cur_lines = ""
+
     def my_yield(x):
-        if isinstance(x, Grid):
+        if isinstance(x, Puzzle):
             yield x
         else:
             yield from x
-    with open(file, 'r') as fh:
+
+    with open(file, "r") as fh:
         for line in fh:
-            if '-' in line and '-' in cur_lines:
+            if "-" in line and "-" in cur_lines:
                 yield from my_yield(pp.parse(cur_lines))
                 cur_lines = line
                 continue
             cur_lines += line
     if cur_lines:
         yield from my_yield(pp.parse(cur_lines))
+
 
 class PuzzleTransformer(Transformer):
     def given(self, v):
@@ -39,7 +44,7 @@ class PuzzleTransformer(Transformer):
     def cell_item(self, v):
         return v[0]
 
-    def open(self, v):
+    def open(self, _):
         return None
 
     def cell_row(self, v):
@@ -52,23 +57,25 @@ class PuzzleTransformer(Transformer):
         return v
 
     def puzzle(self, v):
-        grid = Grid()
+        puzzle = Puzzle()
         dat = v[3] + v[4] + v[5]
         for i in range(9):
             for j in range(9):
                 if dat[i][j] is not None:
                     # this would work:
-                    # grid[ (i+1, j+1) ] = dat[i][j]
+                    # puzzle[ (i+1, j+1) ] = dat[i][j]
                     #
                     # but would fail to mark the cell as a given
-                    grid[ (i+1, j+1) ].given = dat[i][j]
-        return grid
+                    puzzle[(i + 1, j + 1)].given = dat[i][j]
+        return puzzle
 
     def puzzle_list(self, v):
         return v
 
+
 def PuzzleParser():
-    l = Lark('''
+    l = Lark(
+        """
         ?start: puzzle_list
         ?puzzle_list: puzzle*
         puzzle: header header header box_line box_line box_line
@@ -83,11 +90,9 @@ def PuzzleParser():
         OPENCHAR: "."
         %import common.WS
         %ignore WS
-    ''',
-
-    parser='lalr',
-    transformer=PuzzleTransformer()
-
+    """,
+        parser="lalr",
+        transformer=PuzzleTransformer(),
     )
 
     return l

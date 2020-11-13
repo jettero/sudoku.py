@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+DIR="$(dirname "$0")"
+export PYTHONPATH="$DIR"
+
+prog="$1"; shift
+
+echo "$(date): $prog $*" >> .pathed-run.log
+"$prog" "$@"

@@ -1,0 +1,37 @@
+[MASTER]
+disable=missing-docstring, multiple-imports, invalid-name, bad-whitespace,
+    multiple-statements, bare-except, relative-import, redefined-variable-type,
+    too-few-public-methods, broad-except, fixme, too-many-public-methods,
+    too-many-branches, bad-continuation, too-many-nested-blocks,
+    global-statement, inconsistent-return-statements, bad-reversed-sequence,
+    superfluous-parens
+
+persistent=yes
+cache-size=500
+
+[REPORTS]
+output-format=colorized
+files-output=no
+
+[BASIC]
+bad-functions = input
+good-names = e, v, i
+
+[TYPECHECK]
+generated-members=.*\.hook\.main
+
+[DESIGN]
+max-line-length     = 200
+max-args            = 12
+max-attributes      = 20
+max-branchs         = 30
+max-locals          = 30
+max-parents         = 7
+max-public-methods  = 20
+max-returns         = 12
+max-statements      = 60
+
+# if it's 3, it's 3.  If it's 2, it's 2.  If it's 4, it's 11,
+# WHAT-THE-EVERLIVING-FUCK ; just disable bad-continuation, it's broken.
+indent-after-paren  = 4
+# FUCK YOU

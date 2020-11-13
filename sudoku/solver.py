@@ -13,6 +13,22 @@ log = logging.getLogger(__name__)
 
 NAMESPACES = ("sudoku.rules",)
 INSTALLED_DIR = os.path.dirname(__file__)
+KNOWN_OPTS = {"human", }
+
+
+def _process_opts(opts):
+    if isinstance(opts, str):
+        opts = opts.split()
+    try:
+        for item in opts:
+            yield item
+    except TypeError:
+        pass
+
+
+def process_opts(opts):
+    return set(_process_opts(opts)).intersection(KNOWN_OPTS)
+
 
 class RulesManager(pluggy.PluginManager):
     _local_modules = set()
@@ -38,8 +54,12 @@ class RulesManager(pluggy.PluginManager):
 
         return cls._local_modules
 
-    def __init__(self):
+    def __init__(self, opts=None):
         super().__init__("sudoku")
+
+        self.opts = process_opts(opts)
+        if not self.opts:
+            self.opts.add("human")
 
         log.debug("RulesManager.init [start]")
 
@@ -58,8 +78,9 @@ class RulesManager(pluggy.PluginManager):
 
     def step(self, puzzle):
         if self.step_count > 0:
-            puzzle.describe_inference(f'step {self.step_count}')
-        return sum(self.hook.hidden(puzzle=puzzle)) + sum(self.hook.human(puzzle=puzzle))
+            puzzle.describe_inference(f"step {self.step_count}")
+        ret = sum(self.hook.main(puzzle=puzzle, opts=self.opts))
+        return ret
 
     def solve(self, puzzle):
         puzzle = puzzle.clone()
@@ -68,7 +89,7 @@ class RulesManager(pluggy.PluginManager):
         while self.step(puzzle):
             self.step_count += 1
 
-        puzzle.describe_inference(f'FIN')
+        puzzle.describe_inference("FIN")
         self.step_count = 0
 
         return puzzle
@@ -77,15 +98,16 @@ class RulesManager(pluggy.PluginManager):
 _manager = None
 
 
-def get_manager():
+def get_manager(opts=None):
     global _manager
     if _manager is None:
-        _manager = RulesManager()
+        _manager = RulesManager(opts=opts)
     return _manager
 
 
 Solver = Karen = get_manager
 
-def solve(puzzle):
+
+def solve(puzzle, opts=None):
     """ instantiate a Solver and solve the given puzzle """
-    return Karen().solve(puzzle=puzzle)
+    return Karen(opts=opts).solve(puzzle=puzzle)

@@ -1,0 +1,45 @@
+# We like to use pre-commit but we prefer not to combine pre-commit/psf-black
+# fixes with the commit step.  Instead, we block pushes until things get fixed.
+#
+# pre-commit install --hook-type pre-push
+# by hand, that comes out to something like this:
+# pre-commit run --from-ref upstream/master --to-ref HEAD
+#
+# but do whatever you like
+
+exclude: 'old/'
+
+fail_fast: false
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v3.1.0
+  hooks:
+  - id: check-yaml
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+- repo: https://github.com/psf/black
+  rev: 19.10b0
+  hooks:
+  - id: black
+- repo: local
+  hooks:
+  - id: pylint
+    name: pylint
+    entry: ./pathed-pylintest pylint
+    language: system
+    types: [python]
+  - id: pytest
+    name: pytest
+    entry: ./pathed-pylintest pytest t
+    always_run: true
+    language: system
+    pass_filenames: false
+
+# this doesn't seem to quite work...
+# - repo: local
+#   hooks:
+#     - id: tests
+#       name: run tests
+#       entry: pytest
+#       language: system
+#       types: [python]

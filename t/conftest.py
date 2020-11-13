@@ -3,9 +3,9 @@
 
 import pytest
 
-from sudoku import Grid
+from sudoku import Puzzle
 
 
 @pytest.fixture
-def empty_grid():
-    yield Grid()
+def empty_puzzle():
+    yield Puzzle()
