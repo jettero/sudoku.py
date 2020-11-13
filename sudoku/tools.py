@@ -6,6 +6,10 @@ from collections import namedtuple
 from .monkeypatch_tabulate import sudoku_table_format  # pylint: disable=unused-import
 
 
+def describe_elements(elements):
+    return ", ".join(sorted(e.short for e in elements))
+
+
 class PYTR:
     def __init__(self, pattern, flags=0):
         self._regex = re.compile(pattern, flags)
@@ -56,6 +60,7 @@ class PYTR:
     def __repr__(self):
         return self._regex.pattern
 
+
 def one_and_the_others_iter(*s):
-    for i,x in enumerate(s):
-        yield (x, s[:i] + s[i+1:])
+    for i, x in enumerate(s):
+        yield (x, s[:i] + s[i + 1 :])

@@ -2,6 +2,10 @@
 # coding: utf-8
 
 from fnmatch import fnmatch
+from .filt import acceptable_index_value
+from .element import Element
+
+BOX_CLASS = None  # populated when Box loads (circular import resolution)
 
 
 class Otuple(tuple):
@@ -23,7 +27,7 @@ class Otuple(tuple):
                         if isinstance(item, Element):
                             if fnmatch(item.short, wanted):
                                 yield item
-                        elif isinstance(item, Box):
+                        elif isinstance(item, BOX_CLASS):
                             yield from sgenerator(item, wanted)
 
                 return set(sgenerator(self, idx))
@@ -38,6 +42,5 @@ class Otuple(tuple):
                         ret.add(item)
                 return ret
             (idx,) = idx
-        if not 1 <= idx <= 9:
-            raise IndexError("1 <= idx <= 9")
+        idx = acceptable_index_value(idx)
         return super().__getitem__(idx - 1)
