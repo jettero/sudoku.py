@@ -6,23 +6,23 @@ from .tools import sudoku_table_format
 from .otuple import Otuple
 from .const import BOX_NUMBERS, ROW_NUMBERS, COLUMN_NUMBERS
 from .box import Box, Row, Col
+from .filt import element_has_val
 
-def box_elements(b):
-    b -= 1
-    c = (3 * b) % 9
-    C = tuple(range(c, c + 3))
-    r = (b // 3) * 3
-    R = tuple(range(r, r + 3))
-    for r in R:
-        for c in C:
-            yield self.rows[r + 1][c + 1]
 
 class Puzzle:
     def __init__(self):
-        self.rows = Otuple(Row(idx=r) for r in ROW_NUMBERS)
-        self.cols = Otuple(
-            Col(*(r[c] for r in self.rows), idx=c) for c in COLUMN_NUMBERS
-        )
+        self.rows = rows = Otuple(Row(idx=r) for r in ROW_NUMBERS)
+        self.cols = Otuple(Col(*(r[c] for r in rows), idx=c) for c in COLUMN_NUMBERS)
+
+        def box_elements(b):
+            b -= 1
+            c = (3 * b) % 9
+            C = tuple(range(c, c + 3))
+            r = (b // 3) * 3
+            R = tuple(range(r, r + 3))
+            for r in R:
+                for c in C:
+                    yield rows[r + 1][c + 1]
 
         self.boxes = Otuple(Box(*box_elements(b), idx=b) for b in BOX_NUMBERS)
         self._history = list()
@@ -92,6 +92,13 @@ class Puzzle:
     def __repr__(self):
         dat = [[x.as_cell for x in row] for row in self.rows]
         return tabulate(dat, tablefmt=sudoku_table_format, stralign=None)
+
+    def has(self, val, inc_val=True, inc_marks=False):
+        return set(
+            x
+            for x in self
+            if element_has_val(x, val, inc_val=inc_val, inc_marks=inc_marks)
+        )
 
     @property
     def box_rows(self):
