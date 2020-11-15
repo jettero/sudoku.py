@@ -5,8 +5,10 @@ from sudoku import solve
 
 def reload_puzzles():
     from sudoku import get_puzzles
-    global p, q
-    p = list(get_puzzles())
-    q = list(solve(x) for x in p)
+    global P, Q
+    P = list(get_puzzles())
+    Q = list(solve(x) for x in P)
 
 reload_puzzles()
+p = P[0]
+q = Q[0]
