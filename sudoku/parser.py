@@ -14,7 +14,7 @@ def get_puzzles(file="Puzzles.txt"):
             yield from PuzzleParser().parse(dat)
 
         but it tries to read one puzzle at a time and yield them without
-        reading the whole file.
+        reading the whole file at once.
     """
 
     pp = PuzzleParser()
