@@ -4,7 +4,7 @@
 from tabulate import tabulate
 from .tools import sudoku_table_format
 from .otuple import Otuple
-from .const import BOX_NUMBERS, ROW_NUMBERS, COLUMN_NUMBERS
+from .const import BOX_NUMBERS, ROW_NUMBERS, COLUMN_NUMBERS, ELEMENT_VALUES
 from .box import Box, Row, Col
 from .filt import element_has_val
 
@@ -111,3 +111,28 @@ class Puzzle:
         yield (self.boxes[1], self.boxes[4], self.boxes[7])
         yield (self.boxes[2], self.boxes[5], self.boxes[8])
         yield (self.boxes[3], self.boxes[6], self.boxes[9])
+
+    @property
+    def groupings(self):
+        yield self.rows
+        yield self.cols
+        yield self.boxes
+
+    def count_values(self):
+        ret = dict()
+        for grouping in self.groupings:
+            for group in grouping:
+                ret[group.short] = d = { d:0 for d in ELEMENT_VALUES }
+                for x in group:
+                    if x.value:
+                        d[x.value] += 1
+        return ret
+
+    def check(self):
+        bad = list()
+        cv = self.count_values()
+        for gname,grouping in sorted(cv.items()):
+            for v,c in sorted(grouping.items()):
+                if c > 1:
+                    bad.append(f"{gname} contains {c} '{v}'s")
+        return bad
