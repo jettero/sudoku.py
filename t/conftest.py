@@ -4,8 +4,16 @@
 import pytest
 
 from sudoku import Puzzle
+from sudoku import ROW_NUMBERS
 
-
-@pytest.fixture
+@pytest.fixture(scope='function')
 def empty_puzzle():
     yield Puzzle()
+
+
+@pytest.fixture(scope='function')
+def diag_puzzle():
+    p = Puzzle()
+    for x in ROW_NUMBERS:
+        p[x,x] = x
+    yield p
