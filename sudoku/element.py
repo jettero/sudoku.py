@@ -52,10 +52,9 @@ class Element:
 
     def __init__(self, value=None, given=False):
         self.value = value
-        self._pencil = set()
-        self._center = set()
-        self.tags = set()
         self.given = given
+        self.tags = set()
+        self.reset()
 
     def reset(self):
         self._pencil = set()

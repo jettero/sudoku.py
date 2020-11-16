@@ -5,3 +5,4 @@ t.py
 file
 .pathed-run.log
 .coverage
+*.py,cover
