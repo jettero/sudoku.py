@@ -51,3 +51,24 @@ def test_boxes_iter(empty_puzzle):
     for box in empty_puzzle.boxes:
         assert PYTR(".*?".join((f"b{b}",) * 9)) == repr(box)
         b += 1
+
+def test_has_things(empty_puzzle):
+    empty_puzzle[5,5] = 5
+    empty_puzzle[4,2].add_pencil_mark(5,6)
+    empty_puzzle[6,2].add_pencil_mark(5,6)
+    empty_puzzle[4,8].add_center_mark(5,6)
+    empty_puzzle[6,8].add_center_mark(5,6)
+
+    res = empty_puzzle.has(5, inc_val=False, inc_marks=False)
+    assert len(res) == 0
+
+    res = empty_puzzle.has(5, inc_val=False, inc_marks=True)
+    assert len(res) == 4
+
+    res = empty_puzzle.has(5, inc_val=True, inc_marks=False)
+    assert len(res) == 1
+
+    res = empty_puzzle.has(5, inc_val=True, inc_marks=True)
+    assert len(res) == 5
+
+
