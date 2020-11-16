@@ -4,3 +4,4 @@ Output.txt
 t.py
 file
 .pathed-run.log
+.coverage
