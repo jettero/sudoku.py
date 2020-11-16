@@ -4,6 +4,7 @@
 import re
 from collections import namedtuple
 from .monkeypatch_tabulate import sudoku_table_format  # pylint: disable=unused-import
+from .const import R19
 
 
 def describe_elements(elements):
@@ -64,3 +65,9 @@ class PYTR:
 def one_and_the_others_iter(*s):
     for i, x in enumerate(s):
         yield (x, s[:i] + s[i + 1 :])
+
+
+def pos_iter():
+    for r in R19:
+        for c in R19:
+            yield (r,c)
