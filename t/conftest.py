@@ -4,7 +4,16 @@
 import pytest
 
 from sudoku import Puzzle
+from sudoku import get_puzzles
 from sudoku import ROW_NUMBERS
+
+@pytest.fixture(scope='function')
+def puzzles():
+    yield get_puzzles()
+
+@pytest.fixture(scope='function')
+def p0(puzzles):
+    yield puzzles[0]
 
 @pytest.fixture(scope='function')
 def empty_puzzle():
