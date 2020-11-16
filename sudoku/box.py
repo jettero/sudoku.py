@@ -5,7 +5,12 @@ import weakref
 import sudoku.otuple as otuple
 from .otuple import Otuple
 from .element import Element
-from .filt import attrs_containing_val, val_restricted_to_single_attr, element_has_val
+from .filt import (
+    attrs_containing_val,
+    val_restricted_to_single_attr,
+    element_has_val,
+    elements_in_attr,
+)
 from .const import BOX_NUMBERS
 
 
@@ -31,16 +36,18 @@ class Box:
             if element_has_val(x, val, inc_val=inc_val, inc_marks=inc_marks)
         )
 
-    def attr_containing_val(self, val, inc_val=True, inc_marks=True):
-        return attrs_containing_val(self, val, inc_val=inc_val, inc_marks=inc_marks)
+    def attr_containing_val(self, val, attr="row", inc_val=True, inc_marks=True):
+        return attrs_containing_val(
+            self, val, attr=attr, inc_val=inc_val, inc_marks=inc_marks
+        )
 
-    def single_attr_containing_val(self, val, inc_val=True, inc_marks=True):
+    def single_attr_containing_val(self, val, attr="row", inc_val=True, inc_marks=True):
         return val_restricted_to_single_attr(
-            self, val, inc_val=inc_val, inc_marks=inc_marks
+            self, val, attr=attr, inc_val=inc_val, inc_marks=inc_marks
         )
 
     def elements_in_attr(self, no, attr="row"):
-        return set(x for x in self if getattr(x, attr) == no)
+        return elements_in_attr(self, no, attr=attr)
 
     @property
     def cname(self):
