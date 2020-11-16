@@ -9,7 +9,7 @@ from sudoku import ROW_NUMBERS
 
 @pytest.fixture(scope='function')
 def puzzles():
-    yield get_puzzles()
+    yield tuple(get_puzzles())
 
 @pytest.fixture(scope='function')
 def p0(puzzles):
@@ -18,7 +18,6 @@ def p0(puzzles):
 @pytest.fixture(scope='function')
 def empty_puzzle():
     yield Puzzle()
-
 
 @pytest.fixture(scope='function')
 def diag_puzzle():
