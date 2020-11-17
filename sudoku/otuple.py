@@ -15,32 +15,30 @@ class Otuple(tuple):
     """
 
     def __getitem__(self, idx):
+        global BOX_CLASS
         try:
             idx = int(idx)
         except (ValueError, TypeError):
-            pass
-        if isinstance(idx, str):
-            if "b" in idx or "r" in idx or "c" in idx or "*" in idx:
+            if isinstance(idx, str):
+                if "b" in idx or "r" in idx or "c" in idx or "*" in idx:
 
-                def sgenerator(it, wanted):
-                    for item in it:
-                        if isinstance(item, Element):
-                            if fnmatch(item.short, wanted):
-                                yield item
-                        elif isinstance(item, BOX_CLASS):
-                            yield from sgenerator(item, wanted)
+                    def sgenerator(it, wanted):
+                        for item in it:
+                            if isinstance(item, Element):
+                                if fnmatch(item.short, wanted):
+                                    yield item
+                            elif isinstance(item, BOX_CLASS):
+                                yield from sgenerator(item, wanted)
 
-                return set(sgenerator(self, idx))
+                    return set(sgenerator(self, idx))
         if isinstance(idx, (list, set, tuple)):
-            if len(idx) != 1:
-                ret = set()
-                for x in idx:
-                    item = self[x]
-                    if isinstance(item, Box):
-                        ret = ret.union(item)
-                    else:
-                        ret.add(item)
-                return ret
-            (idx,) = idx
+            ret = set()
+            for x in idx:
+                item = self[x]
+                if isinstance(item, (set,BOX_CLASS,Otuple)):
+                    ret = ret.union(item)
+                else:
+                    ret.add(item)
+            return ret
         idx = acceptable_index_value(idx)
         return super().__getitem__(idx - 1)

@@ -36,18 +36,9 @@ class Box:
             if element_has_val(x, val, inc_val=inc_val, inc_marks=inc_marks)
         )
 
-    def attr_containing_val(self, val, attr="row", inc_val=True, inc_marks=True):
-        return attrs_containing_val(
-            self, val, attr=attr, inc_val=inc_val, inc_marks=inc_marks
-        )
-
-    def single_attr_containing_val(self, val, attr="row", inc_val=True, inc_marks=True):
-        return val_restricted_to_single_attr(
-            self, val, attr=attr, inc_val=inc_val, inc_marks=inc_marks
-        )
-
-    def elements_in_attr(self, no, attr="row"):
-        return elements_in_attr(self, no, attr=attr)
+    attrs_containing_val = attrs_containing_val
+    single_attr_containing_val = val_restricted_to_single_attr
+    elements_in_attr = elements_in_attr
 
     @property
     def cname(self):

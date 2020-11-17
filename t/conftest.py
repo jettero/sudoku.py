@@ -16,6 +16,10 @@ def p0(puzzles):
     yield puzzles[0]
 
 @pytest.fixture(scope='function')
+def p1(puzzles):
+    yield puzzles[1]
+
+@pytest.fixture(scope='function')
 def empty_puzzle():
     yield Puzzle()
 

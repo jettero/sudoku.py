@@ -2,7 +2,7 @@
 # coding: utf-8
 
 import re
-
+import pytest
 from sudoku import COLUMN_NUMBERS, ROW_NUMBERS
 from sudoku.tools import PYTR
 
@@ -27,7 +27,7 @@ def test_rows_iter(empty_puzzle):
     """
     r = 1
     for row in empty_puzzle.rows:
-        assert PYTR(".*?".join(f"b{BN[r][c]}c{c}r{r}" for c in COLUMN_NUMBERS)) == repr(
+        assert PYTR(".*?".join(f"b{BN[r][c]}r{r}c{c}" for c in COLUMN_NUMBERS)) == repr(
             row
         )
         r += 1
@@ -40,7 +40,7 @@ def test_cols_iter(empty_puzzle):
     """
     c = 1
     for col in empty_puzzle.cols:
-        assert PYTR(".*?".join(f"b{BN[r][c]}c{c}r{r}" for r in ROW_NUMBERS)) == repr(
+        assert PYTR(".*?".join(f"b{BN[r][c]}r{r}c{c}" for r in ROW_NUMBERS)) == repr(
             col
         )
         c += 1
@@ -77,3 +77,7 @@ def test_rows_have_things(five_six_puzzle):
 
     res = five_six_puzzle.rows[4].has(5, inc_val=True, inc_marks=True)
     assert len(res) == 2
+
+def test_silly_idx(empty_puzzle):
+    with pytest.raises(IndexError):
+        empty_puzzle.rows[0]

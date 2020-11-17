@@ -32,7 +32,7 @@ def test_elements_in_box4_having_5(box4):
 
 # attrs_containing_val()
 def test_columns_in_box4_with_5(box4):
-    res = box4.attr_containing_val(5, attr='col')
+    res = box4.attrs_containing_val(5, attr='col')
     assert res == {2,}
 
 # val_restricted_to_single_attr()

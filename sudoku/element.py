@@ -46,6 +46,12 @@ CENTER_POS = (
     (3, 4),
 )
 
+def _tag_sort(x, vdb={ 'b': 0, 'r': 1, 'c': 2 }):
+    try:
+        return vdb[ x[0] ]
+    except (KeyError, IndexError):
+        pass
+    return 0
 
 class Element:
     _box = _col = _row = _value = _given = None
@@ -65,8 +71,7 @@ class Element:
     def __repr__(self):
         r = ["E"]
         if self.tags:
-            tags = "".join(sorted(self.tags))
-            r.append(f"({tags})")
+            r.append(f"({self.short})")
         if self.value:
             r.append(f"<{self.value}>")
         return "".join(r)
@@ -87,7 +92,7 @@ class Element:
 
     @property
     def short(self):
-        return "".join(sorted(self.tags))
+        return "".join(sorted(self.tags, key=_tag_sort))
 
     @property
     def box(self):

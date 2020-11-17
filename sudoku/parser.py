@@ -20,7 +20,7 @@ def get_puzzles(file="Puzzles.txt"):
     pp = PuzzleParser()
     cur_lines = ""
 
-    def my_yield(x):
+    def my_yield(x): # pragma: no cover
         if isinstance(x, Puzzle):
             yield x
         else:
@@ -69,7 +69,7 @@ class PuzzleTransformer(Transformer):
                     puzzle[(i + 1, j + 1)].given = dat[i][j]
         return puzzle
 
-    def puzzle_list(self, v):
+    def puzzle_list(self, v): # pragma: no cover
         return v
 
 
