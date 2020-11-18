@@ -4,11 +4,13 @@
 from sudoku import solve
 
 def reload_puzzles():
+    global P
     from sudoku import get_puzzles
-    global P, Q
     P = list(get_puzzles())
-    Q = list(solve(x) for x in P)
 
 reload_puzzles()
-p = P[0]
-q = Q[0]
+fp = P[0]
+fq = solve(fp)
+
+lp = P[-1]
+lq = solve(lp)

@@ -1,2 +1,0 @@
-
-pytest "$@" --cov=sudoku --cov-report=term-missing:skip-covered

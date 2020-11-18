@@ -4,7 +4,7 @@
 import re
 from collections import namedtuple
 from .monkeypatch_tabulate import sudoku_table_format  # pylint: disable=unused-import
-from .const import R19
+from .const import R19, EV
 
 
 def describe_elements(elements):
@@ -32,7 +32,7 @@ class PYTR:
             if self._m:
                 self._g = self._m.groups()
             else:
-                self._g = list()
+                self._g = tuple()
         return self._g
 
     @property
@@ -71,3 +71,14 @@ def pos_iter():
     for r in R19:
         for c in R19:
             yield (r,c)
+
+def pairs_iter():
+    already = set()
+    for v1 in EV:
+        for v2 in EV:
+            if v1 == v2:
+                continue
+            op = tuple(sorted((v1,v2)))
+            if op not in already:
+                already.add(op)
+                yield op

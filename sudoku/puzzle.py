@@ -56,13 +56,17 @@ class Puzzle:
         self._history = list()
 
     def describe_inference(self, desc):
-        desc = desc.strip() + "\n"
+        desc = desc.strip()
         if desc not in self._history:
             self._history.append(desc)
 
     @property
     def history(self):
-        return "".join(self._history)
+        return tuple(self._history)
+
+    @property
+    def history_str(self):
+        return "\n".join(self._history) + '\n'
 
     def __iter__(self):
         for row in self.rows:
