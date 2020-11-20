@@ -19,7 +19,7 @@ def main(puzzle, opts):
                 lvu = tuple(sorted(set( x.loc for x in hvu )))
                 k = (v1,v2,lvu)
                 if k not in already:
-                    puzzle.describe_inference(f'{v1}-{v2} pair in {box.short} in {describe_elements(hvu)}')
+                    puzzle.describe_inference(f'{v1}-{v2} pair in {box.short} in {describe_elements(hvu)}', __name__)
                     already.add(k)
                     for e in hvu:
                         e.remove_pencil_mark(*EV)

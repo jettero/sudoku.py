@@ -62,7 +62,7 @@ class PYTR:
         return self._regex.pattern
 
 
-def one_and_the_others_iter(*s):
+def one_and_the_others_iter(s):
     for i, x in enumerate(s):
         yield (x, s[:i] + s[i + 1 :])
 

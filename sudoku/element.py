@@ -57,14 +57,15 @@ class Element:
     _box = _col = _row = _value = _given = None
 
     def __init__(self, value=None, given=False):
+        self._center = set()
+        self._pencil = set()
         self.value = value
         self.given = given
         self.tags = set()
         self.reset()
 
     def reset(self):
-        self._pencil = set()
-        self._center = set()
+        self.clear_marks()
         if not self.given:
             self.value = None
 
@@ -163,8 +164,7 @@ class Element:
         if isinstance(x, Element):
             x = x.value
         self._value = acceptable_element_value(x, none_ok=True)
-        self._pencil = set()
-        self._center = set()
+        self.clear_marks()
 
     @property
     def given(self):
@@ -208,3 +208,12 @@ class Element:
 
     def clear_center_marks(self):
         self._center.clear()
+
+    def remove_marks(self, *m):
+        self.remove_center_mark(*m)
+        self.remove_pencil_mark(*m)
+    remove_mark = remove_marks
+
+    def clear_marks(self):
+        self.clear_center_marks()
+        self.clear_pencil_marks()

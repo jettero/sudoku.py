@@ -78,7 +78,7 @@ class RulesManager(pluggy.PluginManager):
 
     def step(self, puzzle):
         if self.step_count > 0:
-            puzzle.describe_inference(f"step {self.step_count}")
+            puzzle.describe_inference(f"step {self.step_count}", __name__)
         ret = sum(self.hook.main(puzzle=puzzle, opts=self.opts))
         return ret
 
@@ -89,7 +89,7 @@ class RulesManager(pluggy.PluginManager):
         while self.step(puzzle):
             self.step_count += 1
 
-        puzzle.describe_inference("FIN")
+        puzzle.describe_inference("FIN", __name__)
         self.step_count = 0
 
         return puzzle

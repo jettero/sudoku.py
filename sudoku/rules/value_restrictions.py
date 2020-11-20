@@ -64,19 +64,18 @@ def main(puzzle, opts):
                     for e in s:
                         k = (v, e.loc)
                         if k not in already_s:
-                            puzzle.describe_inference(f'singleton {v} must be in {e.short} in {box.short}')
+                            puzzle.describe_inference(f'singleton {v} must be in {e.short} in {box.short}', __name__)
                             e.value = v
                             for box in (puzzle.boxes[e.box], puzzle.rows[e.row], puzzle.cols[e.col]):
                                 for e in box:
-                                    e.remove_pencil_mark(v)
-                                    e.remove_center_mark(v)
+                                    e.remove_marks(v)
                             did_count += 1
                             already_s.add(k)
                 elif len(s) == 2 and not abstraction.only_singletons:
                     for e in s:
                         k = (v, e.loc)
                         if k not in already_p:
-                            puzzle.describe_inference(f'{v} can only be in {describe_elements(s)} in {box.short}')
+                            puzzle.describe_inference(f'{v} can only be in {describe_elements(s)} in {box.short}', __name__)
                             e.add_pencil_mark(v)
                             did_count += 1
                             already_p.add(k)

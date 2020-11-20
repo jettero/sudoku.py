@@ -7,6 +7,7 @@ from .otuple import Otuple
 from .const import BOX_NUMBERS, ROW_NUMBERS, COLUMN_NUMBERS, ELEMENT_VALUES
 from .box import Box, Row, Col
 from .filt import element_has_val
+from .history import History
 
 
 class Puzzle:
@@ -25,7 +26,7 @@ class Puzzle:
                     yield rows[r + 1][c + 1]
 
         self.boxes = Otuple(Box(*box_elements(b), idx=b) for b in BOX_NUMBERS)
-        self._history = list()
+        self._history = History()
         self._context = dict()
 
     def context(self, thing, **kw):
@@ -53,20 +54,14 @@ class Puzzle:
     def reset(self):
         for e in self:
             e.reset()
-        self._history = list()
+        self._history.clear()
 
-    def describe_inference(self, desc):
-        desc = desc.strip()
-        if desc not in self._history:
-            self._history.append(desc)
+    def describe_inference(self, desc, src):
+        self._history.append(desc, src)
 
     @property
     def history(self):
-        return tuple(self._history)
-
-    @property
-    def history_str(self):
-        return "\n".join(self._history) + '\n'
+        return self._history.freeze()
 
     def __iter__(self):
         for row in self.rows:

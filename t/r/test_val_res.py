@@ -34,8 +34,8 @@ def test_value_restrictions(p1):
     log.debug(p1)
 
     pm = p1.has(3, inc_val=False, inc_marks=True)
-    assert len(pm) == 5
+    assert len(pm) == 6
 
     pm = tuple(has_pencil_mark(3, p1))
-    assert len(pm) == 5
+    assert len(pm) == 6
 
