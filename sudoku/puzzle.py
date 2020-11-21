@@ -121,7 +121,7 @@ class Puzzle:
         ret = dict()
         for grouping in self.groupings:
             for group in grouping:
-                ret[group.short] = d = { d:0 for d in ELEMENT_VALUES }
+                ret[group.short] = d = {d: 0 for d in ELEMENT_VALUES}
                 for x in group:
                     if x.value:
                         d[x.value] += 1
@@ -130,8 +130,8 @@ class Puzzle:
     def check(self):
         bad = list()
         cv = self.count_values()
-        for gname,grouping in sorted(cv.items()):
-            for v,c in sorted(grouping.items()):
+        for gname, grouping in sorted(cv.items()):
+            for v, c in sorted(grouping.items()):
                 if c > 1:
                     bad.append(f"{gname} contains {c} '{v}'s")
         return bad

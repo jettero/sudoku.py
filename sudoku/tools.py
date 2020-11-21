@@ -70,7 +70,8 @@ def one_and_the_others_iter(s):
 def pos_iter():
     for r in R19:
         for c in R19:
-            yield (r,c)
+            yield (r, c)
+
 
 def pairs_iter():
     already = set()
@@ -78,7 +79,7 @@ def pairs_iter():
         for v2 in EV:
             if v1 == v2:
                 continue
-            op = tuple(sorted((v1,v2)))
+            op = tuple(sorted((v1, v2)))
             if op not in already:
                 already.add(op)
                 yield op

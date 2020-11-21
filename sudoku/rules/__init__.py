@@ -7,8 +7,9 @@ import pluggy
 hookspec = pluggy.HookspecMarker("sudoku")
 hookimpl = pluggy.HookimplMarker("sudoku")
 
+
 @hookspec
-def main(puzzle, opts): # pragma: no cover
+def main(puzzle, opts=set()):  # pragma: no cover
     # Do whatever the ruleset should do and then return the count of things
     # that were done
     #
@@ -28,6 +29,7 @@ def main(puzzle, opts): # pragma: no cover
     # 'something' exactly? What counts as work?)
 
     return did_count
+
 
 del hookspec
 del pluggy

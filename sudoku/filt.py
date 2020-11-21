@@ -38,5 +38,6 @@ def val_restricted_to_single_attr(box, val, attr="row", inc_val=True, inc_marks=
     if len(s) == 1:
         return next(iter(s))
 
-def elements_in_attr(box, no, attr='row'):
+
+def elements_in_attr(box, no, attr="row"):
     return set(x for x in box if getattr(x, attr) == no)

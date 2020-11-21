@@ -3,18 +3,29 @@
 
 import pytest
 
-@pytest.fixture(scope='function')
-def box4(five_six_puzzle):
-    yield five_six_puzzle.boxes[4]
+
+@pytest.fixture(scope="function")
+def box4(p_45m):
+    yield p_45m.boxes[4]
+
+
+def box6(p_45m):
+    yield p_45m.boxes[6]
+
 
 # elements_in_attr()
 def test_elements_of_box_4_in_col2(box4):
-    res = box4.elements_in_attr(2, attr='col')
+    res = box4.elements_in_attr(2, attr="col")
 
     assert len(res) == 3
-    assert set(x.box for x in res) == {4,}
-    assert set(x.col for x in res) == {2,}
-    assert set(x.row for x in res) == {4,5,6}
+    assert set(x.box for x in res) == {
+        4,
+    }
+    assert set(x.col for x in res) == {
+        2,
+    }
+    assert set(x.row for x in res) == {4, 5, 6}
+
 
 # element_has_val()
 def test_elements_in_box4_having_5(box4):
@@ -30,12 +41,14 @@ def test_elements_in_box4_having_5(box4):
     res = box4.has(5, inc_val=True, inc_marks=True)
     assert len(res) == 2
 
+
 # attrs_containing_val()
 def test_columns_in_box4_with_5(box4):
-    res = box4.attrs_containing_val(5, attr='col')
-    assert res == {2,}
+    res = box4.attrs_containing_val(5, attr="col")
+    assert res == {1, 3}
+
 
 # val_restricted_to_single_attr()
-def test_columns_in_box4_with_5(box4):
-    res = box4.single_attr_containing_val(5, attr='col')
+def test_columns_in_box4_with_4(box4):
+    res = box4.single_attr_containing_val(4, attr="col")
     assert res == 2

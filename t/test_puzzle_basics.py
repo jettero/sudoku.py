@@ -52,31 +52,50 @@ def test_boxes_iter(empty_puzzle):
         assert PYTR(".*?".join((f"b{b}",) * 9)) == repr(box)
         b += 1
 
-def test_puzzle_has_things(five_six_puzzle):
-    res = five_six_puzzle.has(5, inc_val=False, inc_marks=False)
+
+def test_puzzle_has_things(p_45m):
+    res = p_45m.has(5, inc_val=False, inc_marks=False)
     assert len(res) == 0
 
-    res = five_six_puzzle.has(5, inc_val=False, inc_marks=True)
-    assert len(res) == 4
-
-    res = five_six_puzzle.has(5, inc_val=True, inc_marks=False)
-    assert len(res) == 1
-
-    res = five_six_puzzle.has(5, inc_val=True, inc_marks=True)
+    res = p_45m.has(5, inc_val=False, inc_marks=True)
     assert len(res) == 5
 
-def test_rows_have_things(five_six_puzzle):
-    res = five_six_puzzle.rows[4].has(5, inc_val=False, inc_marks=False)
+    res = p_45m.has(5, inc_val=True, inc_marks=False)
+    assert len(res) == 6
+
+    res = p_45m.has(5, inc_val=True, inc_marks=True)
+    assert len(res) == 11
+
+
+def test_rows_have_things(p_45m):
+    res = p_45m.rows[4].has(5, inc_val=False, inc_marks=False)
     assert len(res) == 0
 
-    res = five_six_puzzle.rows[4].has(5, inc_val=False, inc_marks=True)
+    res = p_45m.rows[4].has(5, inc_val=False, inc_marks=True)
     assert len(res) == 2
 
-    res = five_six_puzzle.rows[4].has(5, inc_val=True, inc_marks=False)
+    res = p_45m.rows[4].has(5, inc_val=True, inc_marks=False)
     assert len(res) == 0
 
-    res = five_six_puzzle.rows[4].has(5, inc_val=True, inc_marks=True)
+    res = p_45m.rows[4].has(5, inc_val=True, inc_marks=True)
     assert len(res) == 2
+
+    res = p_45m.rows[5].has(5, inc_val=False, inc_marks=True)
+    assert len(res) == 0
+
+    res = p_45m.rows[5].has(5, inc_val=True, inc_marks=False)
+    assert len(res) == 1
+
+    res = p_45m.rows[5].has(5, inc_val=True, inc_marks=True)
+    assert len(res) == 1
+
+    for row in p_45m.rows:
+        if row.has(5, inc_val=True, inc_marks=False):
+            assert row.has(5, inc_val=False, inc_marks=True) == set()
+
+        if row.has(5, inc_val=False, inc_marks=True):
+            assert row.has(5, inc_val=True, inc_marks=False) == set()
+
 
 def test_silly_idx(empty_puzzle):
     with pytest.raises(IndexError):

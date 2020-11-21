@@ -13,7 +13,9 @@ log = logging.getLogger(__name__)
 
 NAMESPACES = ("sudoku.rules",)
 INSTALLED_DIR = os.path.dirname(__file__)
-KNOWN_OPTS = {"human", }
+KNOWN_OPTS = {
+    "human",
+}
 
 
 def _process_opts(opts):

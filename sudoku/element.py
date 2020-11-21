@@ -46,12 +46,14 @@ CENTER_POS = (
     (3, 4),
 )
 
-def _tag_sort(x, vdb={ 'b': 0, 'r': 1, 'c': 2 }):
+
+def _tag_sort(x, vdb={"b": 0, "r": 1, "c": 2}):
     try:
-        return vdb[ x[0] ]
+        return vdb[x[0]]
     except (KeyError, IndexError):
         pass
     return 0
+
 
 class Element:
     _box = _col = _row = _value = _given = None
@@ -209,11 +211,16 @@ class Element:
     def clear_center_marks(self):
         self._center.clear()
 
-    def remove_marks(self, *m):
+    def remove_mark(self, *m):
         self.remove_center_mark(*m)
         self.remove_pencil_mark(*m)
-    remove_mark = remove_marks
 
     def clear_marks(self):
         self.clear_center_marks()
         self.clear_pencil_marks()
+
+    remove_marks = remove_mark
+    add_center_marks = add_center_mark
+    remove_center_marks = remove_center_mark
+    add_pencil_marks = add_pencil_mark
+    remove_pencil_marks = remove_pencil_mark

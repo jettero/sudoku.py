@@ -35,7 +35,7 @@ class Otuple(tuple):
             ret = set()
             for x in idx:
                 item = self[x]
-                if isinstance(item, (set,BOX_CLASS,Otuple)):
+                if isinstance(item, (set, BOX_CLASS, Otuple)):
                     ret = ret.union(item)
                 else:
                     ret.add(item)

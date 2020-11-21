@@ -4,6 +4,7 @@
 from collections import OrderedDict
 import re
 
+
 class FrozenHistory(tuple):
     def __getitem__(self, search):
         search = re.compile(search)

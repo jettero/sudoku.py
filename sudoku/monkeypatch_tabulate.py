@@ -25,18 +25,18 @@ import tabulate
 
 class SudokuTableFormat(tabulate.TableFormat):
     @property
-    def padding(self): # pragma: no cover
+    def padding(self):  # pragma: no cover
         self.pos = [0, 0]
         return super().padding
 
     @property
-    def linebetweenrows(self): # pragma: no cover
+    def linebetweenrows(self):  # pragma: no cover
         self.pos[1] += 1
         if self.pos[1] in (4, 7):
             return super().linebelowheader
         return super().linebetweenrows
 
-    def datarow(self, padded_cells, colwidths, colaligns): # pragma: no cover
+    def datarow(self, padded_cells, colwidths, colaligns):  # pragma: no cover
         # This is what "grid" would do if datarow was actually a callable:
         #   begin, sep, end = super().datarow
         #   return (begin + sep.join(padded_cells) + end).rstrip()
