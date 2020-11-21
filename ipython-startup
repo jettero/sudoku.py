@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import sys
+from glob import glob
 from sudoku import solve
 
 def reload_puzzles():
-    global P
+    global P, A
     from sudoku import get_puzzles
     P = list(get_puzzles())
+    A = list()
+
+    for file in glob('t/asset/p*.txt'):
+        A.extend(get_puzzles(file))
 
 reload_puzzles()
 fp = P[0]

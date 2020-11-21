@@ -2,10 +2,12 @@
 # coding: utf-8
 
 import os
+import glob
 import logging
 import pytest
 
 from sudoku import Puzzle, get_puzzles, ROW_NUMBERS, solve
+from sudoku.tools import PYTR
 
 log = logging.getLogger(__name__)
 
@@ -50,25 +52,24 @@ def diag_puzzle():
     yield p
 
 
-def get_single_puzzle(short):
-    for dir in (adir, tdir, rdir):
-        file = os.path.join(dir, f"{short}.txt")
-        if os.path.isfile(file):
-            (p,) = get_puzzles(file)
+def _load_all_assets_as_fixtures():
+    def _wrap_in_bound_scope(p):
+        def _bound_to_p():
+            yield p
+
+        return _bound_to_p
+
+    short_name = PYTR(r"^p?_?(?P<short>.+?)\.txt$")
+    for file in glob.glob(os.path.join(adir, "*.txt")):
+        if short_name.search(os.path.basename(file)):
+            short = "p_" + short_name[0]
+            (p,) = get_puzzles(file=file)
             spam(short, p)
-            return p
+            globals()[short] = pytest.fixture(scope="function")(_wrap_in_bound_scope(p))
+            log.info("loaded %s into fixture %s", file, short)
 
 
-@pytest.fixture(scope="function")
-def p_1t9m4():
-    p = get_single_puzzle("p_1t9m4")
-    yield p
-
-
-@pytest.fixture(scope="function")
-def p_45():
-    p = get_single_puzzle("p_45")
-    yield p
+_load_all_assets_as_fixtures()
 
 
 @pytest.fixture(scope="function")
