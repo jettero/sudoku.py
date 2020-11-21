@@ -27,11 +27,14 @@ def main(puzzle, opts=set()):
                     )
 
                     if o1 and o2:
+                        # if v is restricted to one row in both other boxes we
+                        # can compute a single blessed row where v has to be in
+                        # the remaining box
                         blessed_no, *broken = set(getattr(x, attr) for x in box) - {
                             o1,
                             o2,
                         }
-                        if broken:
+                        if broken: # pragma: no cover
                             broken = f'{blessed_no}, {", ".join(broken)}'
                             puzzle.describe_inference(
                                 f"this puzzle is broken, we have multiple blessed rows for {v} in {box.short}: {broken}",
@@ -57,6 +60,9 @@ def main(puzzle, opts=set()):
                                 blessed.add(k)
                                 did_count += 1
 
+                    # we can also remove any pencil marks in rows restricted
+                    # out by either o1 or o2 even if nothing else happened
+                    # above
                     for no in (o1, o2):
                         cant_be = set(
                             x for x in box if getattr(x, attr) == no and v in x.marks
