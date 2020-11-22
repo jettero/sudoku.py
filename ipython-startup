@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import os
 import logging
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('ipy')
@@ -12,10 +13,14 @@ def reload_puzzles():
     global P, A
     from sudoku import get_puzzles
     P = list(get_puzzles())
-    A = list()
+    A = dict()
 
     for file in glob('t/asset/p*.txt'):
-        A.extend(get_puzzles(file))
+        bname = os.path.basename(file)[:-4]
+        puzzles = tuple(get_puzzles(file))
+        if len(puzzles) == 1:
+            puzzles, = puzzles
+        A[bname] = puzzles
 
 reload_puzzles()
 fp = P[0]
@@ -24,6 +29,8 @@ fq = solve(fp)
 lp = P[-1]
 lq = solve(lp)
 
-p = P[9]
-q = solve(p)
-q.check()
+p_45 = A['p_45']
+
+p9 = P[9]
+q9 = solve(p9)
+q9.check()
