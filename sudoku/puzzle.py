@@ -128,7 +128,10 @@ class Puzzle:
         return ret
 
     def check(self):
-        bad = list()
+        class WeirdList(list):
+            def __bool__(self):
+                return len(self) == 0
+        bad = WeirdList()
         cv = self.count_values()
         for gname, grouping in sorted(cv.items()):
             for v, c in sorted(grouping.items()):

@@ -16,7 +16,6 @@ INSTALLED_DIR = os.path.dirname(__file__)
 KNOWN_OPTS = { 'human', 'test' }
 # we don't actually use opts for anything (yet?)
 
-
 def _process_opts(opts):
     if isinstance(opts, str):
         opts = opts.split()
@@ -81,6 +80,12 @@ class RulesManager(pluggy.PluginManager):
         if self.step_count > 0:
             puzzle.describe_inference(f"step {self.step_count}", __name__)
         ret = sum(self.hook.main(puzzle=puzzle, opts=self.opts))
+        chk = puzzle.check()
+        if not chk:
+            puzzle.describe_inference('puzzle broke:', __name__)
+            for item in chk:
+                puzzle.describe_inference(f'[!]  {item}', __name__)
+            return 0
         return ret
 
     def solve(self, puzzle):

@@ -23,21 +23,11 @@ def spam(name, puzzle):
         log.debug("%s:\n%s", name, puzzle)
         already_spammed.add(name)
 
+PUZZLES = tuple(get_puzzles())
 
 @pytest.fixture(scope="function")
 def puzzles():
-    yield tuple(get_puzzles())
-
-
-@pytest.fixture(scope="function")
-def p0(puzzles):
-    yield puzzles[0]
-
-
-@pytest.fixture(scope="function")
-def p1(puzzles):
-    yield puzzles[1]
-
+    yield PUZZLES
 
 @pytest.fixture(scope="function")
 def empty_puzzle():
@@ -51,26 +41,34 @@ def diag_puzzle():
         p[x, x] = x
     yield p
 
+def _wrap_in_bound_scope(p, name):
+    def _bound_to_p():
+        yield p
+    _bound_to_p.__name__ = name
+    return _bound_to_p
 
 def _load_all_assets_as_fixtures():
-    def _wrap_in_bound_scope(p):
-        def _bound_to_p():
-            yield p
-
-        return _bound_to_p
-
     short_name = PYTR(r"^p?_?(?P<short>.+?)\.txt$")
     for file in glob.glob(os.path.join(adir, "*.txt")):
         if short_name.search(os.path.basename(file)):
             short = "p_" + short_name[0]
             (p,) = get_puzzles(file=file)
             spam(short, p)
-            globals()[short] = pytest.fixture(scope="function")(_wrap_in_bound_scope(p))
+            globals()[short] = pytest.fixture(scope="function")(_wrap_in_bound_scope(p, short))
             log.info("loaded %s into fixture %s", file, short)
-
 
 _load_all_assets_as_fixtures()
 
+def _provide_each_puzzle_as_a_fixture():
+    for n,p in enumerate(PUZZLES):
+        name = f'p{n}'
+        globals()[name] = pytest.fixture(scope='function')(_wrap_in_bound_scope(p, name))
+
+_provide_each_puzzle_as_a_fixture()
+
+@pytest.fixture(scope='function', params=PUZZLES)
+def any_p(request):
+    return request.param
 
 @pytest.fixture(scope="function")
 def p_45m(p_45):

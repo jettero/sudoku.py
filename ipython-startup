@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('ipy')
+
 from glob import glob
 from sudoku import solve
 
@@ -19,3 +23,7 @@ fq = solve(fp)
 
 lp = P[-1]
 lq = solve(lp)
+
+p = P[9]
+q = solve(p)
+q.check()
