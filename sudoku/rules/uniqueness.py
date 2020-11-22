@@ -5,7 +5,7 @@
 from sudoku.rules import hookimpl
 from sudoku.const import ELEMENT_VALUES as EV
 
-sev = set(EV)
+SEV = set(EV)
 
 
 @hookimpl
@@ -16,7 +16,7 @@ def main(puzzle, opts=set()):
         no_v = set(e for e in box if not e.value)
         if len(no_v) == 1:
             kv = set(e.value for e in box if e.value)
-            v, *ov = sev - kv
+            v, *ov = SEV - kv
             (e,) = no_v
             if ov:  # pragma: no cover
                 puzzle.describe_inference(
