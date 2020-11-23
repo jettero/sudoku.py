@@ -29,10 +29,19 @@ def main(puzzle, opts=set()):
         if bbh1 and bbh2:
             return True
 
+    memo = dict()
+    def memoized_fetch(v,box):
+        k = (v,box)
+        try:
+            return memo[k]
+        except KeyError:
+            memo[k] = hv = box.has(v, inc_marks=True, inc_val=False)
+        return hv
+
     for v1, v2 in pairs_iter():
         for box in puzzle.boxes + puzzle.rows + puzzle.cols:
-            hv1 = box.has(v1, inc_marks=True, inc_val=False)
-            hv2 = box.has(v2, inc_marks=True, inc_val=False)
+            hv1 = memoized_fetch(v1,box)
+            hv2 = memoized_fetch(v2,box)
             hvu = hv1.union(hv2)
             if len(hv1) == 2 and len(hv2) == 2 and len(hvu) == 2:
                 if seems_legit(v1, v2, hvu):
