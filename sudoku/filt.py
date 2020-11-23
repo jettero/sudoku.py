@@ -4,17 +4,22 @@
 from .const import ELEMENT_VALUES
 
 
-def acceptable_element_value(x, none_ok=False, word="values", ecls=ValueError):
+def acceptable_element_value(x, none_ok=False):
     if x is None:
         if none_ok:
             return x
     elif 1 <= x <= 9:
         return x
-    raise ecls(f'{word} must be one of {ELEMENT_VALUES}, not "{x!r}"')
+    raise ValueError('values must be in the range 1-9')
 
 
 def acceptable_index_value(x, none_ok=False):
-    return acceptable_element_value(x, none_ok=none_ok, word="indexes", ecls=IndexError)
+    if x is None:
+        if none_ok:
+            return x
+    elif 1 <= x <= 9:
+        return x
+    raise IndexError('indexes must be in the range 1-9')
 
 
 def element_has_val(e, val, inc_val=True, inc_marks=True):
