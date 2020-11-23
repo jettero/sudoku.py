@@ -10,6 +10,7 @@ import subprocess
 
 from sudoku import Puzzle, get_puzzles, ROW_NUMBERS, solve
 from sudoku.tools import PYTR
+from sudoku import __file__ as __sfile__
 
 log = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ tdir = os.path.dirname(__file__)
 rdir = os.path.dirname(tdir)
 adir = os.path.join(tdir, "asset")
 odir = os.path.join(tdir, 'output')
+sdir = os.path.dirname(__sfile__)
 
 already_spammed = set()
 
@@ -139,7 +141,7 @@ def pytest_sessionfinish(session, exitstatus):
                 csvg      = os.path.join(odir, 'combined.svg')
                 combined.dump_stats(cfilename)
 
-                gp_cmd = [ 'gprof2dot', '-f', 'pstats', cfilename ]
+                gp_cmd = [ 'gprof2dot', '-f', 'pstats', cfilename, '--path', sdir ]
 
                 gp = subprocess.Popen(gp_cmd, stdout=subprocess.PIPE)
                 dp = subprocess.Popen(['dot', '-Tsvg', '-o', csvg], stdin=gp.stdout)
