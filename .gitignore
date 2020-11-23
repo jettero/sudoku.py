@@ -6,3 +6,4 @@ file
 .pathed-run.log
 .coverage
 *.py,cover
+t/output

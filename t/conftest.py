@@ -5,6 +5,8 @@ import os
 import glob
 import logging
 import pytest
+import pstats
+import subprocess
 
 from sudoku import Puzzle, get_puzzles, ROW_NUMBERS, solve
 from sudoku.tools import PYTR
@@ -14,6 +16,7 @@ log = logging.getLogger(__name__)
 tdir = os.path.dirname(__file__)
 rdir = os.path.dirname(tdir)
 adir = os.path.join(tdir, "asset")
+odir = os.path.join(tdir, 'output')
 
 already_spammed = set()
 
@@ -92,3 +95,52 @@ def p_45m(p_45):
     spam("p_45m", p)
 
     yield p
+
+##### profiling
+prof_filenames = set()
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_call(item):
+    if os.environ.get('TEST_PROFILE'):
+        import cProfile
+        filename, lineno, funcname = item.location # item.name is just the function name
+        profile_name = filename.split('/')[-1][:-3]
+        profile_name += '-' + funcname + '.pstats'
+        prof_filename = os.path.join(odir, profile_name)
+        prof_filenames.add(prof_filename)
+        try:
+            os.makedirs(odir)
+        except OSError:
+            pass
+        prof = cProfile.Profile()
+        prof.enable()
+
+    yield
+
+    if os.environ.get('TEST_PROFILE'):
+        prof.dump_stats(prof_filename)
+        prof_filenames.add(prof_filename)
+
+def pytest_sessionfinish(session, exitstatus):
+    if os.environ.get('TEST_PROFILE'):
+        # shamelessly ripped from pytest-profiling — then modified to taste
+        if prof_filenames:
+            combined = None
+            for pfname in prof_filenames:
+                if not os.path.isfile(pfname):
+                    continue
+                if combined is None:
+                    combined = pstats.Stats(pfname)
+                else:
+                    combined.add(pfname)
+
+            if combined:
+                cfilename = os.path.join(odir, 'combined.pstats')
+                csvg      = os.path.join(odir, 'combined.svg')
+                combined.dump_stats(cfilename)
+
+                gp_cmd = [ 'gprof2dot', '-f', 'pstats', cfilename ]
+
+                gp = subprocess.Popen(gp_cmd, stdout=subprocess.PIPE)
+                dp = subprocess.Popen(['dot', '-Tsvg', '-o', csvg], stdin=gp.stdout)
+                dp.communicate()
