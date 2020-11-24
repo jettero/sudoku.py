@@ -42,13 +42,18 @@ class Puzzle:
             self._context[thing] = dict(**kw)
         return self._context[thing]
 
-    def clone(self):
+    def clone(self, transpose=False, copy_all=False, with_marks=False):
         ret = self.__class__()
         for r in ROW_NUMBERS:
             for c in COLUMN_NUMBERS:
-                e = self[r, c]
+                e = self[c,r] if transpose else self[r, c]
                 if e.given:
                     ret[r, c].given = e.value
+                elif copy_all and e.value:
+                    ret[r,c].value = e.value
+                if with_marks or copy_all:
+                    ret[r,c].add_pencil_marks(*e.pencil)
+                    ret[r,c].add_center_marks(*e.center)
         return ret
 
     def reset(self):

@@ -22,7 +22,7 @@ def main(puzzle, opts=set()):
         elif r1 == r2:
             (bno,) = set(x.box for x in puzzle.rows[r1]) - hvu_boxes
         else:
-            raise Exception("this doesn't seem possible")
+            raise Exception("this doesn't seem possible") # pragma: no cover
         bbox = puzzle.boxes[bno]
         bbh1 = bbox.has(v1, inc_marks=True, inc_val=True)
         bbh2 = bbox.has(v2, inc_marks=True, inc_val=True)
