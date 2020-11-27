@@ -35,7 +35,7 @@ class RulesManager(pluggy.PluginManager):
 
     @property
     def local_modules(self):
-        yield from self._local_modules if self._local_modules else self._load_local_modules()
+        yield from self._load_local_modules()
 
     @classmethod
     def _load_local_modules(cls):
@@ -47,7 +47,7 @@ class RulesManager(pluggy.PluginManager):
             log.debug("loading %s.* from %s", namespace, plugin_path)
             for item in pkgutil.iter_modules([plugin_path], f"{namespace}."):
                 if item.name == __name__:
-                    continue
+                    continue # pragma: no cover ; too rare to bother with
                 log.debug("loading %s", item.name)
                 m = importlib.import_module(item.name)
                 cls._local_modules.add(m)
@@ -81,7 +81,7 @@ class RulesManager(pluggy.PluginManager):
             puzzle.describe_inference(f"step {self.step_count}", __name__)
         ret = sum(self.hook.main(puzzle=puzzle, opts=self.opts))
         chk = puzzle.check()
-        if not chk:
+        if not chk: # pragma: no cover ; no need to check this, we check check() elsewhere
             puzzle.describe_inference('puzzle broke:', __name__)
             for item in chk:
                 puzzle.describe_inference(f'[!]  {item}', __name__)

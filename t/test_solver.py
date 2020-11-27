@@ -2,7 +2,7 @@
 # coding: utf-8
 
 import logging
-from sudoku.solver import process_opts, solve
+from sudoku.solver import process_opts, solve, Karen
 
 log = logging.getLogger(__name__)
 
@@ -31,3 +31,6 @@ def test_solver_doesnt_ruin_any_puzzle(any_p):
         for item in c:
             log.error("  %s", item)
     assert ok
+
+def test_solvers_load_the_same_thing():
+    assert set(Karen().local_modules) == set(Karen().local_modules)
