@@ -2,6 +2,7 @@
 # coding: utf-8
 
 from sudoku import Element
+from sudoku.element import CELL_WIDTH
 
 def test_element_repr():
     assert repr(Element()) == "E"
@@ -52,9 +53,24 @@ def test_element_sort():
     assert e<f<=g
 
 def test_element_as_cell():
-    e = Element(4,5,6)
-    assert '|' in e.as_cell
-    assert '_' in e.as_cell
+    e = Element()
+    for i in range(1,10):
+        e.value = i
+        for line in e.as_cell.splitlines():
+            assert len(line) == CELL_WIDTH
+
+        e.reset()
+        e.add_pencil_mark(i)
+        assert f'{i}' in e.as_cell
+        for j in set(range(1,10)) - {i,}:
+            assert f'{j}' not in e.as_cell
+
+        e.reset()
+        e.add_center_mark(i)
+        assert f'{i}' in e.as_cell
+        for j in set(range(1,10)) - {i,}:
+            assert f'{j}' not in e.as_cell
+
     e.reset()
     e.add_pencil_mark(4,5,6)
     assert '4' in e.as_cell
