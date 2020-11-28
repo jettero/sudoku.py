@@ -3,7 +3,7 @@
 
 import re
 from pyfiglet import Figlet
-from .tools import PYTR
+from .tools import PYTR, rc2b
 from .filt import acceptable_element_value
 
 # NOTE: CELL_WIDTH is pretty fiddly. To get the grid to work out, at
@@ -47,24 +47,16 @@ CENTER_POS = (
 )
 
 
-def _tag_sort(x, vdb={"b": 0, "r": 1, "c": 2}):
-    try:
-        return vdb[x[0]]
-    except (KeyError, IndexError):
-        pass
-    return 0
-
-
 class Element:
-    _box = _col = _row = _value = _given = None
+    _row = _col = _value = _given = None
 
-    def __init__(self, value=None, given=False):
+    def __init__(self, value=None, row=None, col=None, given=False):
         self._center = set()
         self._pencil = set()
-        self.value = value
+        self.row = row
+        self.col = col
         self.given = given
-        self.tags = set()
-        self.reset()
+        self.value = value
 
     def reset(self):
         self.clear_marks()
@@ -95,27 +87,45 @@ class Element:
 
     @property
     def short(self):
-        return "".join(sorted(self.tags, key=_tag_sort))
+        return "".join(self.tags)
 
     @property
     def box(self):
-        if self._box is None:
-            self._box = self._t2n(t="b")
         return self._box
 
     @property
-    def column(self):
-        if self._col is None:
-            self._col = self._t2n(t="c")
-        return self._col
+    def row(self):
+        return self._row
 
-    col = column
+    def _compute_box(self):
+        self._box = rc2b(self._row, self._col)
+
+    @row.setter
+    def row(self, v):
+        self._row = acceptable_element_value(v, none_ok=True)
+        self._compute_box()
 
     @property
-    def row(self):
-        if self._row is None:
-            self._row = self._t2n(t="r")
-        return self._row
+    def col(self):
+        return self._col
+
+    @col.setter
+    def col(self, v):
+        self._col = acceptable_element_value(v, none_ok=True)
+        self._compute_box()
+
+    column = col
+
+    @property
+    def tags(self):
+        ret = list()
+        if self._box:
+            ret.append(f'b{self.box}')
+        if self._row:
+            ret.append(f'r{self.row}')
+        if self._col:
+            ret.append(f'r{self.col}')
+        return ret
 
     def _t2n(self, t=None):
         for tag in self.tags:

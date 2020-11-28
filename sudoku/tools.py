@@ -6,6 +6,30 @@ from collections import namedtuple
 from .monkeypatch_tabulate import sudoku_table_format  # pylint: disable=unused-import
 from .const import R19, EV
 
+def rc2b(r,c):
+    # I wonder if we could do this more elegantly with math
+    # probably not worth figuring out… hrm.
+    if r in (1,2,3):
+        if c in (1,2,3):
+            return 1
+        if c in (4,5,6):
+            return 2
+        if c in (7,8,9):
+            return 3
+    if r in (4,5,6):
+        if c in (1,2,3):
+            return 4
+        if c in (4,5,6):
+            return 5
+        if c in (7,8,9):
+            return 6
+    if r in (7,8,9):
+        if c in (1,2,3):
+            return 7
+        if c in (4,5,6):
+            return 8
+        if c in (7,8,9):
+            return 9
 
 def describe_elements(elements):
     return ", ".join(sorted(e.short for e in elements))
@@ -72,6 +96,15 @@ def pos_iter():
         for c in R19:
             yield (r, c)
 
+def brc_iter():
+    for b in range(9):
+        c = (3 * b) % 9
+        C = tuple(range(c, c + 3))
+        r = (b // 3) * 3
+        R = tuple(range(r, r + 3))
+        for r in R:
+            for c in C:
+                yield (b+1,r+1,c+1)
 
 def pairs_iter():
     already = set()
