@@ -2,8 +2,8 @@
 # coding: utf-8
 
 import pytest
+from sudoku import BOX_MATRIX
 from sudoku.tools import brc_iter, rc2b
-from sudoku.const import BOX_MATRIX
 
 def test_brc_iter():
     bs = set()
