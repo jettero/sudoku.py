@@ -10,7 +10,7 @@ def acceptable_element_value(x, none_ok=False):
             return x
     elif 1 <= x <= 9:
         return x
-    raise ValueError('values must be in the range 1-9')
+    raise ValueError(f'values must be in the range 1-9 (given: {x!r})')
 
 
 def acceptable_index_value(x, none_ok=False):
@@ -19,7 +19,7 @@ def acceptable_index_value(x, none_ok=False):
             return x
     elif 1 <= x <= 9:
         return x
-    raise IndexError('indexes must be in the range 1-9')
+    raise IndexError(f'indexes must be in the range 1-9 (given: {x!r})')
 
 
 def element_has_val(e, val, inc_val=True, inc_marks=True):
