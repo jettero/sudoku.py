@@ -85,6 +85,13 @@ class Element:
             other = other.loc
         return self.loc >= other
 
+    def __hash__(self):
+        r = 0
+        for i,x in zip((1,10,100), self.loc):
+            if x:
+                r += i * x
+        return r
+
     @property
     def loc(self):
         return (self.box, self.row, self.col)
