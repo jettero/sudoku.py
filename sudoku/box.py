@@ -15,7 +15,12 @@ from .const import BOX_NUMBERS
 
 
 class Box:
+
     def __init__(self, *e, idx=None):
+        self.cname = self.__class__.__name__
+        self.lcname = self.cname.lower()
+        self.ccode = self.lcname[0]
+
         if len(e) == 0:
             self._elements = Otuple(Element() for _ in range(9))
         elif len(e) == 9:
@@ -26,8 +31,12 @@ class Box:
             )
 
         if idx is not None:
-            for e in self:
-                e.tags.add(f"{self.ccode}{idx}")
+            if self.ccode == 'r':
+                for e in self:
+                    e.row = idx
+            elif self.ccode == 'c':
+                for e in self:
+                    e.col = idx
 
     def has(self, val, inc_val=True, inc_marks=False):
         return set(
@@ -39,18 +48,6 @@ class Box:
     attrs_containing_val = attrs_containing_val
     single_attr_containing_val = val_restricted_to_single_attr
     elements_in_attr = elements_in_attr
-
-    @property
-    def cname(self):
-        return self.__class__.__name__
-
-    @property
-    def lcname(self):
-        return self.__class__.__name__.lower()
-
-    @property
-    def ccode(self):
-        return self.__class__.__name__[0].lower()
 
     def __getitem__(self, i):
         e = self._elements[i]
