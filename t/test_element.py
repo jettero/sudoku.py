@@ -50,3 +50,13 @@ def test_element_sort():
     assert f == g
     assert e != g
     assert e<f<=g
+
+def test_element_as_cell():
+    e = Element(4,5,6)
+    assert '|' in e.as_cell
+    assert '_' in e.as_cell
+    e.reset()
+    e.add_pencil_mark(4,5,6)
+    assert '4' in e.as_cell
+    assert '5' in e.as_cell
+    assert '6' in e.as_cell
