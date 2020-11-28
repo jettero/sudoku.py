@@ -72,18 +72,18 @@ class Element:
 
     def __eq__(self, other):
         if isinstance(other, Element):
-            other = other.short
-        return self.short == other
+            other = other.loc
+        return self.loc == other
 
     def __gt__(self, other):
         if isinstance(other, Element):
-            other = other.short
-        return self.short > other
+            other = other.loc
+        return self.loc > other
 
     def __ge__(self, other):
         if isinstance(other, Element):
-            other = other.short
-        return self.short >= other
+            other = other.loc
+        return self.loc >= other
 
     @property
     def loc(self):
