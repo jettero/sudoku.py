@@ -36,3 +36,17 @@ def test_value_things():
     for e in (gi,gs):
         assert e.value == 4
         assert e.loc == B
+
+def test_element_sort():
+    e = Element(4,5,6)
+    f = Element(7,8,9)
+    g = Element(1,8,9)
+
+    assert f>e
+    assert e<f
+    assert not f<e
+    assert not e>f
+    assert not (f<g or f>g)
+    assert f == g
+    assert e != g
+    assert e<f<=g
