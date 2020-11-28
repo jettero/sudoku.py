@@ -13,7 +13,6 @@ from .filt import acceptable_element_value
 
 FUCKED_UP_LINEAR_SCALING = 2
 CELL_WIDTH = 8
-VALID_TAG = PYTR(r"(?P<t>[bcr])(?P<n>[1-9])")
 FIG = Figlet(
     font="small", justify="center", width=CELL_WIDTH + FUCKED_UP_LINEAR_SCALING
 )
@@ -119,19 +118,11 @@ class Element:
     @property
     def tags(self):
         ret = list()
-        if self._box:
-            ret.append(f'b{self.box}')
-        if self._row:
-            ret.append(f'r{self.row}')
-        if self._col:
-            ret.append(f'r{self.col}')
+        for t in ('box', 'row', 'col'):
+            a = getattr(self, t)
+            if a:
+                ret.append(f'{t[0]}{a}')
         return ret
-
-    def _t2n(self, t=None):
-        for tag in self.tags:
-            if VALID_TAG.match(tag):
-                if VALID_TAG.groupdict.t == t:
-                    return int(VALID_TAG.groupdict.n)
 
     @property
     def as_cell(self):
