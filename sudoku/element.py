@@ -70,6 +70,11 @@ class Element:
             r.append(f"<{self.value}>")
         return "".join(r)
 
+    def __eq__(self, other):
+        if isinstance(other, Element):
+            other = other.short
+        return self.short == other
+
     def __gt__(self, other):
         if isinstance(other, Element):
             other = other.short
