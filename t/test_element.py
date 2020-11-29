@@ -76,3 +76,30 @@ def test_element_as_cell():
     assert '4' in e.as_cell
     assert '5' in e.as_cell
     assert '6' in e.as_cell
+
+def test_element_assignments():
+    e = Element()
+    e.given = 8
+
+    assert e.value == 8
+
+    f = Element()
+    f.value = e
+
+    assert f.value == e.value
+
+    e.reset()
+    f.reset()
+
+    assert e.value == 8
+    assert f.value is None
+
+    assert e.given is True
+    e.value = None
+    assert e.given is True
+    assert e.value is None
+
+    assert e.given is True
+    e.given = None
+    assert e.given is False
+    assert e.value is None
