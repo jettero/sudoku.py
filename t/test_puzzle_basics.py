@@ -3,8 +3,9 @@
 
 import re
 import pytest
-from sudoku import COLUMN_NUMBERS, ROW_NUMBERS
+from sudoku import COLUMN_NUMBERS, ROW_NUMBERS, Puzzle
 from sudoku.tools import PYTR
+from sudoku.element import CELL_WIDTH
 
 BN = (
     None,
@@ -100,3 +101,38 @@ def test_rows_have_things(p_45m):
 def test_silly_idx(empty_puzzle):
     with pytest.raises(IndexError):
         empty_puzzle.rows[0]
+    with pytest.raises(IndexError):
+        empty_puzzle[1] = 4
+
+def test_reset(empty_puzzle):
+    empty_puzzle[1,1].given = 5
+    empty_puzzle[1,2].value = 4
+    empty_puzzle[2,1].add_pencil_mark(6,7)
+    empty_puzzle[2,2].add_center_mark(8,9)
+
+    assert empty_puzzle[1,1].value == 5
+    assert empty_puzzle[1,2].value == 4
+
+    assert empty_puzzle[2,1].pencil == {6,7}
+    assert empty_puzzle[2,2].center == {8,9}
+
+    empty_puzzle.reset()
+
+    assert empty_puzzle[1,1].value == 5
+    assert empty_puzzle[1,2].value is None
+
+    assert empty_puzzle[2,1].pencil == set()
+    assert empty_puzzle[2,2].center == set()
+
+def test_rows(empty_puzzle):
+    p = Puzzle()
+    r1 = p[1]
+    r7 = p[7]
+    assert p[1].short == 'row 1'
+    assert p[7].short == 'row 7'
+
+def test_repr(empty_puzzle, p1, p2, p3):
+    for p in (empty_puzzle, p1, p2, p3):
+        for line in str(p).splitlines():
+            assert len(line) == CELL_WIDTH*9 + 2*9 + (9-1) + 2
+            # length of line is cell_width + two spaces + dividers between + two borders

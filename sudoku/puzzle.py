@@ -31,10 +31,11 @@ class Puzzle:
 
     def context(self, thing, **kw):
         try:
-            if thing in self._context:
-                return self._context[thing]
+            hash(thing)
         except TypeError:
             thing = id(thing)
+        if thing in self._context:
+            return self._context[thing]
         if thing not in self._context:
             for k, v in kw.items():
                 if v in (set, dict, tuple, list):

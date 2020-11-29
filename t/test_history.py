@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+from sudoku import Puzzle
 from sudoku.history import History, FrozenHistory
 
 def test_history():
@@ -20,3 +21,11 @@ def test_history():
     assert f['stoopid'] == ('[thing] stoopid',)
 
     assert str(f) == '[mang2] supz\n[thing] stoopid\n'
+
+def test_puzzle_history():
+    p = Puzzle()
+    p.describe_inference('description', 'namehere')
+
+    h = p.history
+
+    assert tuple(h) == ('[namehere] description',)
