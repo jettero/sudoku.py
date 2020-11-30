@@ -42,7 +42,7 @@ def test_binary_pairs_p_bp(p_bpm):
 
     log.debug("computed p_bpm:\n%s", p_bpm)
 
-    assert set(x.loc for x in p_bpm if x.center) == {(8,9,4), (8,9,5), (3,2,9), (9,7,9)}
+    assert set(x.loc[1:] for x in p_bpm if x.center) == {(9,4), (9,5), (2,9), (7,9)}
 
 def test_binary_pairs_p_bp(p_bpmt):
     while bp_main(p_bpmt):
@@ -50,4 +50,4 @@ def test_binary_pairs_p_bp(p_bpmt):
 
     log.debug("computed p_bpm (transposed):\n%s", p_bpmt)
 
-    assert set(x.loc for x in p_bpmt if x.center) == {(6,4,9), (6,5,9), (7,9,2), (9,9,7)}
+    assert set(x.loc[1:] for x in p_bpmt if x.center) == {(4,9), (5,9), (9,2), (9,7)}
