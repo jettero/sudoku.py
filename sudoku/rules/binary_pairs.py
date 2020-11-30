@@ -3,7 +3,6 @@
 
 from sudoku.rules import hookimpl
 from sudoku.tools import describe_elements, pairs_iter
-from sudoku.const import EV
 
 
 @hookimpl
@@ -63,7 +62,7 @@ def main(puzzle, opts=set()):
                         )
                         already.add(k)
                         for e in hvu:
-                            e.remove_pencil_mark(*EV)
+                            e.clear_pencil_marks()
                             e.add_center_mark(v1, v2)
                         memo.clear()
 
