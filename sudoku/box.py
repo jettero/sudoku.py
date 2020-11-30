@@ -59,7 +59,11 @@ class Box:
         self._elements[i].value = v
 
     def __iter__(self):
-        yield from (self[i] for i in BOX_NUMBERS)
+        for e in self._elements:
+            if isinstance(e, weakref.ref):
+                yield e()
+            else:
+                yield e
 
     def __repr__(self):
         e = " ".join(repr(e) for e in self)
