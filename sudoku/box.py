@@ -30,9 +30,7 @@ class Box:
                 f"A {self.__class__} must receive 0 elements or 9, nothing in between"
             )
 
-        # In Box, this makes no sense but child classes Row and Col need this
-        if idx is not None:
-            self.idx = idx
+        self.idx = idx
 
     def has(self, val, inc_val=True, inc_marks=False):
         return set(
@@ -68,7 +66,10 @@ class Box:
     @property
     def idx(self):
         return self[1].box
-    # this property has setters in Row and Col
+
+    @idx.setter
+    def idx(self, x):
+        pass
 
     @property
     def short(self):
