@@ -25,7 +25,7 @@ class Puzzle:
                 for c in C:
                     yield rows[r + 1][c + 1]
 
-        self.boxes = Otuple(Box(*box_elements(b)) for b in BOX_NUMBERS)
+        self.boxes = Otuple(Box(*box_elements(b), idx=b) for b in BOX_NUMBERS)
         self._history = History()
         self._context = dict()
 
