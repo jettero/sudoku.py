@@ -30,13 +30,9 @@ class Box:
                 f"A {self.__class__} must receive 0 elements or 9, nothing in between"
             )
 
+        # In Box, this makes no sense but child classes Row and Col need this
         if idx is not None:
-            if self.ccode == 'r':
-                for e in self:
-                    e.row = idx
-            elif self.ccode == 'c':
-                for e in self:
-                    e.col = idx
+            self.idx = idx
 
     def has(self, val, inc_val=True, inc_marks=False):
         return set(
@@ -70,17 +66,35 @@ class Box:
         return f"{self.cname}[{e}]"
 
     @property
+    def idx(self):
+        return self[1].box
+    # this property has setters in Row and Col
+
+    @property
     def short(self):
         n = self.lcname
-        return f"{n} {getattr(self[1], n)}"
+        return f"{self.lcname} {self.idx}"
 
 
 class Row(Box):
-    pass
+    @property
+    def idx(self):
+        return self[1].row
+
+    @idx.setter
+    def idx(self, i):
+        for e in self:
+            e.row = i
 
 
 class Col(Box):
-    pass
+    @property
+    def idx(self):
+        return self[1].col
 
+    @idx.setter
+    def idx(self, i):
+        for e in self:
+            e.col = i
 
 otuple.BOX_CLASS = Box
