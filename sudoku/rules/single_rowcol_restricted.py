@@ -35,12 +35,12 @@ def main(puzzle, opts=set()):
                             o2,
                         }
                         if broken: # pragma: no cover
-                            broken = f'{blessed_no}, {", ".join(broken)}'
+                            broken = tuple(sorted((blessed_no,) + tuple(broken)))
                             puzzle.describe_inference(
                                 f"this puzzle is broken, we have multiple blessed rows for {v} in {box.short}: {broken}",
                                 __name__,
                             )
-                            return
+                            return 0
                         has_no_v = set(e for e in box if not e.value)
                         can_be_v = set(
                             e for e in has_no_v if getattr(e, attr) == blessed_no

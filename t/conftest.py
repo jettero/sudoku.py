@@ -7,10 +7,12 @@ import logging
 import pytest
 import pstats
 import subprocess
+import itertools
 
 from sudoku import Puzzle, get_puzzles, ROW_NUMBERS, solve
 from sudoku.tools import PYTR
 from sudoku import __file__ as __sfile__
+from sudoku.solver import Karen
 
 log = logging.getLogger(__name__)
 
@@ -22,13 +24,24 @@ sdir = os.path.dirname(__sfile__)
 
 already_spammed = set()
 
-
 def spam(name, puzzle):
     if name not in already_spammed:
         log.debug("%s:\n%s", name, puzzle)
         already_spammed.add(name)
 
 PUZZLES = tuple(get_puzzles())
+RULES = dict( (n.split('.')[-1],m.main) for n,m in Karen().list_name_plugin() )
+RULE2 = tuple( f'{first}|{second}' for first,second in itertools.combinations(RULES, 2) )
+
+@pytest.fixture(scope='function', params=tuple(f'p{i}' for i in range(len(PUZZLES))))
+def any_p(request):
+    p = PUZZLES[int(request.param[1:])]
+    return p
+
+@pytest.fixture(scope='session', params=tuple(RULE2))
+def any_2rule(request):
+    r1,r2 = request.param.split('|')
+    return (RULES[r1], RULES[r2])
 
 @pytest.fixture(scope="function")
 def puzzles():
@@ -70,10 +83,6 @@ def _provide_each_puzzle_as_a_fixture():
         globals()[name] = pytest.fixture(scope='function')(_wrap_in_bound_scope(p, name))
 
 _provide_each_puzzle_as_a_fixture()
-
-@pytest.fixture(scope='function', params=PUZZLES)
-def any_p(request):
-    return request.param
 
 @pytest.fixture(scope="function")
 def p_45m(p_45):

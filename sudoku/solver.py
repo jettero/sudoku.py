@@ -77,26 +77,33 @@ class RulesManager(pluggy.PluginManager):
         self.step_count = 0
 
     def step(self, puzzle):
-        if self.step_count > 0:
-            puzzle.describe_inference(f"step {self.step_count}", __name__)
-        ret = sum(self.hook.main(puzzle=puzzle, opts=self.opts))
-        chk = puzzle.check()
-        if not chk: # pragma: no cover ; no need to check this, we check check() elsewhere
-            puzzle.describe_inference('puzzle broke:', __name__)
-            for item in chk:
-                puzzle.describe_inference(f'[!]  {item}', __name__)
-            return 0
-        return ret
+        # this doesn't give me pre/post functions for each hook
+        # in any way I can actually figure out:
+        #
+        # ret = sum(self.hook.main(puzzle=puzzle, opts=self.opts))
+        #
+        # So, ima just do it myself:
+
+        dc = 0
+        for name,hook in self.list_name_plugin():
+            try:
+                dc += hook(puzzle=puzzle, opts=self.opts)
+            except Exception as e:
+                puzzle.describe_inference(f'{name} seems broken: {e}', __name__)
+                continue
+            chk = puzzle.check()
+            if not chk: # pragma: no cover ; no need to check this, we check check() elsewhere
+                puzzle.describe_inference(f'puzzle broke during {name}:', __name__)
+                for item in chk:
+                    puzzle.describe_inference(f'[!]  {item}', __name__)
+                return 0
+        return dc
 
     def solve(self, puzzle):
         puzzle = puzzle.clone()
 
-        self.step_count = 1
-        while self.step(puzzle):
-            self.step_count += 1
-
-        puzzle.describe_inference("FIN", __name__)
-        self.step_count = 0
+        while self.step(puzzle) > 0:
+            pass
 
         return puzzle
 
