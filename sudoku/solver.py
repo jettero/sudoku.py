@@ -87,7 +87,7 @@ class RulesManager(pluggy.PluginManager):
         dc = 0
         for name,hook in self.list_name_plugin():
             try:
-                dc += hook(puzzle=puzzle, opts=self.opts)
+                dc += hook.main(puzzle=puzzle, opts=self.opts)
             except Exception as e:
                 puzzle.describe_inference(f'{name} seems broken: {e}', __name__)
                 continue
