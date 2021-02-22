@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import os
+import re
 import logging
 import pkgutil
 import importlib
@@ -13,8 +14,9 @@ log = logging.getLogger(__name__)
 
 NAMESPACES = ("sudoku.rules",)
 INSTALLED_DIR = os.path.dirname(__file__)
-KNOWN_OPTS = { 'human', 'test' }
+KNOWN_OPTS = {"human", "test"}
 # we don't actually use opts for anything (yet?)
+
 
 def _process_opts(opts):
     if isinstance(opts, str):
@@ -33,6 +35,8 @@ def process_opts(opts):
 class RulesManager(pluggy.PluginManager):
     _local_modules = set()
 
+    accept_filter = reject_filter = None
+
     @property
     def local_modules(self):
         yield from self._load_local_modules()
@@ -47,15 +51,26 @@ class RulesManager(pluggy.PluginManager):
             log.debug("loading %s.* from %s", namespace, plugin_path)
             for item in pkgutil.iter_modules([plugin_path], f"{namespace}."):
                 if item.name == __name__:
-                    continue # pragma: no cover ; too rare to bother with
+                    continue  # pragma: no cover ; too rare to bother with
                 log.debug("loading %s", item.name)
                 m = importlib.import_module(item.name)
                 cls._local_modules.add(m)
 
         return cls._local_modules
 
-    def __init__(self, opts=None):
+    def __init__(
+        self,
+        opts=None,
+        accept_filter=os.environ.get("SUDOKU_RAFILTER", None),
+        reject_filter=os.environ.get("SUDOKU_RRFILTER", None),
+    ):
         super().__init__("sudoku")
+
+        if accept_filter:
+            self.accept_filter = re.compile(accept_filter)
+
+        if reject_filter:
+            self.reject_filter = re.compile(reject_filter)
 
         self.opts = process_opts(opts)
         if not self.opts:
@@ -65,6 +80,20 @@ class RulesManager(pluggy.PluginManager):
 
         self.add_hookspecs(sudoku.rules)
         for m in self.local_modules:
+            if self.reject_filter and self.reject_filter.search(m.__name__):
+                log.debug(
+                    "rejecting %s since it matched the curent reject_filter=%s",
+                    m.__name__,
+                    self.reject_filter.pattern,
+                )
+                continue
+            if self.accept_filter and not self.accept_filter.search(m.__name__):
+                log.debug(
+                    "rejecting %s since it did not match the curent accept_filter=%s",
+                    m.__name__,
+                    self.accept_filter.pattern,
+                )
+                continue
             log.debug("registering %s", m)
             self.register(m)
             log.debug("registered %s", m)
@@ -85,17 +114,19 @@ class RulesManager(pluggy.PluginManager):
         # So, ima just do it myself:
 
         dc = 0
-        for name,hook in self.list_name_plugin():
+        for name, hook in self.list_name_plugin():
             try:
                 dc += hook.main(puzzle=puzzle, opts=self.opts)
             except Exception as e:
-                puzzle.describe_inference(f'{name} seems broken: {e}', __name__)
+                puzzle.describe_inference(f"{name} seems broken: {e}", __name__)
                 continue
             chk = puzzle.check()
-            if not chk: # pragma: no cover ; no need to check this, we check check() elsewhere
-                puzzle.describe_inference(f'puzzle broke during {name}:', __name__)
+            if (
+                not chk
+            ):  # pragma: no cover ; no need to check this, we check check() elsewhere
+                puzzle.describe_inference(f"puzzle broke during {name}:", __name__)
                 for item in chk:
-                    puzzle.describe_inference(f'[!]  {item}', __name__)
+                    puzzle.describe_inference(f"[!]  {item}", __name__)
                 return 0
         return dc
 
