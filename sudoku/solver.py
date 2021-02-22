@@ -142,16 +142,29 @@ class RulesManager(pluggy.PluginManager):
 _manager = None
 
 
-def get_manager(opts=None):
+def get_manager(
+    opts=None,
+    accept_filter=os.environ.get("SUDOKU_RAFILTER", None),
+    reject_filter=os.environ.get("SUDOKU_RRFILTER", None),
+):
     global _manager
     if _manager is None:
-        _manager = RulesManager(opts=opts)
+        _manager = RulesManager(
+            opts=opts, accept_filter=accept_filter, reject_filter=reject_filter
+        )
     return _manager
 
 
 Solver = Karen = get_manager
 
 
-def solve(puzzle, opts=None):
+def solve(
+    puzzle,
+    opts=None,
+    accept_filter=os.environ.get("SUDOKU_RAFILTER", None),
+    reject_filter=os.environ.get("SUDOKU_RRFILTER", None),
+):
     """ instantiate a Solver and solve the given puzzle """
-    return Karen(opts=opts).solve(puzzle=puzzle)
+    return Karen(
+        opts=opts, accept_filter=accept_filter, reject_filter=reject_filter
+    ).solve(puzzle=puzzle)
