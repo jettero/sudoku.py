@@ -11,6 +11,8 @@ from .history import History
 
 
 class Puzzle:
+    broken = False
+
     def __init__(self):
         self.rows = rows = Otuple(Row(idx=r) for r in ROW_NUMBERS)
         self.cols = Otuple(Col(*(r[c] for r in rows), idx=c) for c in COLUMN_NUMBERS)
@@ -143,4 +145,5 @@ class Puzzle:
             for v, c in sorted(grouping.items()):
                 if c > 1:
                     bad.append(f"{gname} contains {c} '{v}'s")
+                    self.broken = True
         return bad
