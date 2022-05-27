@@ -121,11 +121,13 @@ class RulesManager(pluggy.PluginManager):
                 puzzle.describe_inference(f"{name} seems broken: {e}", __name__)
                 puzzle.broken = True
                 continue
-            cres = puzzle.check()
-            if not cres:
+            if puzzle.broken:
+                break
+            elif not (cres := puzzle.check()):
                 puzzle.describe_inference(f"puzzle broke during {name}:", __name__)
                 for item in cres:
                     puzzle.describe_inference(f"[!]  {item}", __name__)
+                break
         return dc
 
     def solve(self, puzzle):
