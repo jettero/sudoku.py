@@ -87,6 +87,10 @@ class PYTR:
 
 
 def one_and_the_others_iter(s):
+    """
+        In [35]: list(one_and_the_others_iter([1,2,3]))
+        Out[35]: [(1, [2, 3]), (2, [1, 3]), (3, [1, 2])]
+    """
     for i, x in enumerate(s):
         yield (x, s[:i] + s[i + 1 :])
 
