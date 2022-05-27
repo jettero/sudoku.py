@@ -22,6 +22,7 @@ def main(puzzle, opts=set()):
                 puzzle.describe_inference(
                     f"this puzzle is broken, we need {e} to be {v} + {ov}", __name__
                 )
+                puzzle.broken = True
                 return
             puzzle.describe_inference(f"{e} must be {v} by uniqueness", __name__)
             e.value = v

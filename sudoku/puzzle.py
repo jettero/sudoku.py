@@ -139,11 +139,12 @@ class Puzzle:
         class WeirdList(list):
             def __bool__(self):
                 return len(self) == 0
-        bad = WeirdList()
+        res = WeirdList()
         cv = self.count_values()
         for gname, grouping in sorted(cv.items()):
             for v, c in sorted(grouping.items()):
                 if c > 1:
-                    bad.append(f"{gname} contains {c} '{v}'s")
-                    self.broken = True
-        return bad
+                    res.append(f"{gname} contains {c} '{v}'s")
+        if not res:
+            self.broken = True
+        return res

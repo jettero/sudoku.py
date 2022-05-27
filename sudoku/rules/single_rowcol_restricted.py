@@ -40,6 +40,7 @@ def main(puzzle, opts=set()):
                                 f"this puzzle is broken, we have multiple blessed rows for {v} in {box.short}: {broken}",
                                 __name__,
                             )
+                            puzzle.broken = True
                             return 0
                         has_no_v = set(e for e in box if not e.value)
                         can_be_v = set(

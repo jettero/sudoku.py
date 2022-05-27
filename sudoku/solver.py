@@ -119,22 +119,21 @@ class RulesManager(pluggy.PluginManager):
                 dc += hook.main(puzzle=puzzle, opts=self.opts)
             except Exception as e:
                 puzzle.describe_inference(f"{name} seems broken: {e}", __name__)
+                puzzle.broken = True
                 continue
-            chk = puzzle.check()
-            if (
-                not chk
-            ):  # pragma: no cover ; no need to check this, we check check() elsewhere
+            cres = puzzle.check()
+            if not cres:
                 puzzle.describe_inference(f"puzzle broke during {name}:", __name__)
-                for item in chk:
+                for item in cres:
                     puzzle.describe_inference(f"[!]  {item}", __name__)
-                return 0
         return dc
 
     def solve(self, puzzle):
         puzzle = puzzle.clone()
 
         while self.step(puzzle) > 0:
-            pass
+            if puzzle.broken:
+                break
 
         return puzzle
 
