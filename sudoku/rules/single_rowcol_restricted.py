@@ -37,7 +37,7 @@ def main(puzzle, opts=set()):
                         if broken: # pragma: no cover
                             broken = tuple(sorted((blessed_no,) + tuple(broken)))
                             puzzle.describe_inference(
-                                f"this puzzle is broken, we have multiple blessed rows for {v} in {box.short}: {broken}",
+                                f"this puzzle is broken, we have multiple blessed {attr}s for {v} in {box.short}: {broken}",
                                 __name__,
                             )
                             puzzle.broken = True
