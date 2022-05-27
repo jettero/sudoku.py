@@ -29,26 +29,26 @@ def test_elements_of_box_4_in_col2(box4):
 
 # element_has_val()
 def test_elements_in_box4_having_5(box4):
-    res = box4.has(5, inc_val=False, inc_marks=False)
+    res = box4.has(5, inc_val=False)
     assert len(res) == 0
 
-    res = box4.has(5, inc_val=False, inc_marks=True)
+    res = box4.has(5, inc_val=False, inc_pencil=True)
     assert len(res) == 2
 
-    res = box4.has(5, inc_val=True, inc_marks=False)
+    res = box4.has(5, inc_val=False)
     assert len(res) == 0
 
-    res = box4.has(5, inc_val=True, inc_marks=True)
+    res = box4.has(5, inc_val=True, inc_pencil=True)
     assert len(res) == 2
 
 
 # attrs_containing_val()
 def test_columns_in_box4_with_5(box4):
-    res = box4.attrs_containing_val(5, attr="col")
+    res = box4.attrs_containing_val(5, attr="col", inc_pencil=True)
     assert res == {1, 3}
 
 
 # val_restricted_to_single_attr()
 def test_columns_in_box4_with_4(box4):
-    res = box4.single_attr_containing_val(4, attr="col")
+    res = box4.single_attr_containing_val(4, attr="col", inc_pencil=True)
     assert res == 2

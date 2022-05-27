@@ -32,11 +32,11 @@ class Box:
 
         self.idx = idx
 
-    def has(self, val, inc_val=True, inc_marks=False):
+    def has(self, val, inc_val=True, inc_pencil=False, inc_center=False):
         return set(
             x
             for x in self
-            if element_has_val(x, val, inc_val=inc_val, inc_marks=inc_marks)
+            if element_has_val(x, val, inc_val=inc_val, inc_pencil=inc_pencil, inc_center=inc_center)
         )
 
     attrs_containing_val = attrs_containing_val

@@ -100,11 +100,11 @@ class Puzzle:
         dat = [[x.as_cell for x in row] for row in self.rows]
         return tabulate(dat, tablefmt=sudoku_table_format, stralign=None)
 
-    def has(self, val, inc_val=True, inc_marks=False):
+    def has(self, val, inc_val=True, inc_pencil=False, inc_center=False):
         return set(
             x
             for x in self
-            if element_has_val(x, val, inc_val=inc_val, inc_marks=inc_marks)
+            if element_has_val(x, val, inc_val=inc_val, inc_pencil=inc_pencil, inc_center=inc_center)
         )
 
     @property

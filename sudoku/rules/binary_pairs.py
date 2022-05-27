@@ -38,12 +38,12 @@ def main(puzzle, opts=set()):
 
     memo = dict()
 
-    def memoized_fetch(v, box, inc_marks=True, inc_val=False):
-        k = (v, box, inc_marks, inc_val)
+    def memoized_fetch(v, box, inc_pencil=True, inc_center=False, inc_val=False):
+        k = (v, box, inc_pencil, inc_center, inc_val)
         try:
             return memo[k]
         except KeyError:
-            memo[k] = hv = box.has(v, inc_marks=inc_marks, inc_val=inc_val)
+            memo[k] = hv = box.has(v, inc_pencil=inc_pencil, inc_center=inc_center, inc_val=inc_val)
         return hv
 
     for v1, v2 in pairs_iter():
