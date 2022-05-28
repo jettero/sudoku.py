@@ -26,10 +26,10 @@ class Abstraction:
             return False
         return True
 
-    def elements_in_r1(self, elements):
+    def r1s_with_elements_in(self, elements):
         return set(getattr(e, self.r1) for e in elements)
 
-    def elements_in_r2(self, elements):
+    def r2s_with_elements_in(self, elements):
         return set(getattr(e, self.r2) for e in elements)
 
     def groupings(self, puzzle):
@@ -57,8 +57,8 @@ def main(puzzle, opts=set()):
     for abstraction in ABSTRACTIONS:
         for v in EV:
             e_with_v = puzzle.has(v)
-            rows_with_v = abstraction.elements_in_r1(e_with_v)
-            cols_with_v = abstraction.elements_in_r2(e_with_v)
+            rows_with_v = abstraction.r1s_with_elements_in(e_with_v)
+            cols_with_v = abstraction.r2s_with_elements_in(e_with_v)
             for box in abstraction.groupings(puzzle):
                 if box.has(v):
                     continue
