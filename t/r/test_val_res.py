@@ -29,7 +29,7 @@ def test_value_restrictions(p1):
     while vr_main(p1, {}):
         pass
 
-    pm = p1.has(3, inc_val=False, inc_marks=True)
+    pm = p1.has(3, inc_val=False, inc_pencil=True)
     assert len(pm) == 6
 
     pm = tuple(has_pencil_mark(3, p1))
