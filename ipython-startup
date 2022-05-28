@@ -35,3 +35,7 @@ p_bp = A['p_bp']
 p9 = P[9]
 q9 = solve(p9)
 q9.check()
+
+p7 = P[7]
+q7 = solve(p7)
+q7.check()
