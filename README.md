@@ -16,7 +16,7 @@ shell.
 
 ## rules ideas
 I'm not really happy with the current ruleset or especially the way the markings
-are computed and used in them.  I have a new system in mind for that. 
+are computed and used in those rules.  I have a new system in mind for that. 
 
 ## generation ideas
 I'd also like to try my hand at puzzle generation. If I can get the solver to do
