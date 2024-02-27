@@ -39,3 +39,7 @@ q9.check()
 p7 = P[7]
 q7 = solve(p7)
 q7.check()
+
+p5 = P[5]
+q5 = solve(p5)
+q5.check()
