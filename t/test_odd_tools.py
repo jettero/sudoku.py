@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from sudoku.tools import one_and_the_others_iter, pos_iter, pairs_iter
+from sudoku.tools import one_and_the_others_iter, pos_iter, pairs_iter, describe_elements
 
 
 def test_one_and_the_others_iter():
@@ -22,3 +22,10 @@ def test_pairs_iter():
         for j in range(1,10,1):
             if i < j:
                 assert (i,j) in all_pairs
+
+def test_describe(p_45):
+    de = describe_elements(p_45.has(4))
+    assert "b2r3c4" in de
+    assert "b3r1c7" in de
+    assert "b4r5c2" in de
+    assert "b5r4c6" in de

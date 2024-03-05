@@ -12,7 +12,7 @@ except ModuleNotFoundError:
 log = logging.getLogger(__name__)
 
 
-@pytest.mark.skipif(u_main is False, reason="uniqueness rules module required (but missing)")
+@pytest.mark.skipif(u_main is False, reason="uniqueness rules module required, but missing")
 def test_binary_pairs(p_1t9m4):
     u_main(p_1t9m4)
     log.debug("computed p_1t9m4:\n%s", p_1t9m4)
