@@ -12,7 +12,10 @@ import itertools
 from sudoku import Puzzle, get_puzzles, ROW_NUMBERS, solve
 from sudoku.tools import PYTR
 from sudoku import __file__ as __sfile__
-from sudoku.solver import Karen
+import sudoku.solver
+
+sudoku.solver.NAMESPACES.append('t.rules')
+sudoku.solver.INSTALLED_DIR.append(os.path.dirname(__file__))
 
 log = logging.getLogger(__name__)
 
@@ -30,7 +33,7 @@ def spam(name, puzzle):
         already_spammed.add(name)
 
 PUZZLES = tuple(get_puzzles())
-RULES = dict( (n.split('.')[-1],m.main) for n,m in Karen().list_name_plugin() )
+RULES = dict( (n.split('.')[-1],m.main) for n,m in sudoku.solver.Karen().list_name_plugin() )
 RULE2 = tuple( f'{first}|{second}' for first,second in itertools.combinations(RULES, 2) )
 
 @pytest.fixture(scope='function', params=tuple(f'p{i}' for i in range(len(PUZZLES))))

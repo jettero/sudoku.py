@@ -12,8 +12,8 @@ import sudoku.rules
 
 log = logging.getLogger(__name__)
 
-NAMESPACES = ("sudoku.rules",)
-INSTALLED_DIR = os.path.dirname(__file__)
+NAMESPACES = ["sudoku.rules"]
+INSTALLED_DIR = [os.path.dirname(__file__)]
 KNOWN_OPTS = {"human", "test"}
 # we don't actually use opts for anything (yet?)
 
@@ -46,8 +46,8 @@ class RulesManager(pluggy.PluginManager):
         if cls._loaded:
             return cls._local_modules
 
-        for namespace in NAMESPACES:
-            plugin_path = os.path.join(INSTALLED_DIR, *namespace.split(".")[1:])
+        for namespace,base_dir in zip(NAMESPACES, INSTALLED_DIR):
+            plugin_path = os.path.join(base_dir, *namespace.split(".")[1:])
             log.debug("loading %s.* from %s", namespace, plugin_path)
             for item in pkgutil.iter_modules([plugin_path], f"{namespace}."):
                 if item.name == __name__:
@@ -99,6 +99,7 @@ class RulesManager(pluggy.PluginManager):
             self.register(m)
             log.debug("registered %s", m)
 
+        # XXX: we shuld really auto-discover plugins… that's the point of pluggy…
         # log.debug("loading setuptools 'sudoku_plugins' entrypoints")
         # self.load_setuptools_entrypoints("sudoku_plugins")
 
