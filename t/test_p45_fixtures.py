@@ -7,3 +7,7 @@ def test_things(p_45, p_45m):
 
     assert p_45 is not p_45m
     assert p_45m[1, 1].value is None
+
+def test_things(p_45m):
+    for e in p_45m:
+        assert len(e.pencil) + len(e.center) == len(e.marks)

@@ -43,3 +43,20 @@ q7.check()
 p5 = P[5]
 q5 = solve(p5)
 q5.check()
+
+p_45m = p_45.clone()
+
+p_45m[2, 1].add_center_mark(4, 5)
+p_45m[2, 3].add_center_mark(4, 5)
+p_45m
+p_45m[4, 1].add_pencil_mark(5)
+p_45m[4, 3].add_pencil_mark(5)
+p_45m
+p_45m[6, 8].add_pencil_mark(4)
+p_45m[6, 9].add_pencil_mark(4)
+p_45m
+p_45m[7, 5].add_pencil_mark(4)
+p_45m[8, 5].add_pencil_mark(4)
+p_45m[9, 5].add_pencil_mark(4)
+p_45m
+p_45m[7, 7].add_pencil_mark(5)
