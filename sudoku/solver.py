@@ -33,8 +33,8 @@ def process_opts(opts):
 
 
 class RulesManager(pluggy.PluginManager):
+    _loaded = False
     _local_modules = set()
-
     accept_filter = reject_filter = None
 
     @property
@@ -43,7 +43,7 @@ class RulesManager(pluggy.PluginManager):
 
     @classmethod
     def _load_local_modules(cls):
-        if cls._local_modules:
+        if cls._loaded:
             return cls._local_modules
 
         for namespace in NAMESPACES:
@@ -56,6 +56,7 @@ class RulesManager(pluggy.PluginManager):
                 m = importlib.import_module(item.name)
                 cls._local_modules.add(m)
 
+        cls._loaded = True
         return cls._local_modules
 
     def __init__(
