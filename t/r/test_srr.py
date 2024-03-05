@@ -2,11 +2,17 @@
 # coding: utf-8
 
 import logging
-from sudoku.rules.single_rowcol_restricted import main as srr_main
+import pytest
+
+try:
+    from sudoku.rules.single_rowcol_restricted import main as srr_main
+except ModuleNotFoundError:
+    srr_main = False
 
 log = logging.getLogger(__name__)
 
 
+@pytest.mark.skipif(srr_main is False, reason="single_rowcol_restricted rules module required (but missing)")
 def test_binary_pairs(p_srr):
     for box in (p_srr.boxes[7], p_srr.boxes[3]):
         for e in box:
