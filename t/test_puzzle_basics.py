@@ -6,6 +6,7 @@ import pytest
 from sudoku import COLUMN_NUMBERS, ROW_NUMBERS, Puzzle
 from sudoku.tools import PYTR
 from sudoku.element import CELL_WIDTH
+from sudoku.box import Box
 
 BN = (
     None,
@@ -142,3 +143,15 @@ def test_repr(empty_puzzle, p1, p2, p3):
         for line in str(p).splitlines():
             assert len(line) == CELL_WIDTH*9 + 2*9 + (9-1) + 2
             # length of line is cell_width + two spaces + dividers between + two borders
+
+def test_box_rows(p1):
+    br = list(p1.box_rows)
+    assert len(br) == 3 # three rows
+    assert len(br[0]) == 3 # three boxes per row
+    assert isinstance(br[0][0], Box)
+
+def test_box_cols(p1):
+    bc = list(p1.box_cols)
+    assert len(bc) == 3 # three columns
+    assert len(bc[0]) == 3 # thee boxes per column
+    assert isinstance(bc[0][0], Box)
