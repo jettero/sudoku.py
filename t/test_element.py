@@ -103,3 +103,29 @@ def test_element_assignments():
     e.given = None
     assert e.given is False
     assert e.value is None
+
+def test_add_remove_marks():
+    e = Element()
+    assert e.marks == set()
+
+    e.add_pencil_mark(1)
+    assert e.marks == {1,}
+    e.remove_pencil_mark(1)
+    assert e.marks == set()
+
+    e.add_center_mark(1)
+    assert e.marks == {1,}
+    e.remove_center_mark(1)
+    assert e.marks == set()
+
+    e.add_center_mark(1)
+    e.add_pencil_mark(1)
+    assert e.marks == {1,}
+    e.remove_marks(1)
+    assert e.marks == set()
+
+    e.add_center_mark(1)
+    e.add_pencil_mark(1)
+    assert e.marks == {1,}
+    e.clear_marks()
+    assert e.marks == set()
