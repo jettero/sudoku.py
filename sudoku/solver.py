@@ -125,9 +125,7 @@ class RulesManager(pluggy.PluginManager):
             try:
                 dc += hook.main(puzzle=puzzle, opts=self.opts)
             except Exception as e:
-                puzzle.describe_inference(f"{name} seems broken: {e}", __name__)
-                puzzle.broken = True
-                continue
+                puzzle.describe_inference(f"rules module {__name__} seems broken: {e}", __name__)
             if puzzle.broken:
                 break
             elif not (cres := puzzle.check()):
