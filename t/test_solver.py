@@ -32,5 +32,20 @@ def test_solver_doesnt_ruin_any_puzzle(any_p):
             log.error("  %s", item)
     assert ok
 
-def test_solvers_load_the_same_thing():
+def test_solvers_load_the_same_local_modules():
     assert set(Karen().local_modules) == set(Karen().local_modules)
+
+def LPN(*a, **kw): # list plugin names
+    return set(x[0] for x in Karen(*a, **kw).list_name_plugin() if x[1] is not None)
+
+def test_solvers_reject_filters_work():
+    lpn_0 = LPN()
+    lpn_a = LPN(accept_filter='nop')
+    lpn_r = LPN(reject_filter='nop')
+
+    assert lpn_0 != lpn_a
+    assert lpn_0 != lpn_r
+    assert lpn_a != lpn_r
+    assert len(lpn_a) == 1
+    assert 't.rules.nop' in lpn_a
+    assert 't.rules.nop' not in lpn_r

@@ -6,6 +6,7 @@ import re
 import logging
 import pkgutil
 import importlib
+import collections
 
 import pluggy
 import sudoku.rules
@@ -33,7 +34,7 @@ def process_opts(opts):
 
 
 class RulesManager(pluggy.PluginManager):
-    _loaded = False
+    _loaded = collections.defaultdict(lambda: False)
     _local_modules = set()
     accept_filter = reject_filter = None
 
@@ -67,10 +68,10 @@ class RulesManager(pluggy.PluginManager):
     ):
         super().__init__("sudoku")
 
-        if accept_filter:
+        if accept_filter is not None:
             self.accept_filter = re.compile(accept_filter)
 
-        if reject_filter:
+        if reject_filter is not None:
             self.reject_filter = re.compile(reject_filter)
 
         self.opts = process_opts(opts)
@@ -81,21 +82,25 @@ class RulesManager(pluggy.PluginManager):
 
         self.add_hookspecs(sudoku.rules)
         for m in self.local_modules:
-            if self.reject_filter and self.reject_filter.search(m.__name__):
+            m_name = self.get_canonical_name(m)
+            if self.reject_filter is not None and self.reject_filter.search(m_name):
                 log.debug(
                     "rejecting %s since it matched the curent reject_filter=%s",
-                    m.__name__,
+                    m_name,
                     self.reject_filter.pattern,
                 )
+                self.set_blocked(m_name)
                 continue
-            if self.accept_filter and not self.accept_filter.search(m.__name__):
+            if self.accept_filter is not None and not self.accept_filter.search(m_name):
                 log.debug(
                     "rejecting %s since it did not match the curent accept_filter=%s",
-                    m.__name__,
+                    m_name,
                     self.accept_filter.pattern,
                 )
+                self.set_blocked(m_name)
                 continue
             log.debug("registering %s", m)
+            self.unblock(m_name)
             self.register(m)
             log.debug("registered %s", m)
 
@@ -150,12 +155,7 @@ def get_manager(
     accept_filter=os.environ.get("SUDOKU_RAFILTER", None),
     reject_filter=os.environ.get("SUDOKU_RRFILTER", None),
 ):
-    global _manager
-    if _manager is None:
-        _manager = RulesManager(
-            opts=opts, accept_filter=accept_filter, reject_filter=reject_filter
-        )
-    return _manager
+    return RulesManager(opts=opts, accept_filter=accept_filter, reject_filter=reject_filter)
 
 
 Solver = Karen = get_manager
