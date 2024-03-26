@@ -131,6 +131,18 @@ def test_reset(empty_puzzle):
     assert empty_puzzle[2,1].pencil == set()
     assert empty_puzzle[2,2].center == set()
 
+def test_pencil_setter(empty_puzzle):
+    empty_puzzle[2,1].add_pencil_mark(6,7)
+    assert empty_puzzle[2,1].pencil == {6,7}
+    empty_puzzle[2,1].set_pencil_marks(1,2)
+    assert empty_puzzle[2,1].pencil == {1,2}
+
+def test_center_setter(empty_puzzle):
+    empty_puzzle[2,1].add_center_mark(6,7)
+    assert empty_puzzle[2,1].center == {6,7}
+    empty_puzzle[2,1].set_center_marks(1,2)
+    assert empty_puzzle[2,1].center == {1,2}
+
 def test_rows(empty_puzzle):
     p = Puzzle()
     r1 = p[1]

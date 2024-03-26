@@ -224,6 +224,14 @@ class Element:
     def clear_center_marks(self):
         self._center.clear()
 
+    def set_pencil_marks(self, *m):
+        self.clear_pencil_marks()
+        self.add_pencil_marks(*m)
+
+    def set_center_marks(self, *m):
+        self.clear_center_marks()
+        self.add_center_marks(*m)
+
     def remove_mark(self, *m):
         self.remove_center_mark(*m)
         self.remove_pencil_mark(*m)
