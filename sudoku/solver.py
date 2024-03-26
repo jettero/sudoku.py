@@ -122,10 +122,12 @@ class RulesManager(pluggy.PluginManager):
 
         dc = 0
         for name, hook in self.list_name_plugin():
+            if hook is None:
+                continue
             try:
                 dc += hook.main(puzzle=puzzle, opts=self.opts)
             except Exception as e:
-                puzzle.describe_inference(f"rules module {__name__} seems broken: {e}", __name__)
+                puzzle.describe_inference(f"rules module {name} seems broken: {e}", __name__)
             if puzzle.broken:
                 break
             elif not (cres := puzzle.check()):

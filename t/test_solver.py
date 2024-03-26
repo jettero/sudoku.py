@@ -54,30 +54,32 @@ def test_solvers_reject_filters_work():
 def test_sometimes_solvers_break(p0):
     import t.rules.nop as tnop
 
-    s = Karen().solve(p0)
+    solver = Karen(accept_filter='nop')
+
+    s = solver.solve(p0)
     assert len(s.history) == 0
     assert s.broken is False
 
     tnop.RULE_BREAK = True
-    s = Karen().solve(p0)
+    s = solver.solve(p0)
     assert len(s.history['.*intentionally broken.*']) == 1
     assert s.broken is False
     tnop.RULE_BREAK = False
 
     tnop.STEPS = 1 # to test the if puzzle.broken: break
     tnop.PUZZLE_BREAK = True
-    s = Karen().solve(p0)
+    s = solver.solve(p0)
     assert len(s.history) == 0
     assert s.broken is True
     tnop.PUZZLE_BREAK = False
 
     tnop.PUZZLE_SUBTLE_BREAK = True
-    s = Karen().solve(p0)
+    s = solver.solve(p0)
     assert len(s.history['.*puzzle broke during t.rules.nop.*']) == 1
     assert s.broken is True
     tnop.PUZZLE_SUBTLE_BREAK = False
 
     tnop.STEPS = 1
-    s = Karen().solve(p0)
+    s = solver.solve(p0)
     assert len(s.history) == 0
     assert s.broken is False
