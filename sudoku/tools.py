@@ -150,9 +150,15 @@ def format_digits_in_row_cols(digits):
     d = tuple(str(x) for x in digits)
     l = len(digits)
 
+    if l == 1:
+        #   1
+        return (tuple(), (' ', ' ', *d))
+
+    if l == 2:
+        #  12
+        return (tuple(), (' ', *d))
+
     if l < 5:
-        # 1
-        # 12
         # 123
         # 1234
         return (tuple(), d,) # empty tuple, so single line is more centered
