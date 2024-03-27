@@ -130,3 +130,48 @@ def box_col_row(p, e):
     yield p.boxes[e.box]
     yield p.rows[e.row]
     yield p.cols[e.col]
+
+
+def split_tuple(input_tuple, chunk_size=3):
+    return tuple(input_tuple[i : i + chunk_size] for i in range(0, len(input_tuple), chunk_size))
+
+
+def format_digits_in_row_cols(digits):
+    """
+    meant for formatting center marks in the center of the cell when displaying the puzzle for humans
+
+    digits must be iterable, and must be the digits...
+
+    "".join(str(x) for x in digits) # <--- this has to work
+
+    returns a tuple of tuples
+    """
+
+    d = tuple(str(x) for x in digits)
+    l = len(digits)
+
+    if l < 5:
+        # 1
+        # 12
+        # 123
+        # 1234
+        return (tuple(), d,) # empty tuple, so single line is more centered
+
+    if l in (5, 6, 9):
+        # 123
+        # 45
+        #
+        # 123
+        # 456
+        #
+        # 123
+        # 456
+        # 789
+        return split_tuple(d, chunk_size=3)
+
+    # 1234
+    # 567
+    #
+    # 1234
+    # 5678
+    return split_tuple(d, chunk_size=4)

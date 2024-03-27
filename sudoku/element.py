@@ -3,7 +3,7 @@
 
 import re
 from pyfiglet import Figlet
-from .tools import PYTR, rc2b
+from .tools import PYTR, rc2b, format_digits_in_row_cols
 from .filt import acceptable_element_value
 
 # NOTE: CELL_WIDTH is pretty fiddly. To get the grid to work out, at
@@ -31,20 +31,6 @@ PENCIL_POS = (
     (4, 3),
     (4, 5),
 )
-
-CENTER_POS = (
-    None,
-    (1, 2),
-    (1, 3),
-    (1, 4),
-    (2, 2),
-    (2, 3),
-    (2, 4),
-    (3, 2),
-    (3, 3),
-    (3, 4),
-)
-
 
 class Element:
     _row = _col = _value = _given = None
@@ -153,9 +139,10 @@ class Element:
         for i in self._pencil:
             r, c = PENCIL_POS[i]
             blank[r][c] = f"{i}"
-        for i in self._center:
-            r, c = CENTER_POS[i]
-            blank[r][c] = f"{i}"
+        fd = format_digits_in_row_cols(self._center)
+        for r,tup in enumerate(fd):
+            for c,item in enumerate(tup):
+                blank[r+1][c+2] = item
         return "\n".join("".join(x) for x in blank)
 
     @property
