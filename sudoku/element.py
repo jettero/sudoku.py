@@ -36,8 +36,7 @@ class Element:
     _row = _col = _value = _given = None
 
     def __init__(self, value=None, row=None, col=None, given=False):
-        self._center = set()
-        self._pencil = set()
+        self._ = dict(center=set(), pencil=set())
         self.row = row
         self.col = col
         self.given = given
@@ -136,10 +135,10 @@ class Element:
 
             return "".join(pad())  # .replace(" ", ".")
         blank = [list(x) for x in BLANK.split("\n")[:-1]]
-        for i in self._pencil:
+        for i in self._['pencil']:
             r, c = PENCIL_POS[i]
             blank[r][c] = f"{i}"
-        fd = format_digits_in_row_cols(self._center)
+        fd = format_digits_in_row_cols(self._['center'])
         for r,tup in enumerate(fd):
             for c,item in enumerate(tup):
                 blank[r+1][c+2] = item
@@ -151,11 +150,11 @@ class Element:
 
     @property
     def center(self):
-        return set(self._center)
+        return set(self._['center'])
 
     @property
     def pencil(self):
-        return set(self._pencil)
+        return set(self._['pencil'])
 
     @property
     def marks(self):
@@ -186,30 +185,30 @@ class Element:
     def add_pencil_mark(self, *m):
         for a in m:
             a = acceptable_element_value(a)
-            self._pencil.add(a)
+            self._['pencil'].add(a)
 
     def remove_pencil_mark(self, *m):
         for a in m:
             a = acceptable_element_value(a)
-            if a in self._pencil:
-                self._pencil.remove(a)
+            if a in self._['pencil']:
+                self._['pencil'].remove(a)
 
     def clear_pencil_marks(self):
-        self._pencil.clear()
+        self._['pencil'].clear()
 
     def add_center_mark(self, *m):
         for a in m:
             a = acceptable_element_value(a)
-            self._center.add(a)
+            self._['center'].add(a)
 
     def remove_center_mark(self, *m):
         for a in m:
             a = acceptable_element_value(a)
-            if a in self._center:
-                self._center.remove(a)
+            if a in self._['center']:
+                self._['center'].remove(a)
 
     def clear_center_marks(self):
-        self._center.clear()
+        self._['center'].clear()
 
     def set_pencil_marks(self, *m):
         self.clear_pencil_marks()
