@@ -91,20 +91,20 @@ _provide_each_puzzle_as_a_fixture()
 def p_45m(p_45):
     p = p_45.clone()
 
-    p[2, 1].add_center_mark(4, 5)
-    p[2, 3].add_center_mark(4, 5)
+    p[2, 1].add_center_marks(4, 5)
+    p[2, 3].add_center_marks(4, 5)
 
-    p[4, 1].add_pencil_mark(5)
-    p[4, 3].add_pencil_mark(5)
+    p[4, 1].add_pencil_marks(5)
+    p[4, 3].add_pencil_marks(5)
 
-    p[6, 8].add_pencil_mark(4)
-    p[6, 9].add_pencil_mark(4)
+    p[6, 8].add_pencil_marks(4)
+    p[6, 9].add_pencil_marks(4)
 
-    p[7, 5].add_pencil_mark(4)
-    p[8, 5].add_pencil_mark(4)
-    p[9, 5].add_pencil_mark(4)
+    p[7, 5].add_pencil_marks(4)
+    p[8, 5].add_pencil_marks(4)
+    p[9, 5].add_pencil_marks(4)
 
-    p[7, 7].add_pencil_mark(5)
+    p[7, 7].add_pencil_marks(5)
 
     spam("p_45m", p)
 

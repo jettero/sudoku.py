@@ -114,8 +114,8 @@ def test_silly_idx(empty_puzzle):
 def test_reset(empty_puzzle):
     empty_puzzle[1,1].given = 5
     empty_puzzle[1,2].value = 4
-    empty_puzzle[2,1].add_pencil_mark(6,7)
-    empty_puzzle[2,2].add_center_mark(8,9)
+    empty_puzzle[2,1].add_pencil_marks(6,7)
+    empty_puzzle[2,2].add_center_marks(8,9)
 
     assert empty_puzzle[1,1].value == 5
     assert empty_puzzle[1,2].value == 4
@@ -132,13 +132,13 @@ def test_reset(empty_puzzle):
     assert empty_puzzle[2,2].center == set()
 
 def test_pencil_setter(empty_puzzle):
-    empty_puzzle[2,1].add_pencil_mark(6,7)
+    empty_puzzle[2,1].add_pencil_marks(6,7)
     assert empty_puzzle[2,1].pencil == {6,7}
     empty_puzzle[2,1].set_pencil_marks(1,2)
     assert empty_puzzle[2,1].pencil == {1,2}
 
 def test_center_setter(empty_puzzle):
-    empty_puzzle[2,1].add_center_mark(6,7)
+    empty_puzzle[2,1].add_center_marks(6,7)
     assert empty_puzzle[2,1].center == {6,7}
     empty_puzzle[2,1].set_center_marks(1,2)
     assert empty_puzzle[2,1].center == {1,2}

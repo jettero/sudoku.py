@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import re
+import types, inspect
 from pyfiglet import Figlet
 from .tools import PYTR, rc2b, format_digits_in_row_cols
 from .filt import acceptable_element_value
@@ -13,9 +14,7 @@ from .filt import acceptable_element_value
 
 FUCKED_UP_LINEAR_SCALING = 2
 CELL_WIDTH = 8
-FIG = Figlet(
-    font="small", justify="center", width=CELL_WIDTH + FUCKED_UP_LINEAR_SCALING
-)
+FIG = Figlet(font="small", justify="center", width=CELL_WIDTH + FUCKED_UP_LINEAR_SCALING)
 BLANK = re.sub(r"[^\n]", " ", FIG.renderText("X"))
 
 # rather than making an adaptive pencil mark layout; ... I just hardcoded it... lame
@@ -31,6 +30,7 @@ PENCIL_POS = (
     (4, 3),
     (4, 5),
 )
+
 
 class Element:
     _row = _col = _value = _given = None
@@ -72,7 +72,7 @@ class Element:
 
     def __hash__(self):
         r = 0
-        for i,x in zip((1,10,100), self.loc):
+        for i, x in zip((1, 10, 100), self.loc):
             if x:
                 r += i * x
         return r
@@ -115,10 +115,10 @@ class Element:
     @property
     def tags(self):
         ret = list()
-        for t in ('box', 'row', 'col'):
+        for t in ("box", "row", "col"):
             a = getattr(self, t)
             if a:
-                ret.append(f'{t[0]}{a}')
+                ret.append(f"{t[0]}{a}")
         return ret
 
     @property
@@ -135,13 +135,13 @@ class Element:
 
             return "".join(pad())  # .replace(" ", ".")
         blank = [list(x) for x in BLANK.split("\n")[:-1]]
-        for i in self._['pencil']:
+        for i in self._["pencil"]:
             r, c = PENCIL_POS[i]
             blank[r][c] = f"{i}"
-        fd = format_digits_in_row_cols(self._['center'])
-        for r,tup in enumerate(fd):
-            for c,item in enumerate(tup):
-                blank[r+1][c+2] = item
+        fd = format_digits_in_row_cols(self._["center"])
+        for r, tup in enumerate(fd):
+            for c, item in enumerate(tup):
+                blank[r + 1][c + 2] = item
         return "\n".join("".join(x) for x in blank)
 
     @property
@@ -150,11 +150,11 @@ class Element:
 
     @property
     def center(self):
-        return set(self._['center'])
+        return set(self._["center"])
 
     @property
     def pencil(self):
-        return set(self._['pencil'])
+        return set(self._["pencil"])
 
     @property
     def marks(self):
@@ -182,52 +182,54 @@ class Element:
             self._given = True
             self.value = int(v)
 
-    def add_pencil_mark(self, *m):
+    def add_xmarks(self, X, *m):
         for a in m:
             a = acceptable_element_value(a)
-            self._['pencil'].add(a)
+            self._[X].add(a)
 
-    def remove_pencil_mark(self, *m):
+    def set_xmarks(self, X, *m):
+        self.clear_xmarks(X)
+        self.add_xmarks(X, *m)
+
+    def remove_xmarks(self, X, *m):
         for a in m:
             a = acceptable_element_value(a)
-            if a in self._['pencil']:
-                self._['pencil'].remove(a)
+            if a in self._[X]:
+                self._[X].remove(a)
 
-    def clear_pencil_marks(self):
-        self._['pencil'].clear()
+    def clear_xmarks(self, X):
+        self._[X].clear()
 
-    def add_center_mark(self, *m):
-        for a in m:
-            a = acceptable_element_value(a)
-            self._['center'].add(a)
-
-    def remove_center_mark(self, *m):
-        for a in m:
-            a = acceptable_element_value(a)
-            if a in self._['center']:
-                self._['center'].remove(a)
-
-    def clear_center_marks(self):
-        self._['center'].clear()
+    def add_pencil_marks(self, *m):
+        self.add_xmarks("pencil", *m)
 
     def set_pencil_marks(self, *m):
-        self.clear_pencil_marks()
-        self.add_pencil_marks(*m)
+        self.set_xmarks("pencil", *m)
+
+    def remove_pencil_marks(self, *m):
+        self.remove_xmarks("pencil", *m)
+
+    def clear_pencil_marks(self):
+        self.clear_xmarks("pencil")
+
+    def add_center_marks(self, *m):
+        self.add_xmarks("center", *m)
 
     def set_center_marks(self, *m):
-        self.clear_center_marks()
-        self.add_center_marks(*m)
+        self.set_xmarks("center", *m)
 
-    def remove_mark(self, *m):
-        self.remove_center_mark(*m)
-        self.remove_pencil_mark(*m)
+    def remove_center_marks(self, *m):
+        self.remove_xmarks("center", *m)
+
+    def clear_center_marks(self):
+        self.clear_xmarks("center")
 
     def clear_marks(self):
-        self.clear_center_marks()
         self.clear_pencil_marks()
+        self.clear_center_marks()
 
-    remove_marks = remove_mark
-    add_center_marks = add_center_mark
-    remove_center_marks = remove_center_mark
-    add_pencil_marks = add_pencil_mark
-    remove_pencil_marks = remove_pencil_mark
+    def remove_marks(self, *m):
+        self.remove_pencil_marks(*m)
+        self.remove_center_marks(*m)
+
+

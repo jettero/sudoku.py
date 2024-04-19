@@ -60,19 +60,19 @@ def test_element_as_cell():
             assert len(line) == CELL_WIDTH
 
         e.reset()
-        e.add_pencil_mark(i)
+        e.add_pencil_marks(i)
         assert f'{i}' in e.as_cell
         for j in set(range(1,10)) - {i,}:
             assert f'{j}' not in e.as_cell
 
         e.reset()
-        e.add_center_mark(i)
+        e.add_center_marks(i)
         assert f'{i}' in e.as_cell
         for j in set(range(1,10)) - {i,}:
             assert f'{j}' not in e.as_cell
 
     e.reset()
-    e.add_pencil_mark(4,5,6)
+    e.add_pencil_marks(4,5,6)
     assert '4' in e.as_cell
     assert '5' in e.as_cell
     assert '6' in e.as_cell
@@ -108,24 +108,24 @@ def test_add_remove_marks():
     e = Element()
     assert e.marks == set()
 
-    e.add_pencil_mark(1)
+    e.add_pencil_marks(1)
     assert e.marks == {1,}
-    e.remove_pencil_mark(1)
+    e.remove_pencil_marks(1)
     assert e.marks == set()
 
-    e.add_center_mark(1)
+    e.add_center_marks(1)
     assert e.marks == {1,}
-    e.remove_center_mark(1)
+    e.remove_center_marks(1)
     assert e.marks == set()
 
-    e.add_center_mark(1)
-    e.add_pencil_mark(1)
+    e.add_center_marks(1)
+    e.add_pencil_marks(1)
     assert e.marks == {1,}
     e.remove_marks(1)
     assert e.marks == set()
 
-    e.add_center_mark(1)
-    e.add_pencil_mark(1)
+    e.add_center_marks(1)
+    e.add_pencil_marks(1)
     assert e.marks == {1,}
     e.clear_marks()
     assert e.marks == set()
