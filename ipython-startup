@@ -8,6 +8,7 @@ log = logging.getLogger('ipy')
 
 from glob import glob
 from sudoku import solve
+from sudoku.const import ELEMENT_VALUES as EV
 
 def reload_puzzles():
     global P, A

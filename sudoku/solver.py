@@ -137,8 +137,9 @@ class RulesManager(pluggy.PluginManager):
                 break
         return dc
 
-    def solve(self, puzzle):
-        puzzle = puzzle.clone()
+    def solve(self, puzzle, clone=True):
+        if clone:
+            puzzle = puzzle.clone()
 
         while self.step(puzzle) > 0:
             if puzzle.broken:
@@ -166,8 +167,9 @@ def solve(
     opts=None,
     accept_filter=os.environ.get("SUDOKU_RAFILTER", None),
     reject_filter=os.environ.get("SUDOKU_RRFILTER", None),
+    clone=True,
 ):
     """ instantiate a Solver and solve the given puzzle """
     return Karen(
         opts=opts, accept_filter=accept_filter, reject_filter=reject_filter
-    ).solve(puzzle=puzzle)
+    ).solve(puzzle=puzzle, clone=clone)

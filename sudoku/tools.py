@@ -127,9 +127,23 @@ def pairs_iter():
 
 
 def box_col_row(p, e):
+    """generate the box, col, and row for an element"""
     yield p.boxes[e.box]
     yield p.rows[e.row]
     yield p.cols[e.col]
+
+
+def elements_in_box_col_row(p, e):
+    """generate all elements from the box, col, and row of a given element
+    (but excluded the given element and cul duplicates)
+    """
+    ret = set()
+    for b in box_col_row(p, e):
+        for _e in b:
+            if _e is e:
+                continue
+            ret.add(_e)
+    yield from ret
 
 
 def split_tuple(input_tuple, chunk_size=3):
@@ -152,16 +166,19 @@ def format_digits_in_row_cols(digits):
 
     if l == 1:
         #   1
-        return (tuple(), (' ', ' ', *d))
+        return (tuple(), (" ", " ", *d))
 
     if l == 2:
         #  12
-        return (tuple(), (' ', *d))
+        return (tuple(), (" ", *d))
 
     if l < 5:
         # 123
         # 1234
-        return (tuple(), d,) # empty tuple, so single line is more centered
+        return (
+            tuple(),
+            d,
+        )  # empty tuple, so single line is more centered
 
     if l in (5, 6, 9):
         # 123
