@@ -119,6 +119,11 @@ class Element:
             a = getattr(self, t)
             if a:
                 ret.append(f"{t[0]}{a}")
+        for t in ("pencil", "center"):
+            a = getattr(self, t)
+            if a:
+                a = "".join(str(x) for x in sorted(a))
+                ret.append(f"|{t[0]}{a}")
         return ret
 
     @property
