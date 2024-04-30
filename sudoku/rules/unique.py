@@ -11,39 +11,41 @@ from sudoku.rules import hookimpl
 from sudoku.const import ELEMENT_VALUES as EV
 from sudoku.tools import elements_in_box_col_row
 
-SEV = set(EV)
-
 class RestartTop(Exception):
     pass
 
 @hookimpl
+def init(puzzle, opts=set()):
+    for e in puzzle:
+        if not e.value:
+            e.set_center_marks(*EV)
+
+@hookimpl
 def main(puzzle, opts=set()):
+    last_pass_dc = -1
     did_count = 0
 
-    while not puzzle.broken:
+    while not puzzle.broken and last_pass_dc != did_count:
+        last_pass_dc = did_count
         try:
-            for E in puzzle:
-                if E.value:
-                    for e in elements_in_box_col_row(puzzle, E):
-                        if e.value:
-                            continue
-                        if before := e.center:
-                            if E.value in before:
-                                e.remove_center_marks(E.value)
-                                did_count += 1
-                                after = e.center
-                                if len(after) == 1:
-                                    v, = after
-                                    e.value = v
-                                    puzzle.describe_inference(f"{e} must be {v} by uniqueness", __name__)
-                                    raise RestartTop() # restart the top loop with python's clumsy longjump
-                                elif len(after) < 1:
-                                    puzzle.broken = True
-                                    puzzle.describe_inference(f"this puzzle is broken, we need {e} is restricted to ∅", __name__)
-                                    return did_count # we're done here, the puzzle is nonsense now
-                        else:
-                            e.set_center_marks(*( v for v in EV if v != E.value ))
-                            did_count += 1
-            return did_count
+            for e in puzzle:
+                if e.value:
+                    continue
+                v_in_row_col_box = set(x.value for x in elements_in_box_col_row(puzzle, e) if x.value)
+                before = e.center
+                e.remove_center_marks(*v_in_row_col_box)
+                after = e.center
+                if after != before:
+                    did_count += 1
+                    if not after:
+                        puzzle.broken = True
+                        puzzle.describe_inference(f"this puzzle is broken. {e} can't be any value.", __name__)
+                    if len(after) == 1:
+                        v, = after
+                        e.value = v
+                        puzzle.describe_inference(f"{e} must be {v} by uniqueness", __name__)
+                        raise RestartTop() # restart the top loop with python's clumsy longjump
         except RestartTop:
             continue
+
+    return did_count

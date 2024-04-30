@@ -6,19 +6,19 @@ import pytest
 
 log = logging.getLogger(__name__)
 
-main81 = False
+main = False
 try:
-    from sudoku.rules.unique import main as main81
+    from sudoku.rules.unique import main, init
 except ModuleNotFoundError:
-    raise
     pass
 
-@pytest.mark.skipif(main81 is False, reason="unique rules module required, but missing")
+@pytest.mark.skipif(main is False, reason="unique rules module required, but missing")
 def test_test81(p7):
     with open("/tmp/wtf0.txt", 'w') as fh:
         fh.write(str(p7))
 
-    while main81(p7):
+    init(p7)
+    while main(p7):
         pass
 
     with open("/tmp/wtf1.txt", 'w') as fh:
@@ -31,8 +31,11 @@ def test_test81(p7):
     p7[2,6] = 5
     p7[8,6] = 8
 
-    while main81(p7):
+    while main(p7):
         pass
+
+    with open("/tmp/wtf2.txt", 'w') as fh:
+        fh.write(str(p7))
 
     assert p7.broken is True
     assert p7[6,6].center == set()
