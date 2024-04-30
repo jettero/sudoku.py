@@ -161,7 +161,7 @@ def format_digits_in_row_cols(digits):
     returns a tuple of tuples
     """
 
-    d = tuple(str(x) for x in digits)
+    d = tuple(str(x) for x in sorted(digits))
     l = len(digits)
 
     if l == 1:
