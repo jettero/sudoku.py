@@ -129,3 +129,11 @@ def test_add_remove_marks():
     assert e.marks == {1,}
     e.clear_marks()
     assert e.marks == set()
+
+def test_element_description(p7):
+    e = p7[2,6]
+
+    e.set_pencil_marks(2,6)
+    e.set_center_marks(3,7)
+
+    assert str(e) == "E(b2r2c6|p26|c37)"
