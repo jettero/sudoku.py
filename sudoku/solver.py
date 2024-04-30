@@ -113,12 +113,17 @@ class RulesManager(pluggy.PluginManager):
         self.step_count = 0
 
     def step(self, puzzle):
-        # this doesn't give me pre/post functions for each hook
-        # in any way I can actually figure out:
+        # We used to do this (how you're supposed to invoke pluggy hooks):
         #
-        # ret = sum(self.hook.main(puzzle=puzzle, opts=self.opts))
+        #     ret = sum(self.hook.main(puzzle=puzzle, opts=self.opts))
         #
-        # So, ima just do it myself:
+        # ... but pluggy doesn't seem provide any pre/post opportunities to
+        # check for puzzle breaks or anything useful like that. We instead
+        # iterate over the hooks and check puzzle.broken and puzzle.check() for
+        # each one.
+        #
+        # could maybe be done with add_hookcall_monitoring(), but this seems to
+        # be for debug tracing.
 
         dc = 0
         for name, hook in self.list_name_plugin():
