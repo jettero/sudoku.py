@@ -27,3 +27,12 @@ def test_test81(p7):
     assert p7[6,6].value is None
     assert p7[6,6].center == {5,8}
     assert p7.broken is False
+
+    p7[2,6] = 5
+    p7[8,6] = 8
+
+    while main81(p7):
+        pass
+
+    assert p7.broken is True
+    assert p7[6,6].center == set()
