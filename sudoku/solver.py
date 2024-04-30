@@ -141,6 +141,8 @@ class RulesManager(pluggy.PluginManager):
         if clone:
             puzzle = puzzle.clone()
 
+        self.hook.init(puzzle=puzzle, opts=self.opts)
+
         while self.step(puzzle) > 0:
             if puzzle.broken:
                 break
