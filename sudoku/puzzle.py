@@ -32,6 +32,25 @@ class Puzzle:
         self._context = dict()
 
     def context(self, thing, **kw):
+        """
+        Give some puzzle local storage.
+
+            def nombre():
+                X = puzzle.context(main, X=set)["X"]
+
+        This says, there should be some persistant storage called "X" that's
+        quasi-local to the nombre() function.
+
+        You could do sorta the same thing with something like this:
+
+            if not hasattr(puzzle, 'C'):
+                puzzle.C = dict()
+
+            k = (id(main), "X")
+            if k not in puzzle.C:
+                puzzle.C[k] = set()
+            X = puzzle.C[k]
+        """
         try:
             hash(thing)
         except TypeError:
