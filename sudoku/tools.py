@@ -114,17 +114,8 @@ def brc_iter():
                 yield (b + 1, r + 1, c + 1)
 
 
-def pairs_iter():
-    already = set()
-    for v1 in EV:
-        for v2 in EV:
-            if v1 == v2:
-                continue
-            op = tuple(sorted((v1, v2)))
-            if op not in already:
-                already.add(op)
-                yield op
-
+def pairs_iter(n=2):
+    yield from itertools.combinations(EV, n)
 
 def box_col_row(p, e):
     """generate the box, col, and row for an element"""
