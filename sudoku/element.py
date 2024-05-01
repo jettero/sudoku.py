@@ -47,10 +47,18 @@ class Element:
         if not self.given:
             self.value = None
 
-    def __repr__(self):
+    def __str__(self):
         r = ["E"]
         if self.tags:
             r.append(f"({self.short})")
+        if self.value:
+            r.append(f"<{self.value}>")
+        return "".join(r)
+
+    def __repr__(self):
+        r = ["E"]
+        if self.tags:
+            r.append(f"({self.long})")
         if self.value:
             r.append(f"<{self.value}>")
         return "".join(r)
@@ -86,6 +94,10 @@ class Element:
         return "".join(self.tags)
 
     @property
+    def long(self):
+        return "".join(self.ltags)
+
+    @property
     def box(self):
         return self._box
 
@@ -113,17 +125,22 @@ class Element:
     column = col
 
     @property
+    def ltags(self):
+        ret = self.tags
+        for t in ("pencil", "center"):
+            a = getattr(self, t)
+            if a:
+                a = "".join(str(x) for x in sorted(a))
+                ret.append(f"|{t[0]}{a}")
+        return ret
+
+    @property
     def tags(self):
         ret = list()
         for t in ("box", "row", "col"):
             a = getattr(self, t)
             if a:
                 ret.append(f"{t[0]}{a}")
-        for t in ("pencil", "center"):
-            a = getattr(self, t)
-            if a:
-                a = "".join(str(x) for x in sorted(a))
-                ret.append(f"|{t[0]}{a}")
         return ret
 
     @property
