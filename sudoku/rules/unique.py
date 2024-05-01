@@ -2,9 +2,7 @@
 # coding: utf-8
 """
 Go through all cells, if there's a .value, then remove that center mark from
-each cell in the col, row and box.  If a cells in the BCR already have a value,
-then we skip -- or set the broken condition if it's the same value as the given
-element.
+each cell in the col, row and box.
 """
 
 from sudoku.rules import hookimpl
