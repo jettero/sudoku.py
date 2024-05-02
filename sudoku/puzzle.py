@@ -12,10 +12,18 @@ from .history import History
 
 class Puzzle:
     broken = False
+    pid = 0
 
-    def __init__(self):
+    def __init__(self, pid=None):
         self.rows = rows = Otuple(Row(idx=r) for r in ROW_NUMBERS)
         self.cols = Otuple(Col(*(r[c] for r in rows), idx=c) for c in COLUMN_NUMBERS)
+
+        if pid is None:
+            self.pid = self.__class__.pid
+            self.__class__.pid += 1
+        else:
+            self.pid = pid
+        self.short = f'Puzzle({self.pid})'
 
         def box_elements(b):
             b -= 1
@@ -65,7 +73,7 @@ class Puzzle:
         return self._context[thing]
 
     def clone(self, transpose=False, copy_all=False, with_marks=False):
-        ret = self.__class__()
+        ret = self.__class__(pid=self.pid)
         for r in ROW_NUMBERS:
             for c in COLUMN_NUMBERS:
                 e = self[c,r] if transpose else self[r, c]

@@ -167,3 +167,12 @@ def test_box_cols(p1):
     assert len(bc) == 3 # three columns
     assert len(bc[0]) == 3 # thee boxes per column
     assert isinstance(bc[0][0], Box)
+
+def test_pids(p7):
+    q7 = p7.clone()
+
+    assert p7.pid == 7
+    assert q7.pid == p7.pid
+
+    assert p7.short == "Puzzle(7)"
+    assert q7.short == "Puzzle(7)"
