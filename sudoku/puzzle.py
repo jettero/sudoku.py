@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import logging
 from tabulate import tabulate
 from .tools import sudoku_table_format
 from .otuple import Otuple
@@ -9,6 +10,7 @@ from .box import Box, Row, Col
 from .filt import element_has_val
 from .history import History
 
+log = logging.getLogger(__name__)
 
 class Puzzle:
     broken = False
@@ -92,6 +94,7 @@ class Puzzle:
         self._history.clear()
 
     def describe_inference(self, desc, src):
+        log.debug("[%s].di( %s by %s )", self.short, desc, src)
         self._history.append(desc, src)
 
     @property
