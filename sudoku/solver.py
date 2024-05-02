@@ -146,7 +146,10 @@ class RulesManager(pluggy.PluginManager):
         if clone:
             puzzle = puzzle.clone()
 
-        self.hook.init(puzzle=puzzle, opts=self.opts)
+        sv = puzzle.context(solve, sv=set)["sv"]
+        if "init" not in sv:
+            self.hook.init(puzzle=puzzle, opts=self.opts)
+            sv.add('init')
 
         while self.step(puzzle) > 0:
             if puzzle.broken:
