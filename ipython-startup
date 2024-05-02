@@ -3,61 +3,33 @@
 
 import os
 import logging
-logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('ipy')
 
 from glob import glob
 from sudoku import solve
 from sudoku.const import ELEMENT_VALUES as EV
+from sudoku import get_puzzles
+
+log = logging.getLogger('ipy')
 
 def reload_puzzles():
-    global P, A
-    from sudoku import get_puzzles
-    P = list(get_puzzles())
-    A = dict()
+    global P, A, Q
+    P = list()
 
     for file in glob('t/asset/p*.txt'):
         bname = os.path.basename(file)[:-4]
-        puzzles = tuple(get_puzzles(file))
-        if len(puzzles) == 1:
-            puzzles, = puzzles
-        A[bname] = puzzles
+        P.extend(get_puzzles(file))
+
+    P.extend(get_puzzles()) # default is ./Puzzles.txt
+
+    for i,p in enumerate(P):
+        globals()[f'p{i}'] = p
+
+    Q = [ solve(p) for p in P ]
+
+    for i,q in enumerate(Q):
+        globals()[f'q{i}'] = q
+
+    log.debug("loaded %d puzzles in 'P' and 'p0' … 'pN'", len(P))
+    log.debug("loaded %d corresponding solutions in 'Q' and 'q0' … 'qN'", len(Q))
 
 reload_puzzles()
-fp = P[0]
-fq = solve(fp)
-
-lp = P[-1]
-lq = solve(lp)
-
-p_45 = A['p_45']
-p_bp = A['p_bp']
-
-p9 = P[9]
-q9 = solve(p9)
-q9.check()
-
-p7 = P[7]
-q7 = solve(p7)
-q7.check()
-
-p5 = P[5]
-q5 = solve(p5)
-q5.check()
-
-p_45m = p_45.clone()
-
-p_45m[2, 1].add_center_marks(4, 5)
-p_45m[2, 3].add_center_marks(4, 5)
-p_45m
-p_45m[4, 1].add_pencil_marks(5)
-p_45m[4, 3].add_pencil_marks(5)
-p_45m
-p_45m[6, 8].add_pencil_marks(4)
-p_45m[6, 9].add_pencil_marks(4)
-p_45m
-p_45m[7, 5].add_pencil_marks(4)
-p_45m[8, 5].add_pencil_marks(4)
-p_45m[9, 5].add_pencil_marks(4)
-p_45m
-p_45m[7, 7].add_pencil_marks(5)
