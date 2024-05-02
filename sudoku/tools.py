@@ -3,6 +3,7 @@
 
 import re
 from collections import namedtuple
+from itertools import combinations
 from .monkeypatch_tabulate import sudoku_table_format  # pylint: disable=unused-import
 from .const import R19, EV
 
@@ -115,7 +116,7 @@ def brc_iter():
 
 
 def pairs_iter(n=2):
-    yield from itertools.combinations(EV, n)
+    yield from combinations(EV, n)
 
 def box_col_row(p, e):
     """generate the box, col, and row for an element"""
