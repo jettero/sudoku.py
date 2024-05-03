@@ -160,6 +160,11 @@ class Puzzle:
         yield self.cols
         yield self.boxes
 
+    @property
+    def containers(self):
+        for group in self.groupings:
+            yield from group
+
     def count_values(self):
         ret = dict()
         for grouping in self.groupings:
