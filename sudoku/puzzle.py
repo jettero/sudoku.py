@@ -3,7 +3,7 @@
 
 import logging
 from tabulate import tabulate
-from .tools import sudoku_table_format
+from .tools import sudoku_table_format, sudoku_hist_table_format
 from .otuple import Otuple
 from .const import BOX_NUMBERS, ROW_NUMBERS, COLUMN_NUMBERS, ELEMENT_VALUES
 from .box import Box, Row, Col
@@ -127,7 +127,12 @@ class Puzzle:
         raise IndexError(f"grids require tuple indexes to set elements (given: {idx})")
 
     def __repr__(self):
+        return self.short
+
+    def __str__(self):
         dat = [[x.as_cell for x in row] for row in self.rows]
+        if self.history:
+            return tabulate([[tabulate(dat, tablefmt=sudoku_table_format, stralign=None), '\n'.join(self.history)]], tablefmt=sudoku_hist_table_format, rowalign='bottom')
         return tabulate(dat, tablefmt=sudoku_table_format, stralign=None)
 
     def has(self, val, inc_val=True, inc_pencil=False, inc_center=False):

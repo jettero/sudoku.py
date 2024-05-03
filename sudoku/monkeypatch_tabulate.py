@@ -69,7 +69,20 @@ sudoku_tablefmt_obj = SudokuTableFormat(
     with_header_hide=None,
 )
 
-tabulate._table_formats["sudoku"] = sudoku_tablefmt_obj
-tabulate.multiline_formats["sudoku"] = "sudoku"
-
 sudoku_table_format = "sudoku"  # the value actually used in sudoku.Puzzle
+tabulate._table_formats[sudoku_table_format] = sudoku_tablefmt_obj
+tabulate.multiline_formats[sudoku_table_format] = sudoku_table_format
+
+
+sudoku_hist_table_format = 'sudoku_hist'
+tabulate._table_formats[sudoku_hist_table_format] = tabulate.TableFormat(
+    lineabove=None,
+    linebelowheader=None,
+    linebetweenrows=tabulate.Line("", "", "", ""),
+    linebelow=None,
+    headerrow=tabulate.DataRow("", "  ", ""),
+    datarow=tabulate.DataRow("", "  ", ""),
+    padding=0,
+    with_header_hide=None,
+)
+tabulate.multiline_formats[sudoku_hist_table_format] = sudoku_hist_table_format

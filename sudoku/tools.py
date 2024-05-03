@@ -4,7 +4,7 @@
 import re
 from collections import namedtuple
 from itertools import combinations
-from .monkeypatch_tabulate import sudoku_table_format  # pylint: disable=unused-import
+from .monkeypatch_tabulate import sudoku_table_format, sudoku_hist_table_format  # pylint: disable=unused-import
 from .const import R19, EV
 
 
