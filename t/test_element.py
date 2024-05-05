@@ -130,8 +130,8 @@ def test_add_remove_marks():
     e.clear_marks()
     assert e.marks == set()
 
-def test_element_description(p7):
-    e = p7[2,6]
+def test_element_description(empty_puzzle):
+    e = empty_puzzle[2,6]
 
     e.set_pencil_marks(2,6)
     e.set_center_marks(3,7)
@@ -141,5 +141,5 @@ def test_element_description(p7):
 
     e.value = 3
 
-    assert str(e) == "E(b2r2c6)<3>"
+    assert str(e) == "E(b2r2c6)"
     assert repr(e) == "E(b2r2c6)<3>"

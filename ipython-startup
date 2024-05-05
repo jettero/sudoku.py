@@ -13,13 +13,14 @@ log = logging.getLogger('ipy')
 
 def reload_puzzles():
     global P, A, Q
-    P = list()
+    P = list(get_puzzles())
+
+    global last_puzzle
+    last_puzzle = len(P)-1
 
     for file in glob('t/asset/p*.txt'):
         bname = os.path.basename(file)[:-4]
         P.extend(get_puzzles(file))
-
-    P.extend(get_puzzles()) # default is ./Puzzles.txt
 
     for i,p in enumerate(P):
         globals()[f'p{i}'] = p
@@ -31,5 +32,11 @@ def reload_puzzles():
 
     log.debug("loaded %d puzzles in 'P' and 'p0' … 'pN'", len(P))
     log.debug("loaded %d corresponding solutions in 'Q' and 'q0' … 'qN'", len(Q))
+
+    for i in reversed(range(3)):
+        a = last_puzzle - i
+        log.debug("pm%d/qm%d => p%d/q%d", i, i, a, a)
+        globals()[f'pm{i}'] = P[a]
+        globals()[f'qm{i}'] = Q[a]
 
 reload_puzzles()

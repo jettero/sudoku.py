@@ -51,8 +51,6 @@ class Element:
         r = ["E"]
         if self.tags:
             r.append(f"({self.short})")
-        if self.value:
-            r.append(f"<{self.value}>")
         return "".join(r)
 
     def __repr__(self):

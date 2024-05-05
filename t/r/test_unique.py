@@ -13,7 +13,7 @@ except ModuleNotFoundError:
     pass
 
 @pytest.mark.skipif(main is False, reason="unique rules module required, but missing")
-def test_test81(p7):
+def test_testu(p7):
     with open("/tmp/wtf0.txt", 'w') as fh:
         fh.write(str(p7))
 
