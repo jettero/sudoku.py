@@ -40,8 +40,8 @@ def main(puzzle, opts=set()):
                         puzzle.describe_inference(f"this puzzle is broken. {e} can't be any value.", __name__)
                     if len(after) == 1:
                         v, = after
-                        e.value = v
                         puzzle.describe_inference(f"{e} must be {v} by uniqueness", __name__)
+                        e.value = v
                         raise RestartTop() # restart the top loop with python's clumsy longjump
         except RestartTop:
             continue
