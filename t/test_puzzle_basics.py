@@ -176,3 +176,6 @@ def test_pids(p7):
 
     assert p7.short == "Puzzle(7)"
     assert q7.short == "Puzzle(7)"
+    assert p7.short == repr(p7)
+
+    assert str(p7) != repr(p7)
