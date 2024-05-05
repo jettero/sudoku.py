@@ -138,3 +138,8 @@ def test_element_description(p7):
 
     assert str(e) == "E(b2r2c6)"
     assert repr(e) == "E(b2r2c6|p26|c37)"
+
+    e.value = 3
+
+    assert str(e) == "E(b2r2c6)<3>"
+    assert repr(e) == "E(b2r2c6)<3>"
