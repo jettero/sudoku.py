@@ -13,7 +13,7 @@ TUPLE_SIZEZ_AND_NAMES = (  # (sz, name), ...
     (1, "can only be"),
     (2, "pair"),
     (3, "triple"),
-    #   (4, "quad"),
+    (4, "quad"),
 )
 
 
