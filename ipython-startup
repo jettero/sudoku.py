@@ -11,8 +11,37 @@ from sudoku import get_puzzles
 
 log = logging.getLogger('ipy')
 
+def sorta_true(X):
+    if isinstance(X, str):
+        if X.lower() in ('t', 'true', 'y', 'yes'):
+            return True
+        if X.lower() in ('f', 'false', 'n', 'no'):
+            return False
+        try:
+            x = int(X)
+            if x == 0:
+                return False
+            return True
+        except ValueError:
+            pass
+    return bool(X)
+
+def maybe_solve(p):
+    if sorta_true(os.environ.get("NO_SOLVE")):
+        return p
+    if so := os.environ.get("SOLVE_ONLY"):
+        for item in so.split():
+            try:
+                item = int(item)
+                if P[item] is p:
+                    return solve(p)
+            except ValueError:
+                pass
+        return p
+    return solve(p)
+
 def reload_puzzles():
-    global P, A, Q
+    global P, Q
     P = list(get_puzzles())
 
     global last_puzzle
@@ -25,7 +54,8 @@ def reload_puzzles():
     for i,p in enumerate(P):
         globals()[f'p{i}'] = p
 
-    Q = [ solve(p) for p in P ]
+    L = len(P)
+    Q = [ maybe_solve(p) for i,p in enumerate(P) ]
 
     for i,q in enumerate(Q):
         globals()[f'q{i}'] = q
