@@ -132,10 +132,22 @@ class Puzzle:
         return self.short
 
     def __str__(self):
+        return self.long
+
+    @property
+    def long(self):
         dat = [[x.as_cell for x in row] for row in self.rows]
+        inner = tabulate(dat, tablefmt=sudoku_table_format, stralign=None)
         if self.history:
-            return tabulate([[tabulate(dat, tablefmt=sudoku_table_format, stralign=None), '\n'.join(self.history)]], tablefmt=sudoku_hist_table_format, rowalign='bottom')
-        return tabulate(dat, tablefmt=sudoku_table_format, stralign=None)
+            # puzzles happen to be 100 chars wide, COLUMNS-100 is roughly the
+            # space remaining for history items; but we subtract two more for
+            # spacing — and make sure the hist items are at least 80 chars
+            # wide … cuz otherwise it looks dumb and we assume a pager is
+            # being used in any case.
+            max_col_width = max(80, int(os.environ.get('COLUMNS', 80)) - 100 - 2)
+            other = tabulate([ [x] for x in self.history ], tablefmt='plain', maxcolwidths=[max_col_width])
+            return tabulate([[inner, other]], tablefmt=sudoku_hist_table_format, rowalign='bottom')
+        return inner
 
     def has(self, val, inc_val=True, inc_pencil=False, inc_center=False):
         return set(
