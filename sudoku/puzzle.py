@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import os
+import types
 import logging
 from tabulate import tabulate
 from .tools import sudoku_table_format, sudoku_hist_table_format
@@ -188,3 +190,16 @@ class Puzzle:
         if not res:
             self.broken = True
         return res
+
+    def __getattribute__(self, x):
+        try:
+            return super().__getattribute__(x)
+        except AttributeError:
+            if hasattr(self.rows[1], x):
+                def inner(me, *a, **kw):
+                    for row in me.rows:
+                        getattr(row, x)(*a, **kw)
+                inner = types.MethodType(inner, self)
+                setattr(self, x, inner)
+                return inner
+            raise

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import types
 import weakref
 import sudoku.otuple as otuple
 from .otuple import Otuple
@@ -62,6 +63,19 @@ class Box:
     def __repr__(self):
         e = " ".join(repr(e) for e in self)
         return f"{self.cname}[{e}]"
+
+    def __getattribute__(self, x):
+        try:
+            return super().__getattribute__(x)
+        except AttributeError:
+            if hasattr(self._elements[1], x):
+                def inner(me, *a, **kw):
+                    for e in me._elements:
+                        getattr(e, x)(*a, **kw)
+                inner = types.MethodType(inner, self)
+                setattr(self, x, inner)
+                return inner
+            raise
 
     @property
     def idx(self):
