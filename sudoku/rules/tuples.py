@@ -1,7 +1,17 @@
 #!/usr/bin/env python
 # coding: utf-8
 """
-XXX: Description here
+I'm pretty sure this covers most x-wings and things like them, but I was really
+thinking about the tuples.
+
+CASE 0:
+    If 5 and 8 appear in only in r2 and r3 of c1, then they can't also contain
+    other numbers — remove anything but 5 and 8 from those two. This works for
+    any N numbers in any N elements in any row/col/box.
+
+ CASE 1:
+    If we do find a pair or triple or whatever, then remove those values from
+    the other cells in the row/col/box as well.
 """
 
 from itertools import combinations
@@ -23,10 +33,6 @@ def main(puzzle, opts=set()):
 
     for N, nname in TUPLE_SIZEZ_AND_NAMES:
         # CASE 0:
-        #     If 5 and 8 appear in only in c2 and c3 of column 1, then they
-        #     can't also contain other numbers -- remove anything but 5 and 8
-        #     from those two.  This works for any N numbers in any N elements
-        #     in any row/col/box.
         for container in puzzle.containers:
             for vp in combinations(SEV - {e.value for e in container if e.value}, N):
                 vp = {*vp}
@@ -55,8 +61,6 @@ def main(puzzle, opts=set()):
                         )
 
         # CASE 1:
-        #     if we do find a pair or tripple or whatever, then remove those
-        #     values from the other cells in the row/col/box
         for container in puzzle.containers:
             nv = {x for x in container if not x.value}
             for ep in combinations(nv, N):
