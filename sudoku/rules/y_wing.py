@@ -39,3 +39,5 @@ def main(puzzle, opts=set()):
             __name__,
         )
         head.remove_center_marks(ruled_out)
+        return 1
+    return 0
