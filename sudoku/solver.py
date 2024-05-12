@@ -132,6 +132,10 @@ class RulesManager(pluggy.PluginManager):
             try:
                 dc += hook.main(puzzle=puzzle, opts=self.opts)
             except Exception as e:
+                # NOTE: before you go trying to show the file and line-number
+                # in this exception (again), stop. pluggy hides this and makes
+                # it appear to be in solver.py between try and except 3-5 lines
+                # up from here.
                 puzzle.describe_inference(f"rules module {name} seems broken: {e}", __name__)
             if puzzle.broken:
                 break
