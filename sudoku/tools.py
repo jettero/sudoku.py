@@ -2,6 +2,8 @@
 # coding: utf-8
 
 import re
+import os
+import inspect
 from collections import namedtuple
 from itertools import combinations
 from .monkeypatch_tabulate import sudoku_table_format, sudoku_hist_table_format  # pylint: disable=unused-import
@@ -193,3 +195,23 @@ def format_digits_in_row_cols(digits):
 
 def format_ints(*i):
     return ''.join(str(x) for x in sorted(i))
+
+def format_exception_in_english(e, back=1):
+     tb = e.__traceback__
+     if tb is None:
+         return str(e) # weird
+     while tb.tb_next is not None and back > 0:
+         tb = tb.tb_next
+         back -= 1
+
+     frame = tb.tb_frame
+     lineno = tb.tb_lineno
+     filename = frame.f_code.co_filename
+     function_name = frame.f_code.co_name
+
+     if module := inspect.getmodule(frame):
+         module_name = module.__name__
+     else:
+         module_name = os.path.basename(filename)[:-3]
+
+     return f"{e} in {module_name} line {lineno}"

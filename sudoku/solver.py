@@ -10,6 +10,7 @@ import collections
 
 import pluggy
 import sudoku.rules
+from sudoku.tools import format_exception_in_english
 
 log = logging.getLogger(__name__)
 
@@ -129,18 +130,17 @@ class RulesManager(pluggy.PluginManager):
         for name, hook in self.list_name_plugin():
             if hook is None:
                 continue
+            class HookValueError(ValueError):
+                pass
             try:
-                dc += hook.main(puzzle=puzzle, opts=self.opts)
+                r = hook.main(puzzle=puzzle, opts=self.opts)
+                if not isinstance(r, int):
+                    raise HookValueError()
+                dc += r
+            except HookValueError:
+                puzzle.describe_inference(f"rules module {name} seems broken: main() hook failed to return an int", __name__)
             except Exception as e:
-                # NOTE: before you go trying to show the file and line-number
-                # in this exception (again), stop. pluggy hides this and makes
-                # it appear to be in solver.py between try and except 3-5 lines
-                # up from here.
-                #
-                # … but you can import main from the dumb thing and run it on the puzzle
-                #   from sudoku.rules.y_wing import main as y_wing_main
-                #   y_wing_main(puzzle_in_question)
-                puzzle.describe_inference(f"rules module {name} seems broken: {e}", __name__)
+                puzzle.describe_inference(f"rules module {name} seems broken: {format_exception_in_english(e)}", __name__)
             if puzzle.broken:
                 break
             elif not (cres := puzzle.check()):
