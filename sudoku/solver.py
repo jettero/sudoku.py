@@ -34,6 +34,10 @@ def process_opts(opts):
     return set(_process_opts(opts)).intersection(KNOWN_OPTS)
 
 
+class HookValueError(ValueError):
+    pass
+
+
 class RulesManager(pluggy.PluginManager):
     _loaded = collections.defaultdict(lambda: False)
     _local_modules = set()
@@ -48,7 +52,7 @@ class RulesManager(pluggy.PluginManager):
         if cls._loaded:
             return cls._local_modules
 
-        for namespace,base_dir in zip(NAMESPACES, INSTALLED_DIR):
+        for namespace, base_dir in zip(NAMESPACES, INSTALLED_DIR):
             plugin_path = os.path.join(base_dir, *namespace.split(".")[1:])
             log.debug("loading %s.* from %s", namespace, plugin_path)
             for item in pkgutil.iter_modules([plugin_path], f"{namespace}."):
@@ -130,17 +134,19 @@ class RulesManager(pluggy.PluginManager):
         for name, hook in self.list_name_plugin():
             if hook is None:
                 continue
-            class HookValueError(ValueError):
-                pass
             try:
                 r = hook.main(puzzle=puzzle, opts=self.opts)
                 if not isinstance(r, int):
                     raise HookValueError()
                 dc += r
             except HookValueError:
-                puzzle.describe_inference(f"rules module {name} seems broken: main() hook failed to return an int", __name__)
+                puzzle.describe_inference(
+                    f"rules module {name} seems broken: main() hook failed to return an int", __name__
+                )
             except Exception as e:
-                puzzle.describe_inference(f"rules module {name} seems broken: {format_exception_in_english(e)}", __name__)
+                puzzle.describe_inference(
+                    f"rules module {name} seems broken: {format_exception_in_english(e)}", __name__
+                )
             if puzzle.broken:
                 break
             elif not (cres := puzzle.check()):
@@ -157,7 +163,7 @@ class RulesManager(pluggy.PluginManager):
         sv = puzzle.context(solve, sv=set)["sv"]
         if "init" not in sv:
             self.hook.init(puzzle=puzzle, opts=self.opts)
-            sv.add('init')
+            sv.add("init")
 
         while self.step(puzzle) > 0:
             if puzzle.broken:
@@ -187,7 +193,5 @@ def solve(
     reject_filter=os.environ.get("SUDOKU_RRFILTER", None),
     clone=True,
 ):
-    """ instantiate a Solver and solve the given puzzle """
-    return Karen(
-        opts=opts, accept_filter=accept_filter, reject_filter=reject_filter
-    ).solve(puzzle=puzzle, clone=clone)
+    """instantiate a Solver and solve the given puzzle"""
+    return Karen(opts=opts, accept_filter=accept_filter, reject_filter=reject_filter).solve(puzzle=puzzle, clone=clone)
