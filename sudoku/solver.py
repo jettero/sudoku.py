@@ -136,6 +136,10 @@ class RulesManager(pluggy.PluginManager):
                 # in this exception (again), stop. pluggy hides this and makes
                 # it appear to be in solver.py between try and except 3-5 lines
                 # up from here.
+                #
+                # … but you can import main from the dumb thing and run it on the puzzle
+                #   from sudoku.rules.y_wing import main as y_wing_main
+                #   y_wing_main(puzzle_in_question)
                 puzzle.describe_inference(f"rules module {name} seems broken: {e}", __name__)
             if puzzle.broken:
                 break
