@@ -36,11 +36,14 @@ def y_wing_finder(puzzle, C=(2, 2)):
 @hookimpl
 def main(puzzle, opts=set()):
     did_something = 0
-    for head, (lhs, rhs), ruled_out, v1, v2, tail in y_wing_finder(puzzle):
-        puzzle.describe_inference(
-            f"Y-Wing: As {tail} vacillates between {v1} and {v2}, it implies {head} cannot be {ruled_out} via {lhs} and {rhs}",
-            __name__,
-        )
-        head.remove_center_marks(ruled_out)
-        did_something += 1
+    start = -1
+    while did_something > start:
+        start = did_something
+        for head, (lhs, rhs), ruled_out, v1, v2, tail in y_wing_finder(puzzle):
+            puzzle.describe_inference(
+                f"Y-Wing: As {tail} vacillates between {v1} and {v2}, it implies {head} cannot be {ruled_out} via {lhs} and {rhs}",
+                __name__,
+            )
+            head.remove_center_marks(ruled_out)
+            did_something += 1
     return did_something
