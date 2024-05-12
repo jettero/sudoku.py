@@ -190,3 +190,6 @@ def format_digits_in_row_cols(digits):
     # 1234
     # 5678
     return split_tuple(d, chunk_size=4)
+
+def format_ints(*i):
+    return ''.join(str(x) for x in sorted(i))
