@@ -17,7 +17,7 @@ CASE 0:
 from itertools import combinations
 from sudoku.rules import hookimpl
 from sudoku.const import SEV
-from sudoku.tools import describe_elements
+from sudoku.tools import describe_elements, format_ints
 
 TUPLE_SIZEZ_AND_NAMES = (  # (sz, name), ...
     (1, "can only be"),
@@ -55,7 +55,7 @@ def main(puzzle, opts=set()):
                                 did_count += 1
                     if removed:
                         puzzle.describe_inference(
-                            f"{''.join(str(x) for x in sorted(vp))} {nname} in {describe_elements(ep)} in {container.short}"
+                            f"{format_ints(*vp)} {nname} in {describe_elements(ep)} in {container.short}"
                             f" -- remove other values from {describe_elements(removed)}",
                             __name__,
                         )
@@ -75,7 +75,7 @@ def main(puzzle, opts=set()):
                             did_count += 1
                     if removed:
                         puzzle.describe_inference(
-                            f"{''.join(str(x) for x in sorted(vp))} {nname} in {describe_elements(ep)} in {container.short}"
+                            f"{format_ints(*vp)} {nname} in {describe_elements(ep)} in {container.short}"
                             f" -- remove values from {describe_elements(removed)}",
                             __name__,
                         )
