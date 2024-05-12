@@ -1,7 +1,9 @@
 from itertools import combinations
 
 """
-Find y-wings and enforce them
+Find y-wings and enforce them.
+
+TODO: I'd say this spots _some_ y-wings, but certainly _not_ all y-wings.
 """
 
 from itertools import combinations
