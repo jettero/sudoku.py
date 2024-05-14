@@ -198,8 +198,8 @@ def format_ints(*i):
 
 def format_exception_in_english(e, back=1):
      tb = e.__traceback__
-     if tb is None:
-         return str(e) # weird
+     if tb is None:    # this isn't likely to come up, so I don't want to bother testing it
+         return str(e) # pragma: no cover
      while tb.tb_next is not None and back > 0:
          tb = tb.tb_next
          back -= 1
@@ -212,6 +212,7 @@ def format_exception_in_english(e, back=1):
      if module := inspect.getmodule(frame):
          module_name = module.__name__
      else:
-         module_name = os.path.basename(filename)[:-3]
+         # I doubt we'll reach this point very often, so I don't want to bother testing it
+         module_name = os.path.basename(filename)[:-3] # pragma: no cover
 
      return f"{e} in {module_name} line {lineno}"
