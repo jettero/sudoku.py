@@ -5,7 +5,7 @@ import os
 import logging
 
 from glob import glob
-from sudoku import solve
+from sudoku import solve, Puzzle, Box, Row, Col
 from sudoku.const import ELEMENT_VALUES as EV
 from sudoku import get_puzzles
 
