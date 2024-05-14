@@ -79,6 +79,12 @@ def test_sometimes_solvers_break(p0):
     assert s.broken is True
     tnop.PUZZLE_SUBTLE_BREAK = False
 
+    tnop.RETURN_BULLSHIT = True
+    s = solver.solve(p0)
+    assert len(s.history['.*failed to return an int.*']) == 1
+    assert s.broken is False
+    tnop.RETURN_BULLSHIT = False
+
     tnop.STEPS = 1
     s = solver.solve(p0)
     assert len(s.history) == 0

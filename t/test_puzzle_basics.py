@@ -30,6 +30,7 @@ def test_rows_iter(empty_puzzle):
     r = 1
     for row in empty_puzzle.rows:
         assert PYTR(".*?".join(f"b{BN[r][c]}r{r}c{c}" for c in COLUMN_NUMBERS)) == str(row)
+        assert repr(row) == f"row {r}"
         r += 1
 
 
@@ -41,6 +42,7 @@ def test_cols_iter(empty_puzzle):
     c = 1
     for col in empty_puzzle.cols:
         assert PYTR(".*?".join(f"b{BN[r][c]}r{r}c{c}" for r in ROW_NUMBERS)) == str(col)
+        assert repr(col) == f"col {c}"
         c += 1
 
 
@@ -48,6 +50,7 @@ def test_boxes_iter(empty_puzzle):
     b = 1
     for box in empty_puzzle.boxes:
         assert PYTR(".*?".join((f"b{b}",) * 9)) == str(box)
+        assert repr(box) == f"box {b}"
         b += 1
 
 
