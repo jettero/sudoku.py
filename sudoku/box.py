@@ -9,13 +9,13 @@ from .element import Element
 from .filt import (
     attrs_containing_val,
     val_restricted_to_single_attr,
-    element_has_val,
     elements_in_attr,
 )
 from .const import BOX_NUMBERS
+from .traits import MarksTrait, HasTrait
 
 
-class Box:
+class Box(MarksTrait, HasTrait):
 
     def __init__(self, *e, idx=None):
         self.cname = self.__class__.__name__
@@ -32,13 +32,6 @@ class Box:
             )
 
         self.idx = idx
-
-    def has(self, val, inc_val=True, inc_pencil=False, inc_center=False):
-        return set(
-            x
-            for x in self
-            if element_has_val(x, val, inc_val=inc_val, inc_pencil=inc_pencil, inc_center=inc_center)
-        )
 
     attrs_containing_val = attrs_containing_val
     single_attr_containing_val = val_restricted_to_single_attr
@@ -60,22 +53,16 @@ class Box:
             else:
                 yield e
 
+    def __str__(self):
+        return self.long
+
     def __repr__(self):
+        return self.short
+
+    @property
+    def long(self):
         e = " ".join(repr(e) for e in self)
         return f"{self.cname}[{e}]"
-
-    def __getattribute__(self, x):
-        try:
-            return super().__getattribute__(x)
-        except AttributeError:
-            if hasattr(self._elements[1], x):
-                def inner(me, *a, **kw):
-                    for e in me._elements:
-                        getattr(e, x)(*a, **kw)
-                inner = types.MethodType(inner, self)
-                setattr(self, x, inner)
-                return inner
-            raise
 
     @property
     def idx(self):

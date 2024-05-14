@@ -9,12 +9,12 @@ from .tools import sudoku_table_format, sudoku_hist_table_format
 from .otuple import Otuple
 from .const import BOX_NUMBERS, ROW_NUMBERS, COLUMN_NUMBERS, ELEMENT_VALUES
 from .box import Box, Row, Col
-from .filt import element_has_val
 from .history import History
+from .traits import HasTrait, MarksTrait
 
 log = logging.getLogger(__name__)
 
-class Puzzle:
+class Puzzle(HasTrait, MarksTrait):
     broken = False
     pid = 0
 
@@ -149,13 +149,6 @@ class Puzzle:
             return tabulate([[inner, other]], tablefmt=sudoku_hist_table_format, rowalign='bottom')
         return inner
 
-    def has(self, val, inc_val=True, inc_pencil=False, inc_center=False):
-        return set(
-            x
-            for x in self
-            if element_has_val(x, val, inc_val=inc_val, inc_pencil=inc_pencil, inc_center=inc_center)
-        )
-
     @property
     def box_rows(self):
         yield (self.boxes[1], self.boxes[2], self.boxes[3])
@@ -202,16 +195,3 @@ class Puzzle:
         if not res:
             self.broken = True
         return res
-
-    def __getattribute__(self, x):
-        try:
-            return super().__getattribute__(x)
-        except AttributeError:
-            if hasattr(self.rows[1], x):
-                def inner(me, *a, **kw):
-                    for row in me.rows:
-                        getattr(row, x)(*a, **kw)
-                inner = types.MethodType(inner, self)
-                setattr(self, x, inner)
-                return inner
-            raise
