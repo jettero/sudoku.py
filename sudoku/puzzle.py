@@ -76,6 +76,9 @@ class Puzzle(HasTrait, MarksTrait):
             self._context[thing] = dict(**kw)
         return self._context[thing]
 
+    def copy(self, transpose=False):
+        return self.clone(copy_all=True, transpose=transpose)
+
     def clone(self, transpose=False, copy_all=False, with_marks=False):
         ret = self.__class__(pid=self.pid)
         for r in ROW_NUMBERS:
@@ -195,3 +198,13 @@ class Puzzle(HasTrait, MarksTrait):
         if not res:
             self.broken = True
         return res
+
+    @property
+    def solved(self):
+        vals = 0
+        for e in self:
+            if e.value:
+                vals += 1
+        if vals == 81 and self.check():
+            return True
+        return False

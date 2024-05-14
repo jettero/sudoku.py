@@ -68,7 +68,7 @@ def _wrap_in_bound_scope(p, name):
     _bound_to_p.__name__ = name
     return _bound_to_p
 
-def _load_all_assets_as_fixtures():
+def _load_all_assets_as_fixtures(): # provides fixtures p_bp, p_45, p_srr, p_1t9m4 and p_empty via t/asset/*.txt
     short_name = PYTR(r"^p?_?(?P<short>.+?)\.txt$")
     for file in glob.glob(os.path.join(adir, "*.txt")):
         if short_name.search(os.path.basename(file)):

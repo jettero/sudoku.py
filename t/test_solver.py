@@ -89,3 +89,7 @@ def test_sometimes_solvers_break(p0):
     s = solver.solve(p0)
     assert len(s.history) == 0
     assert s.broken is False
+
+def test_sometimes_solvers_work(p_solved, p_empty):
+    assert p_solved.solved == True
+    assert p_empty.solved == False
