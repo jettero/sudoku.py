@@ -5,7 +5,7 @@ from fnmatch import fnmatch
 from .filt import acceptable_index_value
 from .element import Element
 
-BOX_CLASS = None  # populated when Box loads (circular import resolution)
+Box = None  # populated when Box loads (circular import resolution)
 
 
 class Otuple(tuple):
@@ -15,7 +15,6 @@ class Otuple(tuple):
     """
 
     def __getitem__(self, idx):
-        global BOX_CLASS
         try:
             idx = int(idx)
         except (ValueError, TypeError):
@@ -27,7 +26,7 @@ class Otuple(tuple):
                             if isinstance(item, Element):
                                 if fnmatch(item.short, wanted):
                                     yield item
-                            elif isinstance(item, BOX_CLASS):
+                            elif isinstance(item, Box):
                                 yield from sgenerator(item, wanted)
 
                     return set(sgenerator(self, idx))
@@ -35,7 +34,7 @@ class Otuple(tuple):
             ret = set()
             for x in idx:
                 item = self[x]
-                if isinstance(item, (set, BOX_CLASS, Otuple)):
+                if isinstance(item, (set, Box, Otuple)):
                     ret = ret.union(item)
                 else:
                     ret.add(item)

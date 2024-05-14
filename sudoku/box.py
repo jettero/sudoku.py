@@ -99,4 +99,4 @@ class Col(Box):
         for e in self:
             e.col = i
 
-otuple.BOX_CLASS = Box
+otuple.Box = Box
