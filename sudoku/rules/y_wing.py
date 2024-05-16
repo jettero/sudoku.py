@@ -8,13 +8,7 @@ TODO: I'd say this spots _some_ y-wings, but certainly _not_ all y-wings.
 
 from itertools import combinations
 from sudoku.rules import hookimpl
-from sudoku.tools import format_ints
-
-
-def can_see(A, B):
-    if A is B:
-        return False  # I can't see myself, that's just crazy talk
-    return A.row == B.row or A.col == B.col or A.box == B.box
+from sudoku.tools import format_ints, can_see
 
 
 def y_wing_finder(puzzle, C=(2, 2)):

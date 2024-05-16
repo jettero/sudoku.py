@@ -216,3 +216,8 @@ def format_exception_in_english(e, back=1):
          module_name = os.path.basename(filename)[:-3] # pragma: no cover
 
      return f"{e} in {module_name} line {lineno}"
+
+def can_see(A, B):
+    if A is B:
+        return False  # I can't see myself, that's just crazy talk
+    return A.row == B.row or A.col == B.col or A.box == B.box
