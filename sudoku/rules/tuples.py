@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 """
-I'm pretty sure this covers most x-wings and things like them, but I was really
-thinking about the tuples.
-
 CASE 0:
     If 5 and 8 appear in only in r2 and r3 of c1, then they can't also contain
     other numbers — remove anything but 5 and 8 from those two. This works for
     any N numbers in any N elements in any row/col/box.
 
- CASE 1:
+CASE 1:
     If we do find a pair or triple or whatever, then remove those values from
     the other cells in the row/col/box as well.
 """
@@ -46,6 +43,9 @@ def main(puzzle, opts=set()):
                         if item.value != v:
                             did_count += 1
                             item.value = v
+                            puzzle.rows[item.row].remove_marks(v)
+                            puzzle.cols[item.col].remove_marks(v)
+                            puzzle.boxes[item.box].remove_marks(v)
                             removed.add(item)
                     else:
                         for item in ep:
