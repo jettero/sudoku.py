@@ -1,10 +1,9 @@
 
 from itertools import combinations
+from sudoku.const import LongJump
 
 def cycles(puzzle, N=3, C=(2,2)):
     binners = set(x for x in puzzle if not x.value and C[0] <= len(x.center) <= C[1])
-    class LongJump(Exception):
-        pass
     already = set()
     for item in binners:
         cycle = [ item ]

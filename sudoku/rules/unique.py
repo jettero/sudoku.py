@@ -7,10 +7,7 @@ each cell in the col, row and box.
 
 from sudoku.rules import hookimpl
 from sudoku.const import ELEMENT_VALUES as EV
-from sudoku.tools import elements_in_box_col_row
-
-class RestartTop(Exception):
-    pass
+from sudoku.tools import elements_in_box_col_row, LongJump
 
 @hookimpl
 def init(puzzle, opts=set()):
@@ -42,8 +39,11 @@ def main(puzzle, opts=set()):
                         v, = after
                         puzzle.describe_inference(f"{e} must be {v} by uniqueness", __name__)
                         e.value = v
-                        raise RestartTop() # restart the top loop with python's clumsy longjump
-        except RestartTop:
+                        puzzle.rows[e.row].remove_marks(v)
+                        puzzle.cols[e.col].remove_marks(v)
+                        puzzle.boxes[e.box].remove_marks(v)
+                        raise LongJump() # restart the top loop with python's clumsy longjump
+        except LongJump:
             continue
 
     return did_count

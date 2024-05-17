@@ -9,6 +9,8 @@ from itertools import combinations
 from .monkeypatch_tabulate import sudoku_table_format, sudoku_hist_table_format  # pylint: disable=unused-import
 from .const import R19, EV
 
+class LongJump(Exception):
+    pass
 
 def rc2b(r, c):
     # I wonder if we could do this more elegantly with math
@@ -196,6 +198,14 @@ def format_digits_in_row_cols(digits):
 def format_ints(*i):
     return ''.join(str(x) for x in sorted(i))
 
+def oxford_format_ints(*i):
+    i = [ str(x) for x in i ]
+    i = list(sorted(set(i)))
+    if len(i) <= 2:
+       return ' and '.join(i)
+    i[-1] = f'and {i[-1]}'
+    return ', '.join(i)
+
 def format_exception_in_english(e, back=1):
      tb = e.__traceback__
      if tb is None:    # this isn't likely to come up, so I don't want to bother testing it
@@ -221,3 +231,9 @@ def can_see(A, B):
     if A is B:
         return False  # I can't see myself, that's just crazy talk
     return A.row == B.row or A.col == B.col or A.box == B.box
+
+def pluralize(x):
+    if x.endswith('x'):
+        return f'{x}es'
+    return f'{x}s'
+
