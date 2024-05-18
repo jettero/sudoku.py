@@ -42,10 +42,11 @@ and the second attribute ab='col' and then swap so aa='col' and ab='row'.
 Then we can generalize again and say ∀ n ∈ {2,3,4} — which now finds all the
 "Jellyfish" for sizes 3 and 4.
 
-We can then generalize one more time such ∀ aa,ab ∈ { 'row', 'col', 'box' },
-such that aa≠ab.  In other words, all the row-col, col-row, and box-col,
-row-box permutations. This finds not just X-wings and Jellyfish, but also
-something else I'm calling G-wings (generally speaking).
+We can then generalize one more time: ∀ aa,ab ∈ { 'row', 'col', 'box' }, aa≠ab.
+In other words, all the row-col, col-row, and box-col, row-box permutations.
+This finds not just X-wings and Jellyfish, but also something else I'm calling
+G-wings (for generalized x-wings); though, there may already be a better name
+of which I'm not currently aware.
 """
 
 from itertools import combinations, permutations
