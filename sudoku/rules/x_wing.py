@@ -20,11 +20,9 @@ def nameify(n,*a):
 @hookimpl
 def main(puzzle, opts=set()):
     did_something = 0
-    dc = -1
 
     nv = set(x for x in puzzle if not x.value)
-    while dc != did_something:
-        dc = did_something
+    while True:
         try:
             for n in (2,3,4):
                 for i in SEV:
@@ -45,5 +43,7 @@ def main(puzzle, opts=set()):
                                     raise LongJump()
         except LongJump:
             did_something += 1
+            continue
+        break
 
     return did_something
