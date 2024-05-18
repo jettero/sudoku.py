@@ -4,7 +4,48 @@
 """
 Find x-wings (and related) and remove marks relating to their influences.
 
-... and then generalize to find other similar things.
+… and then generalize to find other similar things.
+
+I.e., start with this notion:
+
+    n = 2
+    for i in 1 .. 9:
+        E = { e ∈ P | i in e.center }  # e is an element in the puzzle
+                                       # given that i is a member of
+                                       # the center marks of e)
+
+        A = { e.row | e ∈ E }  # the set of row numbers available in the
+                               # elements in E
+
+        ∀ a ⊆ A, |a| = n:  # a is each 2-pick combination in A
+            Ea = { e ∈ E | e.row ∈ a }  # elements with rows in a
+            b = { e.col | e ∈ Ea }  # columns
+
+            if |b| = n:  # if there's 2 of them
+                Eb = { e ∈ E | e.col ∈ b }  # Eb is the elements with
+                                            # columns in b
+
+                # The X-wing we just found implies nothing else in these
+                # columns can have the mark 'i' — side note: set difference is
+                # not written with a dash, like an algebraic difference … "for
+                # clarity."
+
+                Eδ = Ea - Eb  # meaning Eb \ Ea = { e ∈ Eb | e ∉ Ea }
+                ∀ e ∈ Eδ:  # so for each
+                    e.remove_center_marks(i)  # remove the mark 'i'
+
+
+And then generalize so that A is { e ∈ E | e.col ∈ a } (rather than by rows)
+and b becomes { e ∈ E | e.row ∈ b }. I.e., we call the first attribute aa='row'
+and the second attribute ab='col' and then swap so aa='col' and ab='row'.
+
+Then we can generalize again and say ∀ n ∈ {2,3,4} — which now finds all the
+"Jellyfish" for sizes 3 and 4.
+
+We can then generalize one more time such ∀ aa,ab ∈ { 'row', 'col', 'box' },
+such that aa≠ab.  In other words, all the row-col, col-row, and box-col,
+row-box permutations. This finds not just X-wings and Jellyfish, but also
+something else I'm calling G-wings (generally speaking).
 """
 
 from itertools import combinations, permutations
@@ -35,10 +76,10 @@ def main(puzzle, opts=set()):
 
                             if len(b) == n:
                                 Eb = set(x for x in E if getattr(x, ab) in b)
-                                if no := Eb - Ea:
+                                if Eδ := Eb - Ea:
                                     puzzle.describe_inference(f"{nameify(n,aa,ab)}: {i} can only be in {pluralize(ab)} {oxford_format_ints(*b)} in {pluralize(aa)} {oxford_format_ints(*a)}"
-                                                              f" => remove {i} from {describe_elements(no)}", __name__)
-                                    for e in no:
+                                                              f" => remove {i} from {describe_elements(Eδ)}", __name__)
+                                    for e in Eδ:
                                         e.remove_center_marks(i)
                                     raise LongJump()
         except LongJump:
