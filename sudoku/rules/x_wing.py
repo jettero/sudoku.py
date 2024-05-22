@@ -35,9 +35,9 @@ I.e., start with this notion:
                 ∀ e ∈ Eδ:  # so for each
                     e.remove_center_marks(i)  # remove the mark 'i'
 
-And then generalize so that A is { e ∈ E | e.col ∈ a } (rather than by rows)
-and b becomes { e ∈ E | e.row ∈ b }. I.e., we call the first attribute aa='row'
-and the second attribute ab='col' and then swap so aa='col' and ab='row'.
+And then generalize so that A is { e.col | e ∈ E } (rather than by rows) and b
+becomes { e.row | e ∈ Ea }. I.e., we call the first attribute aa='row' and the
+second attribute ab='col' and then swap so aa='col' and ab='row'.
 
 Then we can generalize again and say ∀ n ∈ {2,3,4} — which now finds all the
 "Jellyfish" for sizes 3 and 4.
