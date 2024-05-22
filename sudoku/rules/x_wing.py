@@ -27,10 +27,11 @@ I.e., start with this notion:
 
                 # The X-wing we just found implies nothing else in these
                 # columns can have the mark 'i' — side note: set difference is
-                # not written with a dash, like an algebraic difference … "for
-                # clarity."
+                # not written with a dash, like an algebraic difference, but
+                # instead chooses a backslash, which has special meaning in
+                # python comments that function as docs.
 
-                Eδ = Ea - Eb  # meaning Eb \ Ea = { e ∈ Eb | e ∉ Ea }
+                Eδ = Ea - Eb  # meaning Eb \\ Ea = { e ∈ Eb | e ∉ Ea }
                 ∀ e ∈ Eδ:  # so for each
                     e.remove_center_marks(i)  # remove the mark 'i'
 
