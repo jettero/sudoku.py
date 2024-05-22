@@ -35,8 +35,6 @@ I.e., start with this notion:
                 ∀ e ∈ Eδ:  # so for each
                     e.remove_center_marks(i)  # remove the mark 'i'
 
-And then generalize to look for col-row instead of row-col.
-
 And then generalize so that A is { e ∈ E | e.col ∈ a } (rather than by rows)
 and b becomes { e ∈ E | e.row ∈ b }. I.e., we call the first attribute aa='row'
 and the second attribute ab='col' and then swap so aa='col' and ab='row'.
