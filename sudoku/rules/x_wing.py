@@ -56,10 +56,10 @@ from sudoku.tools import oxford_format_ints, describe_elements, LongJump, plural
 
 def nameify(n,*a):
     if n == 2 and 'box' not in a:
-        return "X-Wing"
+        return "X-wing"
     if 'box' not in a:
         return "Jellyfish"
-    return f"G-Wing({n}, {'-'.join(sorted(a))})"
+    return f"G-wing({n}, {'-'.join(sorted(a))})"
 
 @hookimpl
 def main(puzzle, opts=set()):
