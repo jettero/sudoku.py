@@ -34,6 +34,7 @@ I.e., start with this notion:
                 ∀ e ∈ Eδ:  # so for each
                     e.remove_center_marks(i)  # remove the mark 'i'
 
+And then generalize to look for col-row instead of row-col.
 
 And then generalize so that A is { e ∈ E | e.col ∈ a } (rather than by rows)
 and b becomes { e ∈ E | e.row ∈ b }. I.e., we call the first attribute aa='row'
@@ -57,6 +58,8 @@ from sudoku.tools import oxford_format_ints, describe_elements, LongJump, plural
 def nameify(n,*a):
     if n == 2 and 'box' not in a:
         return "X-Wing"
+    if 'box' not in a:
+        return "Jellyfish"
     return f"G-Wing({n}, {'-'.join(sorted(a))})"
 
 @hookimpl
