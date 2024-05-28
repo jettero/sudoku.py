@@ -3,6 +3,7 @@
 
 import os
 import logging
+import concurrent.futures
 
 from glob import glob
 from sudoku import solve, Puzzle, Box, Row, Col
@@ -28,7 +29,7 @@ def sorta_true(X):
 
 def maybe_solve(p):
     if sorta_true(os.environ.get("NO_SOLVE")):
-        return p
+        return None
     if so := os.environ.get("SOLVE_ONLY"):
         for item in so.split():
             try:
@@ -37,15 +38,12 @@ def maybe_solve(p):
                     return solve(p)
             except ValueError:
                 pass
-        return p
+        return None
     return solve(p)
 
 def reload_puzzles():
     global P, Q
     P = list(get_puzzles())
-
-    global last_puzzle
-    last_puzzle = len(P)-1
 
     for file in glob('t/asset/p*.txt'):
         bname = os.path.basename(file)[:-4]
@@ -55,18 +53,25 @@ def reload_puzzles():
         globals()[f'p{i}'] = p
 
     L = len(P)
-    Q = [ maybe_solve(p) for i,p in enumerate(P) ]
+    # ThreadPoolExecutor(max_workers=) defaults to min(32, os.cpu_count() + 4)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        Q = list(executor.map(maybe_solve, P))
 
     for i,q in enumerate(Q):
-        globals()[f'q{i}'] = q
+        if q is not None:
+            globals()[f'q{i}'] = q
 
     log.debug("loaded %d puzzles in 'P' and 'p0' … 'pN'", len(P))
-    log.debug("loaded %d corresponding solutions in 'Q' and 'q0' … 'qN'", len(Q))
+    log.debug("loaded %d corresponding solution(s) in 'Q' and 'q0' … 'qN'", len(list(x for x in Q if x is not None)))
 
-    for i in reversed(range(3)):
-        a = last_puzzle - i
-        log.debug("pm%d/qm%d => p%d/q%d", i, i, a, a)
-        globals()[f'pm{i}'] = P[a]
-        globals()[f'qm{i}'] = Q[a]
+    for i in range(1,4,1):
+        j = len(P) - i
+        if Q[-i] is not None:
+            log.debug("pm%d/qm%d => p%d/q%d", i, i, j, j)
+            globals()[f'pm{i}'] = P[-i]
+            globals()[f'qm{i}'] = Q[-i]
+        else:
+            log.debug("pm%d => p%d", i, j)
+            globals()[f'pm{i}'] = P[-i]
 
 reload_puzzles()
