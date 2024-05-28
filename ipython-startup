@@ -10,7 +10,8 @@ from sudoku import solve, Puzzle, Box, Row, Col
 from sudoku.const import ELEMENT_VALUES as EV
 from sudoku import get_puzzles
 
-log = logging.getLogger('ipy')
+_orig_log = log
+log = logging.getLogger('ipython-startup')
 
 def sorta_true(X):
     if isinstance(X, str):
@@ -35,10 +36,12 @@ def maybe_solve(p):
             try:
                 item = int(item)
                 if P[item] is p:
+                    log.info('solving %s', repr(p))
                     return solve(p)
             except ValueError:
                 pass
         return None
+    log.info('solving %s', repr(p))
     return solve(p)
 
 def reload_puzzles():
@@ -54,8 +57,14 @@ def reload_puzzles():
 
     L = len(P)
     # ThreadPoolExecutor(max_workers=) defaults to min(32, os.cpu_count() + 4)
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        Q = list(executor.map(maybe_solve, P))
+    try:
+        log.debug('disabling debug logging temporarily')
+        logging.disable(logging.DEBUG)
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            Q = list(executor.map(maybe_solve, P))
+    finally:
+        logging.disable(logging.NOTSET)
+        log.debug('debug logs re-enabled')
 
     for i,q in enumerate(Q):
         if q is not None:
@@ -75,3 +84,5 @@ def reload_puzzles():
             globals()[f'pm{i}'] = P[-i]
 
 reload_puzzles()
+
+log = _orig_log
