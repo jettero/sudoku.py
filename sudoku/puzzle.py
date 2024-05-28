@@ -80,6 +80,13 @@ class Puzzle(HasTrait, MarksTrait):
         return self.clone(copy_all=True, transpose=transpose)
 
     def clone(self, transpose=False, copy_all=False, with_marks=False):
+        """ Copy the puzzle so the marks and values are disconnected from other copies.
+
+            kwattrs:
+
+                copy_all   :- copy marks and non-given values
+                with_marks :- copy pencil and center marks, but not necessarily ng-values
+        """
         ret = self.__class__(pid=self.pid)
         for r in ROW_NUMBERS:
             for c in COLUMN_NUMBERS:
@@ -101,6 +108,7 @@ class Puzzle(HasTrait, MarksTrait):
     def describe_inference(self, desc, src):
         log.debug("[%s].di( %s by %s )", self.short, desc, src)
         self._history.append(desc, src)
+        self._phist.append( self.clone(with_marks=True) )
 
     @property
     def history(self):
