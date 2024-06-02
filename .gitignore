@@ -1,4 +1,4 @@
-.*-requirements.out
+.*req*
 *.pyc
 *.orig
 *.rej
