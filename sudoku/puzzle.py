@@ -79,7 +79,7 @@ class Puzzle(HasTrait, MarksTrait):
     def copy(self, transpose=False):
         return self.clone(copy_all=True, transpose=transpose)
 
-    def clone(self, transpose=False, copy_all=False, with_marks=False, with_hist=False, with_values=False):
+    def clone(self, transpose=False, copy_all=None, with_marks=None, with_values=None, with_hist=None):
         """ Copy the puzzle so the marks and values are disconnected from other copies.
 
             kwattrs:
@@ -90,8 +90,10 @@ class Puzzle(HasTrait, MarksTrait):
                 copy_all    :- all of the above
         """
         ret = self.__class__(pid=self.pid)
-        if copy_all:
-            with_marks = with_hist = with_values = True
+        if copy_all is not None:
+            with_marks   = with_marks  if with_marks  is not None else copy_all
+            with_values  = with_values if with_values is not None else copy_all
+            with_hist    = with_hist   if with_hist   is not None else copy_all
         for r in ROW_NUMBERS:
             for c in COLUMN_NUMBERS:
                 e = self[c,r] if transpose else self[r, c]
