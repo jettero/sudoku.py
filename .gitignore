@@ -10,3 +10,4 @@ file
 .coverage
 *.py,cover
 t/output
+*.svg

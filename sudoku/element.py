@@ -42,6 +42,16 @@ class Element:
         self.given = given
         self.value = value
 
+    def __getstate__(self):
+        return (self.row, self.col, self.given, self.value, self._)
+
+    def __setstate__(self, args):
+        row, col, given, value, marks, *args = args
+        self.__init__(value=value, row=row, col=col, given=given)
+        self._ = marks
+        if args:
+            raise ValueError(f'{self.__class__.__name__}.__setstate__(loc=({row}, {col}), given={given}, value={value}) -- remaining state data: {args}')
+
     def reset(self):
         self.clear_marks()
         if not self.given:
@@ -251,5 +261,3 @@ class Element:
     def remove_marks(self, *m):
         self.remove_pencil_marks(*m)
         self.remove_center_marks(*m)
-
-

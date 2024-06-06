@@ -14,6 +14,7 @@ from .traits import HasTrait, MarksTrait
 
 log = logging.getLogger(__name__)
 
+
 class Puzzle(HasTrait, MarksTrait):
     broken = False
     pid = 0
@@ -27,7 +28,7 @@ class Puzzle(HasTrait, MarksTrait):
             self.__class__.pid += 1
         else:
             self.pid = pid
-        self.short = f'Puzzle({self.pid})'
+        self.short = f"Puzzle({self.pid})"
 
         def box_elements(b):
             b -= 1
@@ -42,6 +43,19 @@ class Puzzle(HasTrait, MarksTrait):
         self.boxes = Otuple(Box(*box_elements(b), idx=b) for b in BOX_NUMBERS)
         self._history = History()
         self._context = dict()
+
+    def __getstate__(self):
+        return (self.pid, tuple(e.__getstate__() for e in self), tuple(self._history.items())) # NOTE: I don't think we can usefully copy self._context
+
+    def __setstate__(self, args):
+        pid, e_states, hist, *args = args
+        self.__init__(pid=pid)
+        for e, s in zip(self, e_states):
+            e.__setstate__(s)
+        for thing, source in hist:
+            self._history.append(thing, source)
+        if args:
+            raise ValueError(f'{self.__class__.__name__}.__setstate__(pid={pid}) -- remaining state data: {args}')
 
     def context(self, thing, **kw):
         """
@@ -80,33 +94,33 @@ class Puzzle(HasTrait, MarksTrait):
         return self.clone(copy_all=True, transpose=transpose)
 
     def clone(self, transpose=False, copy_all=None, with_marks=None, with_values=None, with_hist=None):
-        """ Copy the puzzle so the marks and values are disconnected from other copies.
+        """Copy the puzzle so the marks and values are disconnected from other copies.
 
-            kwattrs:
+        kwattrs:
 
-                with_marks  :- copy pencil and center marks
-                with_hist   :- copy history
-                with_values :- copy non-given values
-                copy_all    :- all of the above
+            with_marks  :- copy pencil and center marks
+            with_hist   :- copy history
+            with_values :- copy non-given values
+            copy_all    :- all of the above
         """
         ret = self.__class__(pid=self.pid)
         if copy_all is not None:
-            with_marks   = with_marks  if with_marks  is not None else copy_all
-            with_values  = with_values if with_values is not None else copy_all
-            with_hist    = with_hist   if with_hist   is not None else copy_all
+            with_marks = with_marks if with_marks is not None else copy_all
+            with_values = with_values if with_values is not None else copy_all
+            with_hist = with_hist if with_hist is not None else copy_all
         for r in ROW_NUMBERS:
             for c in COLUMN_NUMBERS:
-                e = self[c,r] if transpose else self[r, c]
+                e = self[c, r] if transpose else self[r, c]
                 if e.given:
                     ret[r, c].given = e.value
                 elif with_values and e.value:
-                    ret[r,c].value = e.value
+                    ret[r, c].value = e.value
                 if with_marks and (e.pencil or e.center):
-                    ret[r,c].add_pencil_marks(*e.pencil)
-                    ret[r,c].add_center_marks(*e.center)
+                    ret[r, c].add_pencil_marks(*e.pencil)
+                    ret[r, c].add_center_marks(*e.center)
         if with_hist:
-            for k,v in self._history:
-                ret._history.append(k,v)
+            for k, v in self._history:
+                ret._history.append(k, v)
         return ret
 
     def reset(self):
@@ -163,9 +177,9 @@ class Puzzle(HasTrait, MarksTrait):
             # spacing — and make sure the hist items are at least 80 chars
             # wide … cuz otherwise it looks dumb and we assume a pager is
             # being used in any case.
-            max_col_width = max(80, int(os.environ.get('COLUMNS', 80)) - 100 - 2)
-            other = tabulate([ [x] for x in self.history ], tablefmt='plain', maxcolwidths=[max_col_width])
-            return tabulate([[inner, other]], tablefmt=sudoku_hist_table_format, rowalign='bottom')
+            max_col_width = max(80, int(os.environ.get("COLUMNS", 80)) - 100 - 2)
+            other = tabulate([[x] for x in self.history], tablefmt="plain", maxcolwidths=[max_col_width])
+            return tabulate([[inner, other]], tablefmt=sudoku_hist_table_format, rowalign="bottom")
         return inner
 
     @property
@@ -205,6 +219,7 @@ class Puzzle(HasTrait, MarksTrait):
         class WeirdList(list):
             def __bool__(self):
                 return len(self) == 0
+
         res = WeirdList()
         cv = self.count_values()
         for gname, grouping in sorted(cv.items()):
@@ -224,3 +239,24 @@ class Puzzle(HasTrait, MarksTrait):
         if vals == 81 and self.check():
             return True
         return False
+
+    def is_similar(self, other, with_marks=False, with_history=False):
+        if not isinstance(other, self.__class__):
+            return False
+        puzzle_attributes_to_check = []
+        element_attributes_to_check = ['value', 'given', 'row', 'col']
+        if with_history:
+            puzzle_attributes_to_check.append('history')
+        if with_marks:
+            element_attributes_to_check.append('marks')
+            # NOTE: there's the '_' storage bin of course, but we probably mean
+            # just the pencil/center marks when we use words like 'similar'
+            # rather than equivalent
+        for k in puzzle_attributes_to_check:
+            if getattr(self, k) != getattr(other, k):
+                return False
+        for x,y in zip(self, other):
+            for k in element_attributes_to_check:
+                if getattr(x, k) != getattr(y, k):
+                    return False
+        return True

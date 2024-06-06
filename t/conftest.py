@@ -54,7 +54,6 @@ def puzzles():
 def empty_puzzle():
     yield Puzzle()
 
-
 @pytest.fixture(scope="function")
 def diag_puzzle():
     p = Puzzle()
@@ -86,6 +85,10 @@ def _provide_each_puzzle_as_a_fixture():
         globals()[name] = pytest.fixture(scope='function')(_wrap_in_bound_scope(p, name))
 
 _provide_each_puzzle_as_a_fixture()
+
+@pytest.fixture(scope="function")
+def q7(p7):
+    return solve(p7)
 
 @pytest.fixture(scope="function")
 def p_45m(p_45):

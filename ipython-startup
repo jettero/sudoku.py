@@ -48,19 +48,22 @@ def reload_puzzles():
     global P, Q
     P = list(get_puzzles())
 
+    L0 = len(P)
+
     for file in glob('t/asset/p*.txt'):
         bname = os.path.basename(file)[:-4]
         P.extend(get_puzzles(file))
+
+    L1 = len(P)
 
     for i,p in enumerate(P):
         globals()[f'p{i}'] = p
 
     L = len(P)
-    # ThreadPoolExecutor(max_workers=) defaults to min(32, os.cpu_count() + 4)
     try:
         log.debug('disabling debug logging temporarily')
         logging.disable(logging.DEBUG)
-        with concurrent.futures.ThreadPoolExecutor() as executor:
+        with concurrent.futures.ProcessPoolExecutor() as executor:
             Q = list(executor.map(maybe_solve, P))
     finally:
         logging.disable(logging.NOTSET)
@@ -72,16 +75,17 @@ def reload_puzzles():
 
     log.debug("loaded %d puzzles in 'P' and 'p0' … 'pN'", len(P))
     log.debug("loaded %d corresponding solution(s) in 'Q' and 'q0' … 'qN'", len(list(x for x in Q if x is not None)))
+    log.debug("Puzzles.txt are puzzles p0 .. p%d", L0-1)
 
     for i in range(1,4,1):
-        j = len(P) - i
-        if Q[-i] is not None:
-            log.debug("pm%d/qm%d => p%d/q%d", i, i, j, j)
-            globals()[f'pm{i}'] = P[-i]
-            globals()[f'qm{i}'] = Q[-i]
+        j = L0 - i
+        if Q[j] is not None:
+            log.debug("pm%d/qm%d => %s/%s", i, i, repr(P[j]), repr(Q[j]))
+            globals()[f'pm{i}'] = P[j]
+            globals()[f'qm{i}'] = Q[j]
         else:
-            log.debug("pm%d => p%d", i, j)
-            globals()[f'pm{i}'] = P[-i]
+            log.debug("pm%d => %s", i, repr(P[j]))
+            globals()[f'pm{i}'] = P[j]
 
 reload_puzzles()
 
