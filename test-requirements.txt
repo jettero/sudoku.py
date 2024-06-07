@@ -3,3 +3,7 @@
 pytest
 pytest-pythonpath
 pytest-coverage
+
+
+pytest-parallel
+coverage-enable-subprocess
