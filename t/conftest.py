@@ -39,12 +39,16 @@ RULE2 = tuple( f'{first}|{second}' for first,second in itertools.combinations(RU
 @pytest.fixture(scope='function', params=tuple(f'p{i}' for i in range(len(PUZZLES))))
 def any_p(request):
     p = PUZZLES[int(request.param[1:])]
-    return p.copy()
+    yield p.copy()
+
+@pytest.fixture(scope='function')
+def any_q(any_p):
+    yield solve(any_p)
 
 @pytest.fixture(scope='session', params=tuple(RULE2))
 def any_2rule(request):
     r1,r2 = request.param.split('|')
-    return (RULES[r1], RULES[r2])
+    yield (RULES[r1], RULES[r2])
 
 @pytest.fixture(scope="function")
 def puzzles():

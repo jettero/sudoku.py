@@ -34,10 +34,9 @@ def test_list_true_when_empty():
     assert not l1
     assert not l2
 
-def test_solver_doesnt_ruin_any_puzzle(any_p):
-    q = solve(any_p)
-    c = q.check()
-    assert c == list()
+def test_solver_doesnt_ruin_any_puzzle(any_q):
+    c = any_q.check()
+    assert (any_q, c) == (any_q, list())
     assert c
 
 def test_solvers_load_the_same_local_modules():
