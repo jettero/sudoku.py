@@ -46,11 +46,9 @@ class Element:
         return (self.row, self.col, self.given, self.value, self._)
 
     def __setstate__(self, args):
-        row, col, given, value, marks, *args = args
+        row, col, given, value, marks = args
         self.__init__(value=value, row=row, col=col, given=given)
         self._ = marks
-        if args:
-            raise ValueError(f'{self.__class__.__name__}.__setstate__(loc=({row}, {col}), given={given}, value={value}) -- remaining state data: {args}')
 
     def reset(self):
         self.clear_marks()

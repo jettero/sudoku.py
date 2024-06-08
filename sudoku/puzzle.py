@@ -48,14 +48,12 @@ class Puzzle(HasTrait, MarksTrait):
         return (self.pid, tuple(e.__getstate__() for e in self), tuple(self._history.items())) # NOTE: I don't think we can usefully copy self._context
 
     def __setstate__(self, args):
-        pid, e_states, hist, *args = args
+        pid, e_states, hist = args
         self.__init__(pid=pid)
         for e, s in zip(self, e_states):
             e.__setstate__(s)
         for thing, source in hist:
             self._history.append(thing, source)
-        if args:
-            raise ValueError(f'{self.__class__.__name__}.__setstate__(pid={pid}) -- remaining state data: {args}')
 
     def context(self, thing, **kw):
         """
