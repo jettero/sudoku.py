@@ -7,7 +7,7 @@ Output.txt
 t.py
 file
 .pathed-run.log
-.coverage
+.coverage*
 *.py,cover
 t/output
 *.svg
