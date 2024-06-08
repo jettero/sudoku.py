@@ -4,6 +4,7 @@
 import pytest
 import logging
 from sudoku.solver import process_opts, solve, Karen
+from sudoku.tools import ListTrueWhenEmpty
 
 log = logging.getLogger(__name__)
 
@@ -20,10 +21,22 @@ def test_process_opts():
     assert opts3 == {'human',}
     assert opts4 == set()
 
+def test_list_true_when_empty():
+    l0 = ListTrueWhenEmpty()
+    l1 = ListTrueWhenEmpty([1])
+    l2 = ListTrueWhenEmpty([2])
+
+    assert bool(l0) is True
+    assert bool(l1) is False
+    assert bool(l2) is False
+
+    assert l0
+    assert not l1
+    assert not l2
+
 def test_solver_doesnt_ruin_any_puzzle(any_p):
     q = solve(any_p)
     c = q.check()
-    ok = bool(c)
     if not c:
         log.info('original puzzle that failed:\n%s\n\nour "solution":\n%s\nsolution history:', any_p, q)
         for item in q.history:
@@ -31,7 +44,7 @@ def test_solver_doesnt_ruin_any_puzzle(any_p):
         log.info('problems:')
         for item in c:
             log.error("  %s", item)
-    assert ok
+    assert c
 
 def test_solvers_load_the_same_local_modules():
     assert set(Karen().local_modules) == set(Karen().local_modules)

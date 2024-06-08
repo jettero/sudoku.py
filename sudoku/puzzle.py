@@ -5,7 +5,7 @@ import os
 import types
 import logging
 from tabulate import tabulate
-from .tools import sudoku_table_format, sudoku_hist_table_format
+from .tools import sudoku_table_format, sudoku_hist_table_format, ListTrueWhenEmpty
 from .otuple import Otuple
 from .const import BOX_NUMBERS, ROW_NUMBERS, COLUMN_NUMBERS, ELEMENT_VALUES
 from .box import Box, Row, Col
@@ -214,11 +214,7 @@ class Puzzle(HasTrait, MarksTrait):
         return ret
 
     def check(self):
-        class WeirdList(list):
-            def __bool__(self):
-                return len(self) == 0
-
-        res = WeirdList()
+        res = ListTrueWhenEmpty()
         cv = self.count_values()
         for gname, grouping in sorted(cv.items()):
             for v, c in sorted(grouping.items()):

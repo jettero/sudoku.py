@@ -237,3 +237,6 @@ def pluralize(x):
         return f'{x}es'
     return f'{x}s'
 
+class ListTrueWhenEmpty(list):
+    def __bool__(self):
+        return len(self) == 0
