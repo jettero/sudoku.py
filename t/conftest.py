@@ -61,9 +61,9 @@ def diag_puzzle():
         p[x, x] = x
     yield p
 
-def _wrap_in_bound_scope(p, name):
+def _wrap_puzzle_in_bound_scope(p, name):
     def _bound_to_p():
-        yield p
+        yield p.copy()
     _bound_to_p.__name__ = name
     return _bound_to_p
 
@@ -74,7 +74,7 @@ def _load_all_assets_as_fixtures(): # provides fixtures p_bp, p_45, p_srr, p_1t9
             short = "p_" + short_name[0]
             (p,) = get_puzzles(file=file)
             spam(short, p)
-            globals()[short] = pytest.fixture(scope="function")(_wrap_in_bound_scope(p, short))
+            globals()[short] = pytest.fixture(scope="function")(_wrap_puzzle_in_bound_scope(p, short))
             log.info("loaded %s into fixture %s", file, short)
 
 _load_all_assets_as_fixtures()
@@ -82,7 +82,7 @@ _load_all_assets_as_fixtures()
 def _provide_each_puzzle_as_a_fixture():
     for n,p in enumerate(PUZZLES):
         name = f'p{n}'
-        globals()[name] = pytest.fixture(scope='function')(_wrap_in_bound_scope(p, name))
+        globals()[name] = pytest.fixture(scope='function')(_wrap_puzzle_in_bound_scope(p, name))
 
 _provide_each_puzzle_as_a_fixture()
 
