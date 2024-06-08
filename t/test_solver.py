@@ -37,13 +37,7 @@ def test_list_true_when_empty():
 def test_solver_doesnt_ruin_any_puzzle(any_p):
     q = solve(any_p)
     c = q.check()
-    if not c:
-        log.info('original puzzle that failed:\n%s\n\nour "solution":\n%s\nsolution history:', any_p, q)
-        for item in q.history:
-            log.info('  %s', item)
-        log.info('problems:')
-        for item in c:
-            log.error("  %s", item)
+    assert c == list()
     assert c
 
 def test_solvers_load_the_same_local_modules():
