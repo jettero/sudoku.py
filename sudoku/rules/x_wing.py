@@ -54,12 +54,18 @@ from sudoku.rules import hookimpl
 from sudoku.const import SEV
 from sudoku.tools import oxford_format_ints, describe_elements, LongJump, pluralize
 
-def nameify(n,*a):
-    if n == 2 and 'box' not in a:
+
+def nameify(n, *a):
+    if n == 2 and "box" not in a:
         return "X-wing"
-    if 'box' not in a:
+    if "box" not in a:
         return "Jellyfish"
     return f"G-wing({n}, {'-'.join(sorted(a))})"
+
+
+SIZES = (2, 3, 4)
+ATTRS = ("row", "col") # , "box")
+
 
 @hookimpl
 def main(puzzle, opts=set()):
@@ -68,20 +74,23 @@ def main(puzzle, opts=set()):
     nv = set(x for x in puzzle if not x.value)
     while True:
         try:
-            for n in (2,3,4):
+            for n in SIZES:
                 for i in SEV:
                     E = set(x for x in nv if i in x.center)
-                    for aa,ab in permutations(('row','col','box'), 2):
+                    for aa, ab in permutations(ATTRS, 2):
                         A = set(getattr(x, aa) for x in E)
                         for a in combinations(A, n):
                             Ea = set(x for x in E if getattr(x, aa) in a)
-                            b = set(getattr(x,ab) for x in Ea)
+                            b = set(getattr(x, ab) for x in Ea)
 
                             if len(b) == n:
                                 Eb = set(x for x in E if getattr(x, ab) in b)
                                 if Eδ := Eb - Ea:
-                                    puzzle.describe_inference(f"{nameify(n,aa,ab)}: {i} can only be in {pluralize(ab)} {oxford_format_ints(*b)} in {pluralize(aa)} {oxford_format_ints(*a)}"
-                                                              f" => remove {i} from {describe_elements(Eδ)}", __name__)
+                                    puzzle.describe_inference(
+                                        f"{nameify(n,aa,ab)}: {i} can only be in {pluralize(ab)} {oxford_format_ints(*b)} in {pluralize(aa)} {oxford_format_ints(*a)}"
+                                        f" => remove {i} from {describe_elements(Eδ)}",
+                                        __name__,
+                                    )
                                     for e in Eδ:
                                         e.remove_center_marks(i)
                                     raise LongJump()
