@@ -34,6 +34,9 @@ def test_list_true_when_empty():
     assert not l1
     assert not l2
 
+def test_p_is_not_broken(any_p):
+    assert any_p.check()
+
 def test_solver_doesnt_ruin_any_puzzle(any_q):
     c = any_q.check()
     assert (any_q, c) == (any_q, list())

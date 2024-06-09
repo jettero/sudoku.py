@@ -117,7 +117,7 @@ class Puzzle(HasTrait, MarksTrait):
                     ret[r, c].add_pencil_marks(*e.pencil)
                     ret[r, c].add_center_marks(*e.center)
         if with_hist:
-            for k, v in self._history:
+            for k, v in self._history.items():
                 ret._history.append(k, v)
         return ret
 
@@ -175,7 +175,7 @@ class Puzzle(HasTrait, MarksTrait):
             # spacing — and make sure the hist items are at least 80 chars
             # wide … cuz otherwise it looks dumb and we assume a pager is
             # being used in any case.
-            max_col_width = max(80, int(os.environ.get("COLUMNS", 80)) - 100 - 2)
+            max_col_width = max(40, int(os.environ.get("COLUMNS", 80)) - 100 - 2)
             other = tabulate([[x] for x in self.history], tablefmt="plain", maxcolwidths=[max_col_width])
             return tabulate([[inner, other]], tablefmt=sudoku_hist_table_format, rowalign="bottom")
         return inner

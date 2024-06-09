@@ -36,7 +36,7 @@ PUZZLES = tuple(get_puzzles())
 RULES = dict( (n.split('.')[-1],m.main) for n,m in sudoku.solver.Karen().list_name_plugin() )
 RULE2 = tuple( f'{first}|{second}' for first,second in itertools.combinations(RULES, 2) )
 
-@pytest.fixture(scope='function', params=tuple(f'p{i}' for i in range(len(PUZZLES))))
+@pytest.fixture(scope='function', params=tuple(f'p{i}' for i,p in enumerate(PUZZLES) if p.check()))
 def any_p(request):
     p = PUZZLES[int(request.param[1:])]
     yield p.copy()

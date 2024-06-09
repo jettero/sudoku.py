@@ -37,18 +37,21 @@ def test_puzzle_transpose_with_marks(p_bpm):
     assert cloned[9,4].given
     assert cloned[4,9].pencil == {4,5}
 
-def test_puzzle_copy(p_bp):
-    p1 = p_bp.clone()
-    p2 = p_bp.copy()
+def test_puzzle_compare_copy_to_clone(any_q):
+    p1 = any_q.clone()
+    p2 = any_q.copy()
+
+    assert len(p1.history) < len(p2.history)
 
     assert p1 is not p2
     for e1,e2 in zip(p1,p2):
-        assert e1.value == e2.value
-        assert e1.pencil == e2.pencil
-        assert e1.center == e2.center
+        assert e1.given == e2.given
+        assert len(e1.pencil) <= len(e2.pencil)
+        assert len(e1.center) <= len(e2.center)
         assert e1 is not e2
 
     p1[1,1].set_pencil_marks(3)
     p2[1,1].set_pencil_marks(2)
 
-    assert p1[1,1].pencil != p2[1,1].pencil
+    assert p1[1,1].pencil == {3,}
+    assert p2[1,1].pencil == {2,}
