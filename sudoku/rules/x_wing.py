@@ -54,6 +54,8 @@ from sudoku.rules import hookimpl
 from sudoku.const import SEV
 from sudoku.tools import oxford_format_ints, describe_elements, LongJump, pluralize
 
+SIZES = (2, 3, 4)
+ATTRS = ("row", "col", "box")
 
 def nameify(n, *a):
     if n == 2 and "box" not in a:
@@ -61,11 +63,6 @@ def nameify(n, *a):
     if "box" not in a:
         return "Jellyfish"
     return f"G-wing({n}, {'-'.join(sorted(a))})"
-
-
-SIZES = (2, 3, 4)
-ATTRS = ("row", "col") # , "box")
-
 
 @hookimpl
 def main(puzzle, opts=set()):
