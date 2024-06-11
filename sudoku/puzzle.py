@@ -186,9 +186,7 @@ class Puzzle(HasTrait, MarksTrait):
         if self.history:
             # puzzles happen to be 100 chars wide, COLUMNS-100 is roughly the
             # space remaining for history items; but we subtract two more for
-            # spacing — and make sure the hist items are at least 80 chars
-            # wide … cuz otherwise it looks dumb and we assume a pager is
-            # being used in any case.
+            # spacing — and ensure a certain min-width so it doesn't look too silly.
             max_col_width = max(40, int(os.environ.get("COLUMNS", 80)) - 100 - 2)
             other = tabulate([[x] for x in self.history], tablefmt="plain", maxcolwidths=[max_col_width])
             return tabulate([[inner, other]], tablefmt=sudoku_hist_table_format, rowalign="bottom")
