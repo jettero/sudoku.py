@@ -166,6 +166,20 @@ class Puzzle(HasTrait, MarksTrait):
         return self.long
 
     @property
+    def medium(self):
+        ret = "-----  -----  -----\n"
+        for row in self.rows:
+            rp = list()
+            for e in row:
+                rp.append('.' if e.value is None else str(e.value))
+                if e.col in (3,6):
+                    rp.append('')
+            ret += ' '.join(rp) + '\n'
+            if e.row in (3,6):
+                ret += '\n'
+        return ret
+
+    @property
     def long(self):
         dat = [[x.as_cell for x in row] for row in self.rows]
         inner = tabulate(dat, tablefmt=sudoku_table_format, stralign=None)
