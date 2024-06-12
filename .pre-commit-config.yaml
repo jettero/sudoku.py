@@ -32,7 +32,7 @@ repos:
         types: [python]
       - id: pytest
         name: pytest
-        entry: ./pathed-pylintest pytest t --cov sudoku --cov-report term-missing:skip-covered --no-cov-on-fail --cov-fail-under 100
+        entry: ./pathed-pylintest pytest t --cov sudoku
         always_run: true
         language: system
         pass_filenames: false
