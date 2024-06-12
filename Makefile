@@ -6,6 +6,9 @@ test: .test-reqs
 cov coverage: .test-reqs
 	pytest --cov sudoku --cov-report term-missing:skip-covered --no-cov-on-fail --cov-fail-under 100
 
+pre pre-commit: .test-reqs
+	pre-commit run
+
 ipy ipython: .IPY-reqs
 
 .%-reqs: %-requirements.txt
