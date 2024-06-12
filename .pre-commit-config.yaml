@@ -12,37 +12,31 @@ exclude:
   - disabled-rules/
 
 fail_fast: false
-repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
-  hooks:
-  - id: check-yaml
-  - id: end-of-file-fixer
-  - id: trailing-whitespace
-- repo: https://github.com/psf/black
-  rev: 24.2.0
-  hooks:
-  - id: black
-    args: ['--line-length', '119']
-- repo: local
-  hooks:
-  - id: pylint
-    name: pylint
-    entry: ./pathed-pylintest pylint
-    language: system
-    types: [python]
-  - id: pytest
-    name: pytest
-    entry: ./pathed-pylintest pytest t
-    always_run: true
-    language: system
-    pass_filenames: false
 
-# this doesn't seem to quite work...
-# - repo: local
-#   hooks:
-#     - id: tests
-#       name: run tests
-#       entry: pytest
-#       language: system
-#       types: [python]
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/psf/black
+    rev: 24.2.0
+    hooks:
+      - id: black
+        args: ['--line-length', '119']
+
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: ./pathed-pylintest pylint
+        language: system
+        types: [python]
+      - id: pytest
+        name: pytest
+        entry: ./pathed-pylintest pytest t --cov sudoku --cov-report term-missing:skip-covered --no-cov-on-fail --cov-fail-under 100
+        always_run: true
+        language: system
+        pass_filenames: false

@@ -3,6 +3,9 @@
 test: .test-reqs
 	pytest
 
+cov coverage: .test-reqs
+	pytest --cov sudoku --cov-report term-missing:skip-covered --no-cov-on-fail --cov-fail-under 100
+
 ipy ipython: .IPY-reqs
 
 .%-reqs: %-requirements.txt
