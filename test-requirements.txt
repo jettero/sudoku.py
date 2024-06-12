@@ -4,6 +4,7 @@ pytest
 pytest-pythonpath
 pytest-coverage
 
+pylint
 
 pytest-parallel
 coverage-enable-subprocess
