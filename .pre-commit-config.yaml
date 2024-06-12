@@ -7,10 +7,6 @@
 #
 # but do whatever you like
 
-exclude:
-  - old/
-  - disabled-rules/
-
 fail_fast: false
 
 repos:
